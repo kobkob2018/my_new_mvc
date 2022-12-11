@@ -19,12 +19,16 @@
     public function redirectwithmessage_test(){
       //echo "Here start the test";
       $go_to_page = outer_url("test/redirectwithmessage_after_test/");
+      SystemMessages::add_err_message("shoko bloko! sdfsdf");
+
+      //var_dump($_SESSION);
+
       $this->redirect_to($go_to_page);
     }
 
     public function redirectwithmessage_after_test(){
-
-      
+      //session__clear();
+      //var_dump($_SESSION);
       echo "Here start the  test - AFTER!!!";
       
     }

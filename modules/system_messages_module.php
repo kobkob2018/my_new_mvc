@@ -4,19 +4,11 @@
 
 		
         public function show(){
-            if(session__isset('success_messages')){
-				$this->add_data('success_message', session__get('success_message'));
-				session__unset('success_message');
-			}
-			if(session__isset('err_messages')){
-				$this->add_data('err_messages', session__get('err_messages'));
-				unset($_SESSION[$this->session_prefix.'err_messages']);
-			}
-            else{
-
-                $this->add_data('err_messages',array('Here is a test message at','system_messages_module '));
-            }
+            $system_messages = SystemMessages::get_all();
             
+			//var_dump($system_messages);
+			$this->add_data('success_messages',$system_messages['seccess']);
+			$this->add_data('err_messages',$system_messages['err']);
             $this->include_view('views/messages/all.php');
 
             
