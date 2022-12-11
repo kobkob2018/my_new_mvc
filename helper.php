@@ -28,10 +28,16 @@ function session__unset($param_name){
 
 
 
-function session__get($param_name,$param_val){
+function session__get($param_name){
     $session_prefix = get_config('session_prefix');
     $session_param = $session_prefix.$param_name;
     return $_SESSION[$session_param];
+}
+
+function session__clear(){
+    foreach($_SESSION as $key=>$val){
+        unset($_SESSION[$key]);
+    }
 }
 
 function inner_url($url = ''){
@@ -48,6 +54,7 @@ function inner_url($url = ''){
     return $base_url_dir_before.$url;
 }
 
+
 function outer_url($url = ''){
     $base_url = get_config('base_url');
     $inner_url = inner_url($url);
@@ -56,4 +63,8 @@ function outer_url($url = ''){
 
 function is_mobile(){    
     return get_config('is_mobile');
+}
+
+function input_protect($val){
+    return $val;
 }

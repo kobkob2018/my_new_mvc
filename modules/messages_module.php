@@ -10,7 +10,7 @@
 
 
             echo "works untill now";
-            $this->include_view('views/messeges/testMessage.php');
+            $this->include_view('views/messages/testMessage.php');
         }
 
 	}

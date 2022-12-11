@@ -1,10 +1,10 @@
 <h3>ניהול פרטים אישיים</h3>
 <hr/>
 <div id="user_register_wrap" class="user-form">
-	<?php if($this->form_messege){ ?>
-		<div class="messeges error-messeges">
-			<div class="messege error-messege">
-				<b><?php echo $this->form_messege; ?></b>
+	<?php if($this->form_message){ ?>
+		<div class="messages error-messages">
+			<div class="message error-message">
+				<b><?php echo $this->form_message; ?></b>
 			</div>
 		</div>
 	<?php } ?>

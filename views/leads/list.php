@@ -134,10 +134,10 @@
 					<img src="style/image/loading.gif" id="gt_data_loadin_gif" alt="Loading"> 
 				</div>	
 			</div>
-			<div id="leads_messege_mask" class="get-data-mask mask-div" style="display: none;">
+			<div id="leads_message_mask" class="get-data-mask mask-div" style="display: none;">
 				<div class="mask-bg"></div>
 				<div class="mask-content">
-					<span id="leads_messege_holder"></span>
+					<span id="leads_message_holder"></span>
 				</div>	
 			</div>			
 			<div ng-show="!lead_data" id="leads_list_view">

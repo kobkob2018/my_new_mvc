@@ -10,7 +10,7 @@
 		$user = User::getLogedInUser();
 		$sql_arr = array(
 			"uid"=>$user['id'],
-			"tag_name"=>wigt($tag_data['tag_name'])
+			"tag_name"=>input_protect($tag_data['tag_name'])
 		);
 		$req->execute($sql_arr);
     }

@@ -7,7 +7,7 @@
 	</div>
 	<div class="header-space-keeper"></div>
 	<div id="content_wrap">
-		<?php include('views/messeges/all.php'); ?> 
+		<?php include('views/messages/all.php'); ?> 
 		<?php $this->print_action_output(); ?>
 	</div>
 	<div id="footer" class="footer">

@@ -1,17 +1,17 @@
 <h3>הרשמה למערכת השותפים</h3>
 <hr/>
 <?php if($registered_user){ ?>
-<div class="success-inner-messege">
+<div class="success-inner-message">
 	הרשמתך בוצעה בהצלחה.<br/>
 	אנא בדוק את תיבת המייל שלך ב: <?php echo $registered_user; ?> ולחץ על הלינק לאימות כתובת המייל.<br/>
 	תודה.
 </div>
 <?php } else { ?>
 <div id="user_register_wrap" class="user-form">
-	<?php if($this->form_messege){ ?>
-		<div class="messeges error-messeges">
-			<div class="messege error-messege">
-				<b><?php echo $this->form_messege; ?></b>
+	<?php if($this->form_message){ ?>
+		<div class="messages error-messages">
+			<div class="message error-message">
+				<b><?php echo $this->form_message; ?></b>
 			</div>
 		</div>
 	<?php } ?>

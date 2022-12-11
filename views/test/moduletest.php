@@ -1,4 +1,4 @@
-<div  class="messege error-messege">
+<div  class="message error-message">
     <?php foreach($this->data['testparams'] as $key=>$val): ?>
         <div>
             <h3><?php echo $key; ?></h3>

@@ -5,12 +5,12 @@
 	public $data = array();
 	public $user = false;
 	public $userModel = null;
-	public $err_messeges = array(); 
-	public $success_messeges = array(); 
-	public $session_err_messege = false; 
-	public $session_success_messege = false; 
+	public $err_messages = array(); 
+	public $success_messages = array(); 
+	public $session_err_message = false; 
+	public $session_success_message = false; 
 	public $form_return_params = array();
-	public $form_messege = false;
+	public $form_message = false;
 	public $action_output = "";
 	public $action_params = array('layout_file'=>'views/layout.php','body_layout_file'=>'views/body/main.php'); 
 	public $action_result;
@@ -40,14 +40,7 @@
 			$this->action_result = $this->$action();
 			$this->action_output = ob_get_clean();
 			
-			if(isset($_SESSION[$this->session_prefix.'_success_messege'])){
-				$this->session_success_messege = $_SESSION[$this->session_prefix.'_success_messege'];
-				unset($_SESSION[$this->session_prefix.'_success_messege']);
-			}
-			if(isset($_SESSION[$this->session_prefix.'_err_messege'])){
-				$this->session_err_messege = $_SESSION[$this->session_prefix.'_err_messege'];
-				unset($_SESSION[$this->session_prefix.'_err_messege']);
-			}			
+			
 			if(isset($_REQUEST['sendAction'])){
 				$method_name = $_REQUEST['sendAction'];
 				if(method_exists($this,$method_name)){
@@ -121,13 +114,13 @@
 			$this->action_result = $this->$action();
 			$this->action_output = ob_get_clean();
 			
-			if(isset($_SESSION[$this->session_prefix.'_success_messege'])){
-				$this->session_success_messege = $_SESSION[$this->session_prefix.'_success_messege'];
-				unset($_SESSION[$this->session_prefix.'_success_messege']);
+			if(isset($_SESSION[$this->session_prefix.'_success_message'])){
+				$this->session_success_message = $_SESSION[$this->session_prefix.'_success_message'];
+				unset($_SESSION[$this->session_prefix.'_success_message']);
 			}
-			if(isset($_SESSION[$this->session_prefix.'_err_messege'])){
-				$this->session_err_messege = $_SESSION[$this->session_prefix.'_err_messege'];
-				unset($_SESSION[$this->session_prefix.'_err_messege']);
+			if(isset($_SESSION[$this->session_prefix.'_err_message'])){
+				$this->session_err_message = $_SESSION[$this->session_prefix.'_err_message'];
+				unset($_SESSION[$this->session_prefix.'_err_message']);
 			}			
 			if(isset($_REQUEST['sendAction'])){
 				$method_name = $_REQUEST['sendAction'];
@@ -141,7 +134,9 @@
 		}
 	}
 
-
+	public function add_model(){
+		
+	}
 
 	protected function set_layout($layout_name){
 		$this->action_params['layout_file'] = 'views/layouts/'.$layout_name.'.php';
@@ -200,9 +195,13 @@
 		}
 	}
 
+	public function add_data($dataName,$dataVal){
+		$this->data[$dataName] = $dataVal;
+	}
+
 	public function add_module_data($dataName,$dataVal){
 		//currently we add module data as norrmal data. considering care for naming convension
-		$this->data[$dataName] = $dataVal;
+		$this->add_data($dataName,$dataVal);
 	}
 
 	function form_return_val($param){

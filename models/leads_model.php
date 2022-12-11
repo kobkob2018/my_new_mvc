@@ -121,7 +121,7 @@
 				$lead['cat_name'] = "שיחה שלא נענתה";
 				$lead['full_cat_name'] = "שיחה שלא נענתה";
 			}
-			elseif($lead['answer'] == "MESSEGE"){
+			elseif($lead['answer'] == "message"){
 				$lead['cat_name'] = "טלפון לחזרה - ".$phone_lead_data['extra']."";
 				$lead['full_cat_name'] = "טלפון לחזרה - ".$phone_lead_data['extra']."";
 			}			
@@ -269,7 +269,7 @@
 		if($filter['free'] != ""){
 			$filter_sql .= " AND( ucf.phone LIKE (:free) OR ucf.name LIKE (:free) OR ucf.email LIKE (:free) OR ucf.content LIKE (:free))";
 			$profit_filter_sql .= " AND( ucf.phone LIKE (:free) OR ucf.name LIKE (:free) OR ucf.email LIKE (:free) OR ucf.content LIKE (:free))";
-			$filter_free = wigt($filter['free']);
+			$filter_free = $filter['free'];
 			$prepare_arr['free'] = '%'.$filter_free.'%';
 		}
 		if(!empty($filter['status'])){
@@ -455,7 +455,7 @@
 		$set_sql_arr = array();
 		foreach($data_arr as $key=>$val){
 			$set_sql_arr[] = "$key=:$key";
-			$data_arr[$key] = wigt($val);
+			$data_arr[$key] = input_protect($val);
 		}
 		$set_sql_arr[] = "last_update=NOW()";
 		$set_sql = implode(",",$set_sql_arr);
@@ -480,7 +480,7 @@
 		$insert_array = array();
 		foreach($data_arr as $key=>$val){
 			if($key == "comment"){
-				$val = wigt($val);
+				$val = input_protect($val);
 			}
 			$insert_array[$key] = mysql_real_escape_string($val);
 		}

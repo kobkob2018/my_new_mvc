@@ -6,54 +6,26 @@
     public $loged_in_user = false;
 	
     public function __construct(){
-		if(isset($_SESSION[$this->session_prefix.'_login_user'])){
+		if(session__isset('login_user')){
 			$this->resetUser();
 		}
     }
     public function resetUser(){
 		$db = Db::getInstance();
-		$user_id = $_SESSION[$this->session_prefix.'_login_user'];
+		$user_id = session__get('login_user');
 		$sql = "SELECT * FROM users WHERE id = :uid";
 		$req = $db->prepare($sql);
 		$req->execute(array('uid'=>$user_id));
 		$user_data = $req->fetch();
-		$unk = $user_data['unk'];
-		$sql = "SELECT leadPrice FROM user_bookkeeping WHERE unk = :unk";
-		$req = $db->prepare($sql);
-		$req->execute(array('unk'=>$unk));
-		$user_bookkeeping = $req->fetch();
-		if(isset($user_bookkeeping['leadPrice'])){
-			$user_data['leadPrice_no_tax'] = $user_bookkeeping['leadPrice'];
-		}
-		else{
-			$user_data['leadPrice_no_tax'] = '0';
-		}
 		
 		//note!!! to actually edit and add json user params go to controller.php function print_json_page...
-		$sql = "select unk, leadQry, freeSend, open_mode,hide_refund,enableRecordingsView,enableRecordingsPass,buy_minimum,openContactDataPrice,autoSendLeadContact from user_lead_settings where unk = :unk";
+		$sql = "select user_id, free_send, lead_credit from user_lead_settings where user_id = :user_id";
 		$req = $db->prepare($sql);
-		$req->execute(array('unk'=>$unk));
+		$req->execute(array('user_id'=>$user_data['id']));
 		$user_lead_settings = $req->fetch();
-		$user_data['leadPrice'] = $user_lead_settings['openContactDataPrice'];
-		$user_data['freeSend']	= 	$user_lead_settings['freeSend'];
-		$user_data['open_mode']	= 	$user_lead_settings['open_mode'];
-		$user_data['autoSendLeadContact']	= 	$user_lead_settings['autoSendLeadContact'];
-		$user_data['hasSpecialClosedLeadAlert']	= 	'0';
-		if($user_data['freeSend'] == '0' && $user_data['open_mode'] == '1' && $user_data['autoSendLeadContact'] == '1'){
-			$user_data['hasSpecialClosedLeadAlert']	= 	'1';
-		}
-		if(isset($user_lead_settings['leadQry'])){
-			$user_data['leads_credit'] = $user_lead_settings['leadQry'];
-			$user_data['h_refund'] = $user_lead_settings['hide_refund'];
-			$user_data['leads_limit_type'] = 'limit';
-			if($user_lead_settings['freeSend']=='1' && $user_lead_settings['open_mode'] == '1'){
-				$user_data['leads_limit_type'] = 'no_limit';
-			}
-		}
-		$user_data['enableRecordingsView']	= 	$user_lead_settings['enableRecordingsView'];
-		$user_data['enableRecordingsPass']	= 	$user_lead_settings['enableRecordingsPass'];
-		$user_data['buy_minimum']	= 	$user_lead_settings['buy_minimum'];
-		$user_data['have_net_banners']	= $this->haveNetBanners($user_id);
+		$user_data['free_send'] = $user_lead_settings['free_send'];
+		$user_data['lead_credit']	= 	$user_lead_settings['lead_credit'];
+
 		$this->loged_in_user = $user_data;  
 		return $this->loged_in_user;
     }	
@@ -61,7 +33,7 @@
 		$db = Db::getInstance();
 		$sql = "SELECT id FROM users WHERE username = :username AND password = :password";
 		$req = $db->prepare($sql);
-		$req->execute(array('username'=>wigt($username),'password'=>wigt($password)));
+		$req->execute(array('username'=>input_protect($username),'password'=>md5(input_protect($password))));
 		$user_data = $req->fetch();
 		return $user_data;
 	}

@@ -33,7 +33,7 @@
 			$error_msg[] = $error_missing;
 		}		
 		if(!empty($error_msg)){
-			$this->form_messege = implode("<br/><br/>*",$error_msg);
+			$this->form_message = implode("<br/><br/>*",$error_msg);
 			return;
 		}	
 		else{
@@ -50,15 +50,15 @@
 				$this->userModel->updateUserDetails(array("password"),$data_user);
 			}
 			$this->user = $this->userModel->resetUser();
-			$this->success_messeges[] = "הפרטים עודכנו בהצלחה";
+			$this->success_messages[] = "הפרטים עודכנו בהצלחה";
 		}
 		
 	
 		//self::success
 	}
     public function logout(){
-		unset($_SESSION[$this->session_prefix.'_login_user']);
-		unset($_SESSION[$this->session_prefix.'_leads_filter']);
+		unset($_SESSION[get_config('session_prefix').'_login_user']);
+		unset($_SESSION[get_config('session_prefix').'_leads_filter']);
 		$this->redirect_to(outer_url(''));
     }
 	public function details(){

@@ -6,12 +6,12 @@
     }
 
     public function controllerError() {
-      $this->data['error_messege'] = "Missing controller";
+      $this->data['error_message'] = "Missing controller";
       include('views/pages/error.php');
     }
 
     public function actionError() {
-      $this->data['error_messege'] = "Missing action";
+      $this->data['error_message'] = "Missing action";
       include('views/pages/error.php');
     }
 

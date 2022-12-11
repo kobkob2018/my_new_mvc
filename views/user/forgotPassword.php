@@ -1,13 +1,14 @@
 <h3>שחזור סיסמא</h3>
 <hr/>
-<?php if($this->session_err_messege){ ?>
-	<div class="err-messege">
-		<?php echo $this->session_err_messege; ?>
+<?php if($this->session_err_message){ ?>
+	<div class="err-message">
+		<?php echo $this->session_err_message; ?>
 	</div>
 <?php } ?>
-<?php if($this->session_success_messege){ ?>
-	<div class="success-messege">
-		<?php echo $this->session_success_messege; ?>
+<?php $this->call_module('system_messages','show'); ?>
+<?php if($this->session_success_message){ ?>
+	<div class="success-message">
+		<?php echo $this->session_success_message; ?>
 	</div>
 <?php } ?>
 <div id="user_forgotPassword_wrap" class="user-form">
@@ -22,7 +23,7 @@
 			<input type="submit"  class="submit-btn"  value="שליחה" />
 		</div>
 		<div class="form-group">
-			<a href = '/<?php echo inner_url('userLogin/login/') ?>'>כניסה למערכת</a>
+			<a href = "<?= inner_url('userLogin/login/') ?>">כניסה למערכת</a>
 		</div>			
 	</form>
 </div>

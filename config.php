@@ -9,7 +9,7 @@ $config = array(
     'db_user'=>'just',
     'db_password'=>'1234',
 
-
+    'session_prefix'=>'myleads_',
     'base_url'=>'',
     'base_url_dir'=>'',
 

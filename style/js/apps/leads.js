@@ -366,12 +366,12 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 		setTimeout(function(){$scope.hide_msg_box();},2000);
 	};
 	$scope.show_msg_box = function(msg_str){
-		$("#leads_messege_holder").html(msg_str);
-		$("#leads_messege_mask").show();
+		$("#leads_message_holder").html(msg_str);
+		$("#leads_message_mask").show();
 	};	
 	$scope.hide_msg_box = function(){
-		$("#leads_messege_holder").html("");
-		$("#leads_messege_mask").hide();
+		$("#leads_message_holder").html("");
+		$("#leads_message_mask").hide();
 	};		
 	$scope.send_filter();
 });

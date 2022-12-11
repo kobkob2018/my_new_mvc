@@ -1,45 +1,49 @@
 <?php
-  class Tags extends Model{
+  class Test extends Model{
     // we define 3 attributes
     // they are public so that we can access them using $post->author directly
+	
+    public static function get_test_data(){
 
-    public static function add_tag($tag_data){
-		$db = Db::getInstance();
-		$sql = "INSERT INTO user_lead_tag(user_id,tag_name)VALUES(:uid,:tag_name)";
-		$req = $db->prepare($sql);
-		$user = User::getLogedInUser();
-		$sql_arr = array(
-			"uid"=>$user['id'],
-			"tag_name"=>wigt($tag_data['tag_name'])
+		$test_list = array(
+			"0"=>"ללא תיוג",
+			"1"=>"check",
+			"2"=>"checג",
+			"3"=>"test",
+
 		);
-		$req->execute($sql_arr);
-    }
-    public static function delete_tag($tag_data){
-		$db = Db::getInstance();
-		$sql = "DELETE FROM user_lead_tag WHERE id = :tag_id";
-		$req = $db->prepare($sql);
-		$user = User::getLogedInUser();
-		$sql_arr = array(
-			"tag_id"=>$tag_data['tag_id']
-		);
-		$req->execute($sql_arr);
+		return $test_list;
     }
 	
-    public static function get_user_tag_list(){
+	public static function get_test_model_data(){
+
+
 		$db = Db::getInstance();
-		$sql = "SELECT * FROM user_lead_tag WHERE user_id = :uid";
+		$sql = "SELECT * FROM posts WHERE author = :uid";
 		$req = $db->prepare($sql);
-		$user = User::getLogedInUser();
+		//$user = User::getLogedInUser();
 		$sql_arr = array(
-			"uid"=>$user['id']
+			"uid"=>'1'
 		);
 		$req->execute($sql_arr);
 		$tag_list = array("0"=>"ללא תיוג");
 		foreach($req->fetchAll() as $tag) {
-			$tag_list[$tag['id']] = utgt($tag['tag_name']);
+			$tag_list[$tag['id']] = $tag['content'];
 		}
 		return $tag_list;
+
+
+
+
+		$test_list = array(
+			"0"=>"model",
+			"1"=>"model",
+			"2"=>"model",
+			"3"=>"model",
+
+		);
+		return $test_list;
     }
-	
+
   }
 ?>

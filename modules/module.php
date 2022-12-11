@@ -1,10 +1,14 @@
 <?php
   class Module {
-	private $controller;
+	  private $controller;
     private $action_data;
+    public $add_models = array();
     public function __construct($controllerInterface,$action_data = null) {
-		$this->controller = $controllerInterface;
-        $this->action_data = $action_data;
+		  $this->controller = $controllerInterface;
+      $this->action_data = $action_data;
+      foreach($this->add_models as $add_model){
+        require_once('models/'.$add_model.'_model.php');
+      }
     }
 
     protected function add_data($dataName,$dataVal){
