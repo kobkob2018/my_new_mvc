@@ -1,15 +1,6 @@
 <h3>כניסה למערכת</h3>
 <hr/>
-<?php if($this->session_err_message){ ?>
-	<div class="err-message">
-		<?php echo $this->session_err_message; ?>
-	</div>
-<?php } ?>
-<?php if($this->session_success_message){ ?>
-	<div class="success-message">
-		<?php echo $this->session_success_message; ?>
-	</div>
-<?php } ?>
+
 <div id="user_login_wrap" class="user-form">
 	<form  class="user-form form-validate" action="" method="POST">
 	

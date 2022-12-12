@@ -57,9 +57,8 @@
 		//self::success
 	}
     public function logout(){
-		unset($_SESSION[get_config('session_prefix').'_login_user']);
-		unset($_SESSION[get_config('session_prefix').'_leads_filter']);
-		$this->redirect_to(outer_url(''));
+		session__clear();
+		$this->redirect_to(outer_url());
     }
 	public function details(){
 		include('views/user/details.php');

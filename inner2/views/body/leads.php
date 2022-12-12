@@ -63,6 +63,7 @@
 			<script type="text/javascript">
 				check_notifications_interval();
 			</script>
+			
 		<?php else: ?>
 		  <a href = "<?= inner_url("userLogin/login/"); ?>">כניסה למערכת</a>
 		  <a href = "<?= inner_url("userLogin/register/"); ?>">הרשמה</a>
@@ -73,7 +74,6 @@
 	</div>
 	<div class="header-space-keeper"></div>
 	<div id="content_wrap">
-		<?php $this->call_module('system_messages','show'); ?>
 		<?php $this->print_action_output(); ?>
 	</div>
 	<div id="footer" class="footer">

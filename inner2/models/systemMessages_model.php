@@ -16,6 +16,7 @@
       //echo "adding    ". $message_type."==".$message."<br/>";
         self::$outcome_messages[$message_type][] = $message;
         session__set('system_'.$message_type."_messages",self::$outcome_messages[$message_type]);
+        
     }
 
     public static function get_all(){

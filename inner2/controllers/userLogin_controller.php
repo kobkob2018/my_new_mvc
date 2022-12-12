@@ -4,8 +4,13 @@
    
 	function __construct() {
         parent::__construct();
-        $this->set_body('clean');
+        $this->set_body('main');
     }
+
+	protected function handle_access($action){
+		return true;
+    }
+
 	public function loginSend(){
 		$log_in_user = User::logInUser($_REQUEST['user_username'],$_REQUEST['user_pass']);
 		if($log_in_user){
@@ -20,7 +25,8 @@
 			return;
 		}
 		else{
-			$this->err_messages[] = "שם המשתמש והסיסמה אינם תואמים"; 
+			
+			SystemMessages::add_err_message("שם המשתמש והסיסמה אינם תואמים"); 
 		}		
 	}
 
@@ -38,10 +44,10 @@
 			$header = iconv("UTF-8" , "windows-1255", "סיסמתך במערכת שיתוף לידים של אילביז");
 			$ClientMail = $email;	
 			GlobalFunctions::send_emails_with_phpmailer($fromEmail, $fromTitle, $header, $content_send_to_Client, $content_send_to_Client, $ClientMail, $fromTitle );		
-			$this->success_messages[] = "סיסמתך נשלחה אל כתובת המייל"; 
+			SystemMessages::add_success_message("סיסמתך נשלחה אל כתובת המייל"); 
 		}
 		else{
-			$this->err_messages[] = "כתובת האימייל לא נמצאה במערכת"; 
+			SystemMessages::add_err_message("כתובת האימייל לא נמצאה במערכת");
 		}		
 	}
 	

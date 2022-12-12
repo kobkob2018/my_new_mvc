@@ -1,5 +1,6 @@
 <div id="page_wrap" class="container">
 	<div class="header">
+		<?php $this->call_module('test','help');  ?>
 		<div id="logo_wrap">
 			<img src="style/image/logo.png" alt="מערכת הלידים של איי-אל-ביז" />
 		</div>		
@@ -7,7 +8,9 @@
 	</div>
 	<div class="header-space-keeper"></div>
 	<div id="content_wrap">
-		<?php include('views/messages/all.php'); ?> 
+		<h3>messeges here:</h3>
+		<?php $this->call_module('system_messages','show');  ?>
+		
 		<?php $this->print_action_output(); ?>
 	</div>
 	<div id="footer" class="footer">

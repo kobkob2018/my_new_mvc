@@ -38,6 +38,14 @@ function session__get($param_name){
 
 function session__clear(){
     foreach($_SESSION as $key=>$val){
+        if(strpos($key, get_config('session_prefix')) === 0){
+            unset($_SESSION[$key]);
+        }       
+    }
+}
+
+function session__clear_all(){
+    foreach($_SESSION as $key=>$val){
         unset($_SESSION[$key]);
     }
 }
@@ -69,4 +77,9 @@ function is_mobile(){
 
 function input_protect($val){
     return $val;
+}
+
+function hebdt($datetime_str){
+	$date = new DateTime($datetime_str);
+	return $date->format('d-m-Y H:i:s');
 }

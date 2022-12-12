@@ -1,16 +1,6 @@
 <h3>שחזור סיסמא</h3>
 <hr/>
-<?php if($this->session_err_message){ ?>
-	<div class="err-message">
-		<?php echo $this->session_err_message; ?>
-	</div>
-<?php } ?>
-<?php $this->call_module('system_messages','show'); ?>
-<?php if($this->session_success_message){ ?>
-	<div class="success-message">
-		<?php echo $this->session_success_message; ?>
-	</div>
-<?php } ?>
+
 <div id="user_forgotPassword_wrap" class="user-form">
 	<form class="form-validate" action="" method="POST">
 		<input type="hidden" name="sendAction" value="forgotPasswordSend" />

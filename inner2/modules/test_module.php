@@ -14,5 +14,11 @@
             $this->include_view('views/test/nestingmoduletest.php');
         }
 
+        public function help(){
+            echo "hi this is help function in test module";
+           // session__clear();
+            var_dump($_SESSION);
+        }
+
 	}
 ?>

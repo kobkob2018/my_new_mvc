@@ -1,5 +1,4 @@
 <?= $this->data['nesting_message']; ?>
-<?php $this->call_module('system_messages','show'); ?>
 <table>
 
     

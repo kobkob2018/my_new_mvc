@@ -2,13 +2,11 @@
   class Controller {
 	public $use_models = array("user","systemMessages");
 	public $add_models = array();
+	public $controller_name;
+	public $action_name;
 	public $data = array();
 	public $user = false;
 	public $userModel = null;
-	public $err_messages = array(); 
-	public $success_messages = array(); 
-	public $session_err_message = false; 
-	public $session_success_message = false; 
 	public $form_return_params = array();
 	public $form_message = false;
 	public $action_output = "";
@@ -27,11 +25,37 @@
 		$this->user = User::getLogedInUser();
 		$this->userModel = User::getInstance();
 		global $controller,$action;
+		$this->controller_name = $controller;
+		$this->action_name = $action;
 		$this->body_class = $controller."_".$action;
     }
 
+	protected function handle_access($action){
+		return $this->handle_access_login_only($action);
+	}
+
+	//Please note override functions in extending classes
+	protected function handle_access_login_only($action){
+		if(!$this->user){
+			if(strpos($action, 'ajax_') === 0){
+				$this->print_json_page(array()); 
+			}
+			else{
+				$current_url = outer_url() . $_SERVER["REQUEST_URI"];
+				session__set('last_requested_url',$current_url);
+				$this->redirect_to(outer_url('userLogin/login/'));
+			}
+			return false;
+		}
+		session__unset('last_requested_url');
+		return true;
+   }
 
 	public function print_layout($action){
+
+		if(!$this->handle_access($action)){
+			return;
+		}
 
 		//currently ignore user login restrictions
 		if(true){
@@ -163,13 +187,7 @@
 	}
 
 	public function redirect_to($url){
-		if(get_class($this) != 'UserLoginController'){
-			$current_url = outer_url() . $_SERVER["REQUEST_URI"];
-		}
-		else{
-			$current_url = outer_url().'/';
-		}
-		$_SESSION[$this->session_prefix.'_last_requested_url'] = $current_url;
+		$this->set_layout('blank');
 		header('Location: '.$url);
 	}
 	

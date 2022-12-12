@@ -2,6 +2,7 @@
   class PagesController extends Controller{
 
     public function error() {
+      SystemMessages::add_err_message("Oops! seems like you are in the wrong place");
       include('views/pages/error.php');
     }
 

@@ -11,7 +11,7 @@ $config = array(
 
     'session_prefix'=>'myleads_',
     'base_url'=>'',
-    'base_url_dir'=>'',
+    'base_url_dir'=>'inner2',
 
     'is_mobile'=>false,
 
