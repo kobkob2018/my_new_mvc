@@ -1,14 +1,7 @@
 <?php
   class TestController extends Controller{
-    //public $add_models = array("test");
+    public $add_models = array("test");
     public function test(){
-      session__clear();
-
-
-
-      $session_val =   session__get($session_param);
-      session__unset($session_param);
-      return $session_val;
 
       //$this->data['blankMessage'] = "This will be a blank view";
       //$this->set_layout('blank');
@@ -23,11 +16,47 @@
       include('views/test/controllertest.php');
     }
 
+    protected function handle_access($action){
+      switch ($action){
+        case 'clear':
+        case 'token_login':
+          return true;
+          break;
+        default:
+          return parent::handle_access($action);
+          break;
+        
+      }
+    }
 
     public function clear(){
       session__clear();
       echo "clear session";
       $this->set_layout('blank');
+    }
+
+
+    public function token_login(){
+      if(isset($_GET['row_id']) && isset($_GET['token'])){
+        $log_in_user = Test::authenticate_token($_GET['row_id'],$_GET['token']);
+        if($log_in_user){
+          $_SESSION[$this->session_prefix.'_login_user'] = $log_in_user['id'];
+          $_SESSION[$this->session_prefix.'_show_row'] = $_GET['row_id'];
+          $go_to_page = inner_url("leads/all/");
+          $this->redirect_to($go_to_page);
+          return;
+        }
+        else{
+          if(isset($_SESSION[$this->session_prefix.'_login_user'])){
+            $go_to_page = inner_url("leads/all/");
+            $this->redirect_to($go_to_page);
+            return;					
+          }
+          $this->redirect_to(outer_url('userLogin/login/'));
+        }
+      }
+      
+      echo "this is token login"; 
     }
 
     public function redirectwithmessage_test(){

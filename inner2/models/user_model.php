@@ -3,232 +3,222 @@
     // we define 3 attributes
     // they are public so that we can access them using $post->author directly
 	private static $instance = NULL;
-    public $loged_in_user = false;
-	
+    private $user_data = false;
+	private $login_state = false;
+
     public function __construct(){
 		if(session__isset('login_user')){
-			$this->resetUser();
+			$this->retrive_user_data_from_db();
 		}
     }
-    public function resetUser(){
+
+	public static function get_loged_in_user() {
+		$user = self::getInstance();
+		return $user->user_data;
+    }
+
+	public static function get_login_state() {
+		$user = self::getInstance();
+		return $user->login_state;
+    }
+
+    private static function getInstance() {
+		if (!isset(self::$instance)) {
+		  self::$instance = new User();
+		}
+		return self::$instance;
+	  }
+
+    private function retrive_user_data_from_db(){
 		$db = Db::getInstance();
-		$user_id = session__get('login_user');
-		$sql = "SELECT * FROM users WHERE id = :uid";
+		$login_trace_data = self::get_login_trace_data();
+		if(!$login_trace_data){
+			return $this->user_data;
+		}
+
+		if($login_trace_data['sms_code'] != ''){
+			$this->login_state = 'awaiting_sms_code';
+			return $this->user_data;
+		}
+		else{
+			$this->login_state = 'ok';
+		}
+
+		$sql = "SELECT * FROM users WHERE id = :user_id";
 		$req = $db->prepare($sql);
-		$req->execute(array('uid'=>$user_id));
+		$req->execute(array('user_id'=>$login_trace_data['user_id']));
 		$user_data = $req->fetch();
 		
-		//note!!! to actually edit and add json user params go to controller.php function print_json_page...
-		$sql = "select user_id, free_send, lead_credit from user_lead_settings where user_id = :user_id";
-		$req = $db->prepare($sql);
-		$req->execute(array('user_id'=>$user_data['id']));
-		$user_lead_settings = $req->fetch();
-		$user_data['free_send'] = $user_lead_settings['free_send'];
-		$user_data['lead_credit']	= 	$user_lead_settings['lead_credit'];
 
-		$this->loged_in_user = $user_data;  
-		return $this->loged_in_user;
-    }	
-	private function log_in_user($username,$password){
+		$this->user_data = $user_data;
+		return $this->user_data;
+    }
+
+	protected static function get_login_trace_data(){
 		$db = Db::getInstance();
-		$sql = "SELECT id FROM users WHERE username = :username AND password = :password";
+		$user_session = session__get('login_user');
+		if($user_session){
+			$user_id = $user_session['user_id'];
+			$session_id = $user_session['session_id'];
+			$user_ip = $_SERVER['REMOTE_ADDR'];
+		}
+		else{
+			return false;
+		}
+
+		$sql = "SELECT * FROM login_trace WHERE user_id = :user_id AND session_id = :session_id AND ip = :user_ip";
+		$req = $db->prepare($sql);
+		$req->execute(array(
+			'user_id'=>$user_id,
+			'session_id'=>$session_id,
+			'user_ip'=>$user_ip,
+		));
+		$login_trace_data = $req->fetch();
+		return $login_trace_data;
+	}
+
+	public static function authenticate($username,$password) {
+		$db = Db::getInstance();
+		$sql = "SELECT * FROM users WHERE username = :username AND password = :password";
 		$req = $db->prepare($sql);
 		$req->execute(array('username'=>input_protect($username),'password'=>md5(input_protect($password))));
 		$user_data = $req->fetch();
 		return $user_data;
-	}
-	
-	private function log_in_user_with_token($row_id,$token){
+    }
+
+
+	public static function authenticate_mail($email) {
 		$db = Db::getInstance();
-		$sql = "SELECT unk FROM user_contact_forms WHERE id = :row_id AND auth_token = :token";
+		$sql = "SELECT * FROM users WHERE email = :email";
 		$req = $db->prepare($sql);
-		$req->execute(array('row_id'=>$row_id,'token'=>$token));
-		$unk_data = $req->fetch();
-		if(isset($unk_data['unk'])){
-			$sql = "SELECT id FROM users WHERE unk = :unk";
-			$req = $db->prepare($sql);
-			$req->execute(array('unk'=>$unk_data['unk']));
-			$user_data = $req->fetch();
-			return $user_data;			
-		}
-		return false;
-	}
-	private function log_in_user_with_qty_token($unk,$token){
+		$req->execute(array('email'=>input_protect($email)));
+		$user_data = $req->fetch();
+		return $user_data;
+    }
+
+	public static function authenticate_sms($sms_code) {
 		$db = Db::getInstance();
-		$sql = "SELECT id,unk FROM lead_qty_reminders WHERE unk = :unk AND auth_token = :token";
-		$req = $db->prepare($sql);
-		$req->execute(array('unk'=>$unk,'token'=>$token));
-		$unk_data = $req->fetch();
-		if(isset($unk_data['id']) && isset($unk_data['unk'])){
-			$sql = "SELECT id FROM users WHERE unk = :unk";
-			$req = $db->prepare($sql);
-			$req->execute(array('unk'=>$unk_data['unk']));
-			$user_data = $req->fetch();
-			
-			$sql = "UPDATE lead_qty_reminders SET auth_token = '' WHERE unk = :unk AND auth_token = :token";
-			$req = $db->prepare($sql);
-			$req->execute(array('unk'=>$unk,'token'=>$token));
-			
-			return $user_data;			
+		$login_trace_data = self::get_login_trace_data();
+		if(!$login_trace_data){
+			return false;
 		}
-		return false;
-	}	
-	
-    public static function getInstance() {
-      if (!isset(self::$instance)) {
-		self::$instance = new User();
-      }
-      return self::$instance;
-    }
-    public static function getLogedInUser() {
-		$user = self::getInstance();
-		return $user->loged_in_user;
-    }
-	
-	public static function logInUser($username,$password) {
-		$user = self::getInstance();
-		return $user->log_in_user($username,$password);
-    }
-	public static function logInUserWithToken($row_id,$token) {
-		$user = self::getInstance();
-		return $user->log_in_user_with_token($row_id,$token);
-    }
-	public static function logInUserWithQtyToken($unk,$token) {
-		$user = self::getInstance();
-		return $user->log_in_user_with_qty_token($unk,$token);
-    }	
-	public static function checkUserEmailExists($email){
-		
-		$db = Db::getInstance();
-		$sql = "SELECT email,password,name,username FROM users WHERE email = '$email'";
-		$req = $db->query($sql);
-		$user = $req->fetch();
-		if(!isset($user['email'])){
+
+		if($login_trace_data['sms_code'] != $sms_code){
 			return false;
 		}
 		else{
-			return $user;
+			//delete sms_code and allow user to be logged in
+			$sql = "UPDATE login_trace SET sms_code = '' WHERE user_id = :user_id AND session_id = :session_id";
+			$req = $db->prepare($sql);
+			$req->execute(array(
+				'user_id'=>$login_trace_data['user_id'],
+				'session_id'=>$login_trace_data['session_id'],
+			));
+			return true;
 		}
     }	
-	public function updateUserDetails($user_params,$data_user){
+
+	public static function add_login_trace($user_id,$add_sms_code = false){
+		$trace_array = array(
+			'user_id'=>$user_id,
+			'session_id'=>create_session_id(),
+			'ip'=>$_SERVER['REMOTE_ADDR'],
+			'sms_code'=>'',
+		);
+		
+		if($add_sms_code){
+			$trace_array['sms_code'] = rand(10000,99999);
+		}
+
+
+		$db = Db::getInstance();
+		$sql = "INSERT INTO login_trace(user_id, session_id, ip, login_time, sms_code) VALUES (:user_id,:session_id, :ip ,NOW(), :sms_code)";
+		$req = $db->prepare($sql);
+		$req->execute($trace_array);
+		
+		$user_session = array(
+			'user_id'=>$trace_array['user_id'],
+			'session_id'=>$trace_array['session_id']
+		);
+		session__set('login_user',$user_session);
+		return $trace_array;
+    }
+
+	public static function add_reset_password_token($user_id){
+		$insert_array = array(
+			'user_id'=>$user_id,
+			'token'=>rand(10000,99999),
+		);
+		
+		$db = Db::getInstance();
+		$sql = "INSERT INTO user_reset_password(user_id, token) VALUES (:user_id,:token)";
+		$req = $db->prepare($sql);
+		$req->execute($insert_array);
+
+		$insert_array['row_id'] = $db->lastInsertId();
+		return $insert_array;
+    }
+
+
+	public static function authenticate_password_token($row_id,$token){
+		$sql_array = array(
+			'row_id'=>input_protect($row_id),
+			'token'=>input_protect($token),
+			'user_ip'=>$_SERVER['REMOTE_ADDR']	
+		);
+		
+		$db = Db::getInstance();
+		$sql = "SELECT * FROM user_reset_password WHERE id = :row_id AND token = :token AND (status = '1' OR user_ip = :user_ip)";
+		$req = $db->prepare($sql);
+		$req->execute($sql_array);
+		$token_data = $req->fetch();
+		if($token_data && $token_data['status'] == '1'){
+			$sql = "UPDATE user_reset_password SET status = '0',user_ip = :user_ip  WHERE id = :row_id AND token = :token";
+			$req = $db->prepare($sql);
+			$req->execute($sql_array);
+		}
+		return $token_data;
+    }
+	
+	public static function reset_password_by_token($token_data, $new_pass){
+		$user_id = $token_data['user_id'];
+		$db = Db::getInstance();
+		$sql = "UPDATE users SET password = :password WHERE id = :user_id";
+		$req = $db->prepare($sql);
+		$req->execute(array(
+			'user_id'=>$user_id,
+			'password'=>md5(input_protect($new_pass))
+		));
+		$sql = "DELETE FROM user_reset_password WHERE id = :row_id";
+		$req = $db->prepare($sql);
+		$req->execute(array(
+			'row_id'=>$token_data['row_id'],
+		));
+	}
+
+	public static function update_details($user_params,$data_user){
+		if(!($user_data = self::get_loged_in_user())){
+			return;
+		}
 		$update_params_arr = array();
-		$update_prepere_arr = array('uid'=>$this->loged_in_user['id']);
+		$update_prepere_arr = array('uid'=>$user_data['id']);
 		foreach($user_params as $p_key){
 			$insert_val = str_replace("'","''",trim($data_user[$p_key]));
-			$insert_val = iconv( "UTF-8","windows-1255",$insert_val);
 			$new_user[$p_key] = $insert_val;
 			$update_params_arr[] = "$p_key = :$p_key";
 			$update_prepere_arr[$p_key] = $insert_val;
 		}
 		$update_params = implode(",",$update_params_arr);
 		
-		$sql = "update users set $update_params WHERE id = :uid";	
+		$sql = "update users set $update_params WHERE id = :uid";
 		$db = Db::getInstance();
 		$req = $db->prepare($sql);
 		$req->execute($update_prepere_arr);
+		$user_model = self::getInstance();
+		$user_model->retrive_user_data_from_db();
 		return $new_user;
     }
-	public static function getCCTokens_data($unk){
-		$user_tokens = false;
-		$user_biz_name = "";
-		$user_full_name = "";
-		$db = Db::getInstance();
-		$sql = "SELECT L4digit,full_name,biz_name FROM userCCToken WHERE unk = :unk";		
-		$req = $db->prepare($sql);
-		$req->execute(array('unk'=>$unk));
-		
-		foreach($req->fetchAll() as $user_token_data) {
-			if(!$user_tokens){
-				$user_tokens = array();
-			}
-			$user_tokens[] = $user_token_data['L4digit'];
-			if($user_token_data['biz_name'] != ""){
-				$user_biz_name = iconv("Windows-1255","UTF-8",$user_token_data['biz_name']);
-				$user_full_name = iconv("Windows-1255","UTF-8",$user_token_data['full_name']);		
-			}
-		}
-		return array('biz_name'=>$user_biz_name,'full_name'=>$user_full_name,'tokens'=>$user_tokens);
-	}
-	public static function getCCToken_data($unk,$token_id){
-		$db = Db::getInstance();
-		$sql = "SELECT * FROM userCCToken WHERE unk = :unk AND L4digit = :token_id";		
-		$req = $db->prepare($sql);
-		$req->execute(array('unk'=>$unk,'token_id'=>$token_id));
-		return $req->fetch();
-	}	
 
-	private function haveNetBanners($user_id){
-		$db = Db::getInstance();
-		$sql = "SELECT * FROM net_clients_banner_user WHERE user_id = :uid LIMIT 1";		
-		$req = $db->prepare($sql);
-		$req->execute(array('uid'=>$user_id));
-		$result = false;
-		foreach($req->fetchAll() as $banner) {
-			$result = true;
-		}
-		return $result;
-	}
-	
-	public static function insertCClog($user_id,$new_p,$pro_decs_insert,$gotoUrlParamter,$full_name,$biz_name){
-		$db = Db::getInstance();
-		$insert_arr = array(
-			"user_id"=>$user_id,
-			"new_p"=>$new_p,
-			"pro_decs_insert"=>$pro_decs_insert,
-			"gotoUrlParamter"=>$gotoUrlParamter,
-			"full_name"=>$full_name,
-			"biz_name"=>$biz_name,
-		);
-		$sql = "INSERT INTO ilbizPayByCCLog 
-			(sumTotal, payDate, description,      payToType, userId ,  gotoUrlParamter, full_name, biz_name ) 
-			VALUES 
-			(:new_p,   NOW(),  :pro_decs_insert , '9',      :user_id ,:gotoUrlParamter,:full_name,:biz_name)";
-		$req = $db->prepare($sql);
-		$req->execute($insert_arr);
 
-		return $db->lastInsertId();
-	}
-	public function get_user_cat_tree(){
-		$user = User::getLogedInUser();
-		$db = Db::getInstance();
-		$sql = "SELECT bc.id,bc.cat_name,bc.father FROM user_cat uc LEFT JOIN biz_categories bc ON bc.id = uc.cat_id WHERE user_id = :user_id";
-		$req = $db->prepare($sql);
-		$req->execute(array('user_id'=>$user['id']));
-		$user_cats = array();
-		$parent_cats = array();
-		foreach($req->fetchAll() as $cat_data){
-			$cat_data['cat_name'] = utgt($cat_data['cat_name']);
-			$user_cats[$cat_data['id']] = $cat_data;
-		}
-		$dotthreetimes = array(1,2,3);
-		foreach($dotthreetimes as $do_once){
-			foreach($user_cats as $cat_id=>$cat_data){
-				if($cat_data['father'] != '0' && !isset($user_cats[$cat_data['father']])){					
-					$sql = "SELECT id, cat_name, father FROM biz_categories WHERE id = :cat_id";
-					$req = $db->prepare($sql);
-					$req->execute(array('cat_id'=>$cat_data['father']));
-					$father_data = $req->fetch();	
-					$father_data['cat_name'] = utgt($father_data['cat_name']);
-					$user_cats[$father_data['id']] = $father_data;
-				}
-			}
-		}
-
-		foreach($dotthreetimes as $do_once){			
-			foreach($user_cats as $cat_id=>$cat_data){			
-				if($cat_data['father'] != '0'){
-					if(!isset($user_cats[$cat_data['father']]['children'])){
-						$user_cats[$cat_data['father']]['children'] = array();
-					}
-					$user_cats[$cat_data['father']]['children'][$cat_id] = $cat_data;
-				}
-				else{
-					$parent_cats[$cat_id] = $cat_data;
-				}
-			}
-		}
-		
-		return $parent_cats;
-	}
   }
 ?>

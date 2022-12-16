@@ -50,6 +50,16 @@ function session__clear_all(){
     }
 }
 
+function create_session_id(){
+    $ss1  = time();
+    $ss1 = str_replace(":",3,$ss1); 
+    $ss2 = $_SERVER['REMOTE_ADDR'];
+    $ss2 = str_replace(".",3,$ss2); 
+    $sesid = "$ss2$ss1";
+    return $sesid;
+}
+
+
 function inner_url($url = ''){
     $base_url_dir = get_config('base_url_dir');
     $base_url_dir_after = '';
@@ -70,6 +80,14 @@ function outer_url($url = ''){
     $inner_url = inner_url($url);
     return $base_url.$inner_url;
 }
+
+function current_url(){
+    $base_url = get_config('base_url');
+    $current_url = $base_url . $_SERVER["REQUEST_URI"];
+    return $current_url;
+}
+
+$current_url = get_config('base_url') . $_SERVER["REQUEST_URI"];
 
 function is_mobile(){    
     return get_config('is_mobile');

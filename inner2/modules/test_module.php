@@ -16,8 +16,12 @@
 
         public function help(){
             echo "hi this is help function in test module";
+            $current_url = get_config('base_url') . $_SERVER["REQUEST_URI"];
+            echo "<h1> here is the session:</h1>";
+           
            // session__clear();
             var_dump($_SESSION);
+            echo "<br/><br/><br/><br/>";
         }
 
 	}

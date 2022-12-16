@@ -13,19 +13,16 @@
 		<div class="row-fluid">
 			<div class="form-group span3">
 				<label for="usr[full_name]" id="full_name_label">שם מלא</label>
-				<input type="text" name="usr[full_name]" id="full_name" class="form-input required" data-msg-required="*" value="<?php echo utpr($this->user["full_name"]); ?>"  />
+				<input type="text" name="usr[full_name]" id="full_name" class="form-input required" data-msg-required="*" value="<?= $this->user["full_name"]; ?>"  />
 			</div>
-			<div class="form-group span3">
-				<label for="usr[name]" id="name_label">שם העסק</label>
-				<input type="text" name="usr[name]" id="name" class="form-input required" data-msg-required="*" value="<?php utpr($this->user["name"]); ?>"  />
-			</div>	
+
 			<div class="form-group span3">
 				<label for="usr[phone]" id="phone_label">טלפון</label>
-				<input type="text" name="usr[phone]" id="phone" class="form-input required"  value="<?php utpr($this->user["phone"]); ?>"   data-msg-required="*" />
+				<input type="text" name="usr[phone]" id="phone" class="form-input required"  value="<?= $this->user["phone"]; ?>"   data-msg-required="*" />
 			</div>	
 			<div class="form-group span3">
 				<label for="usr[email]" id="email_label">אימייל</label>
-				<?php utpr($this->user["email"]); ?>
+				<?= $this->user["email"]; ?>
 			</div>			
 		</div>
 		<hr/>
@@ -38,7 +35,7 @@
 		<div class="row-fluid">	
 			<div class="form-group span3">
 				<label for="usr[username]" id="username_label">שם משתמש</label>
-				<input type="text" name="usr[username]" id="username" class="form-input required"  value="<?php utpr($this->user["username"]); ?>"   data-msg-required="*" />
+				<input type="text" name="usr[username]" id="username" class="form-input required"  value="<?= $this->user["username"]; ?>"   data-msg-required="*" />
 			</div>		
 			<div class="form-group span3">
 				<label for="usr[password]" id="password_label">סיסמה<small>(השאר ריק אם אינך רוצה לשנות)</small></label>

@@ -28,7 +28,7 @@
 								<li><a href="<?= inner_url("credits/buyLeads/") ?>">רכישת לידים</a></li>
 								<li><a href="<?= inner_url("notifications/payment_list/") ?>">תשלומים אחרונים</a></li>
 								<li><a href="<?= inner_url("user/details/") ?>">עדכון פרטים</a></li>
-								<li><a href="<?= inner_url("user/logout/") ?>">יציאה</a></li>
+								<li><a href="<?= inner_url("userLogin/logout/") ?>">יציאה</a></li>
 							</ul>
 						</div>
 					  </div>

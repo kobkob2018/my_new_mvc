@@ -1,12 +1,11 @@
 <?php
   class Controller {
-	public $use_models = array("user","systemMessages");
+	public $use_models = array("user","systemMessages","globalSettings");
 	public $add_models = array();
 	public $controller_name;
 	public $action_name;
 	public $data = array();
 	public $user = false;
-	public $userModel = null;
 	public $form_return_params = array();
 	public $form_message = false;
 	public $action_output = "";
@@ -22,8 +21,7 @@
 		foreach($this->add_models as $add_model){
 			require_once('models/'.$add_model.'_model.php');
 		}
-		$this->user = User::getLogedInUser();
-		$this->userModel = User::getInstance();
+		$this->user = User::get_loged_in_user();
 		global $controller,$action;
 		$this->controller_name = $controller;
 		$this->action_name = $action;
@@ -41,7 +39,7 @@
 				$this->print_json_page(array()); 
 			}
 			else{
-				$current_url = outer_url() . $_SERVER["REQUEST_URI"];
+				$current_url = get_config('base_url') . $_SERVER["REQUEST_URI"];
 				session__set('last_requested_url',$current_url);
 				$this->redirect_to(outer_url('userLogin/login/'));
 			}
@@ -220,6 +218,18 @@
 	public function add_module_data($dataName,$dataVal){
 		//currently we add module data as norrmal data. considering care for naming convension
 		$this->add_data($dataName,$dataVal);
+	}
+
+	protected function send_email($email_to, $email_title,$email_content){
+		$email_sender = get_config('email_sender'); 
+		$email_sender_name = get_config('email_sender_name');
+		// Set content-type header for sending HTML email 
+		$headers = "MIME-Version: 1.0" . "\r\n"; 
+		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n"; 
+		
+		// Additional headers 
+		$headers .= 'From: '.$email_sender_name.'<'.$email_sender.'>' . "\r\n"; 
+		mail($email_to,$email_title,$email_content,$headers);
 	}
 
 	function form_return_val($param){

@@ -2,17 +2,19 @@
 
 
 $config = array(
-    'system_name'=>'myleads',
+    'system_name'=>'mymvc',
 
     'db_host'=>'localhost',
     'db_database'=>'newmvc',
     'db_user'=>'just',
     'db_password'=>'1234',
 
-    'session_prefix'=>'myleads_',
+    'session_prefix'=>'mymvc_',
     'base_url'=>'',
     'base_url_dir'=>'inner2',
 
+    'email_sender'=>'info@ilbiz.co.il',
+    'email_sender_name'=>'מנהל הרשת',
     'is_mobile'=>false,
 
 );

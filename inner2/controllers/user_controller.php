@@ -45,9 +45,9 @@
 			);
 
 			$data_user = $_REQUEST['usr'];			
-			$this->userModel->updateUserDetails($user_params,$data_user);
+			User::update_details($user_params,$data_user);
 			if($_REQUEST['usr']['password'] != ""){
-				$this->userModel->updateUserDetails(array("password"),$data_user);
+				User::update_details(array("password"),$data_user);
 			}
 			$this->user = $this->userModel->resetUser();
 			$this->success_messages[] = "הפרטים עודכנו בהצלחה";
@@ -56,10 +56,7 @@
 	
 		//self::success
 	}
-    public function logout(){
-		session__clear();
-		$this->redirect_to(outer_url());
-    }
+
 	public function details(){
 		include('views/user/details.php');
 	}

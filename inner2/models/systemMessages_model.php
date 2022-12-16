@@ -2,7 +2,7 @@
   class SystemMessages extends Model{
     // we define 3 attributes
     // they are public so that we can access them using $post->author directly
-    protected static $outcome_messages = array('seccess'=>array(),'err'=>array());
+    protected static $outcome_messages = array('success'=>array(),'err'=>array());
     protected static $income_messages = array('isset'=>false,'messages'=>null);
     public static function add_success_message($message){
 		  self::add_message('success',$message);
@@ -24,7 +24,7 @@
         return self::$income_messages['messages'];
       }
       else{
-        $income_messages = array('seccess'=>array(),'err'=>array());
+        $income_messages = array('success'=>array(),'err'=>array());
         foreach($income_messages as $key=>$val){
           $message_group = self::get_messages_from_session($key);
           if($message_group){
