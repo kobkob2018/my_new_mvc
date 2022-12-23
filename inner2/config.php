@@ -3,7 +3,7 @@
 
 $config = array(
     'system_name'=>'mymvc',
-
+    'cash_version'=>'1.0',
     'db_host'=>'localhost',
     'db_database'=>'newmvc',
     'db_user'=>'just',

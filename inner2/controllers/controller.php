@@ -2,17 +2,17 @@
   class Controller {
 	public $use_models = array("user","systemMessages","globalSettings");
 	public $add_models = array();
-	public $controller_name;
-	public $action_name;
 	public $data = array();
 	public $user = false;
-	public $form_return_params = array();
-	public $form_message = false;
 	public $action_output = "";
 	public $action_params = array('layout_file'=>'views/layout.php','body_layout_file'=>'views/body/main.php'); 
 	public $action_result;
 	public $body_class = "";
-	public $cash_version = "1.0";
+	public $form_return_params = array();
+	public $form_message = false;
+	public $form_handler;
+	protected $send_action_state = false;
+
     public function __construct() {
 		
 		foreach($this->use_models as $add_model){
@@ -23,8 +23,6 @@
 		}
 		$this->user = User::get_loged_in_user();
 		global $controller,$action;
-		$this->controller_name = $controller;
-		$this->action_name = $action;
 		$this->body_class = $controller."_".$action;
     }
 
@@ -55,104 +53,31 @@
 			return;
 		}
 
-		//currently ignore user login restrictions
-		if(true){
 			
-			ob_start();
-			$this->action_result = $this->$action();
-			$this->action_output = ob_get_clean();
-			
-			
-			if(isset($_REQUEST['sendAction'])){
-				$method_name = $_REQUEST['sendAction'];
-				if(method_exists($this,$method_name)){
-					$this->$method_name();
-				}
-			}
-			
-				
-			include($this->action_params['layout_file']);
-			
+		ob_start();
+		$this->action_result = $this->$action();
+		$this->action_output = ob_get_clean();
+
+		//send_action_proceed can be also caled from the view function
+		$this->send_action_proceed();
+
+		include($this->action_params['layout_file']);
+		
+		return;
+
+	}
+
+	protected function send_action_proceed(){
+		if($this->send_action_state){
 			return;
 		}
+		$this->send_action_state = true;
 
-
-
-		if(isset($_GET['row_id']) && isset($_GET['token'])){
-			$log_in_user = User::logInUserWithToken($_GET['row_id'],$_GET['token']);
-			if($log_in_user){
-				$_SESSION[$this->session_prefix.'_login_user'] = $log_in_user['id'];
-				$_SESSION[$this->session_prefix.'_show_row'] = $_GET['row_id'];
-				$go_to_page = inner_url("leads/all/");
-				$this->redirect_to($go_to_page);
-				return;
+		if(isset($_REQUEST['sendAction'])){
+			$method_name = $_REQUEST['sendAction'];
+			if(method_exists($this,$method_name)){
+				$this->$method_name();
 			}
-			else{
-				if(isset($_SESSION[$this->session_prefix.'_login_user'])){
-					$go_to_page = inner_url("leads/all/");
-					$this->redirect_to($go_to_page);
-					return;					
-				}
-				$this->redirect_to(outer_url('userLogin/login/'));
-			}
-		}
-		elseif(isset($_GET['qty_unk']) && isset($_GET['qty_token'])){
-			$log_in_user = User::logInUserWithQtyToken($_GET['qty_unk'],$_GET['qty_token']); 
-			if($log_in_user){
-				$_SESSION[$this->session_prefix.'_login_user'] = $log_in_user['id'];
-				$_SESSION[$this->session_prefix.'_show_row'] = $_GET['row_id'];
-				$go_to_page = inner_url("credits/buyLeads/");
-				$this->redirect_to($go_to_page);
-				return;
-			}
-			else{
-				if(isset($_SESSION[$this->session_prefix.'_login_user'])){
-					$go_to_page = inner_url("leads/all/");
-					$this->redirect_to($go_to_page);
-					return;					
-				}
-				$this->redirect_to(outer_url('userLogin/login/'));
-			}
-		}		
-		elseif(!$this->user && get_class($this) != 'UserLoginController'){
-			if(strpos($action, 'ajax_') === 0){
-				$this->print_json_page(array()); 
-			}
-			else{
-				$this->redirect_to(outer_url('userLogin/login/'));
-			}
-		}
-		elseif($this->user && get_class($this) == 'UserLoginController'){			
-			$this->redirect_to(outer_url(''));
-		}
-		elseif(isset($_GET['row_id']) && isset($_SESSION[$this->session_prefix.'_login_user'])){
-			$_SESSION[$this->session_prefix.'_show_row'] = $_GET['row_id'];
-			$go_to_page = inner_url('leads/all/');
-			$this->redirect_to($go_to_page);
-			return;
-		}
-		else{
-			ob_start();
-			$this->action_result = $this->$action();
-			$this->action_output = ob_get_clean();
-			
-			if(isset($_SESSION[$this->session_prefix.'_success_message'])){
-				$this->session_success_message = $_SESSION[$this->session_prefix.'_success_message'];
-				unset($_SESSION[$this->session_prefix.'_success_message']);
-			}
-			if(isset($_SESSION[$this->session_prefix.'_err_message'])){
-				$this->session_err_message = $_SESSION[$this->session_prefix.'_err_message'];
-				unset($_SESSION[$this->session_prefix.'_err_message']);
-			}			
-			if(isset($_REQUEST['sendAction'])){
-				$method_name = $_REQUEST['sendAction'];
-				if(method_exists($this,$method_name)){
-					$this->$method_name();
-				}
-			}
-			
-			include($this->action_params['layout_file']);
-			
 		}
 	}
 
@@ -180,7 +105,9 @@
 		*/ 
 	}
 
+	//this is to add view from modules
 	public function include_view($view_path){
+		
 		include($view_path);
 	}
 
@@ -211,10 +138,12 @@
 		}
 	}
 
+	//this is to add data from modules (this controller is the module interface)
 	public function add_data($dataName,$dataVal){
 		$this->data[$dataName] = $dataVal;
 	}
 
+	//this is to add data from modules (this controller is the module interface)
 	public function add_module_data($dataName,$dataVal){
 		//currently we add module data as norrmal data. considering care for naming convension
 		$this->add_data($dataName,$dataVal);
@@ -232,12 +161,33 @@
 		mail($email_to,$email_title,$email_content,$headers);
 	}
 
+	protected function init_form_handler(){
+		require_once('helpers/form_handler.php');
+		if($this->form_handler){
+			return $this->form_handler;
+		}
+		$this->form_handler = new Form_handler($this);
+		return $this->form_handler;
+	}
+
 	function form_return_val($param){
 		if(isset($this->form_return_params[$param])){ 
 			return $this->form_return_params[$param];
 		}		
 		return "";
 	}
+
+	
+	protected function get_form_input($param){
+		return $this->init_form_handler()->get_form_input($param);
+	}
+
+
+	protected function get_select_options($param){
+		return $this->init_form_handler()->get_select_options($param);
+	}
+	
+
 	public function print_json_page($print_result){
 		
 

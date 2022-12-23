@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^mynewmvc.com$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^www.mynewmvc.com$
+RewriteCond %{REQUEST_URI} !clientSite/
+RewriteRule (.*) /clientSite/$1 [L]

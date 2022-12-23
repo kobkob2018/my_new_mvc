@@ -68,21 +68,18 @@
 		$this->redirect_to($go_to_page);
 		return;
 	}
-		
-
 
 	public function forgotPasswordSend(){
 		$log_in_user = User::authenticate_mail($_REQUEST['user_email']);
 		if($log_in_user){
 			$token_array = User::add_reset_password_token($log_in_user['id']);
-			$email = trim($log_in_user['email']);
 			$this->data['forgot_password_user'] =  $log_in_user;
 			$this->data['forgot_password_token'] =  $token_array;
 			ob_start();
 				include('views/emailsSend/forgotPasswordEmail.php');
 
 			$email_content = ob_get_clean();
-			$email_to = $log_in_user['email'];
+			$email_to = trim($log_in_user['email']);
 			$email_title = "סיסמתך במערכת שיתוף לידים של אילביז";
 
 			$this->send_email($email_to, $email_title, $email_content);

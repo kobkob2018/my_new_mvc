@@ -33,7 +33,12 @@ function session__unset($param_name){
 function session__get($param_name){
     $session_prefix = get_config('session_prefix');
     $session_param = $session_prefix.$param_name;
-    return $_SESSION[$session_param];
+    if(isset($_SESSION[$session_param])){
+        return $_SESSION[$session_param];
+    }
+    else{
+        return null;
+    }
 }
 
 function session__clear(){
@@ -100,4 +105,20 @@ function input_protect($val){
 function hebdt($datetime_str){
 	$date = new DateTime($datetime_str);
 	return $date->format('d-m-Y H:i:s');
+}
+
+function print_r_help($val,$name = 'the-field'){
+    echo "<hr>".$name."<hr><pre style='direction:ltr; text-align:left;'>";
+    print_r($val);
+    echo "</pre><hr>";
+}
+
+function var_dump_help($val,$name = 'the-field'){
+    echo "<hr>".$name."<hr><pre style='direction:ltr; text-align:left;'>";
+    var_dump($val);
+    echo "</pre><hr>";
+}
+
+function print_help($str,$name = 'the-field'){
+    echo "<hr>".$name.': '.$str."<hr>";
 }

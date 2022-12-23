@@ -1,7 +1,7 @@
 <?php if(isset($_REQUEST['testit'])): ?>
 <script src="style/js/apps/leads_test.js?v=2"></script>
 <?php else: ?>
-<script src="style/js/apps/leads.js?v=<?php echo $this->cash_version; ?>"></script>
+<script src="style/js/apps/leads.js?v=<?= get_config("cash_version") ?>"></script>
 <?php endif; ?>
 <div ng-app="leadsApp" ng-controller="leadsCtrl">
 

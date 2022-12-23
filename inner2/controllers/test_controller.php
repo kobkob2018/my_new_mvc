@@ -2,18 +2,8 @@
   class TestController extends Controller{
     public $add_models = array("test");
     public function test(){
-
-      //$this->data['blankMessage'] = "This will be a blank view";
-      //$this->set_layout('blank');
-      //$this->set_layout('testLayout');
-      //$this->add_data('test_list',Test::get_test_model_data());
       
-      //var_dump($_SESSION);
-      //var_dump($this->user);
-      //var_dump($this->userModel);
-      
-
-      include('views/test/controllertest.php');
+      include('views/test/test-test.php');
     }
 
     protected function handle_access($action){
@@ -36,7 +26,50 @@
     }
 
 
+
     public function token_login(){
+      $user_id = null;
+      if(isset($_GET['row_id']) && isset($_GET['token'])){
+          $user_id = Test::authenticate_token($_GET['row_id'],$_GET['token']);
+      }
+      $loged_in_user_id = null;
+      if($this->user){
+        $loged_in_user_id = $this->user['id'];
+      }
+      if($user_id){
+        if($loged_in_user_id != $user_id){
+          $login_with_sms = false;
+          User::add_login_trace($user_id,$login_with_sms);
+        }
+        $this->redirect_to(inner_url('test/show_row/?row_id='.$_GET['row_id']));
+      }
+      else{
+        //if row was not found or not valid
+        //but if there is a loged in user allready
+        if($this->user){
+          $this->redirect_to(inner_url('test/test/'));
+
+        }
+        else{
+          $this->redirect_to(outer_url('userLogin/login/'));
+        }
+      }
+      
+    }
+
+    public function show_row(){
+      $row_id = $_GET['row_id'];
+      $this->data['test_row_id'] = $user_id = Test::get_by_id($row_id);
+      include('views/test/show-row.php');
+    }  
+
+
+    public function test_module(){
+
+      include('views/test/controllertest.php');
+    }    
+
+    public function token_login222(){
       if(isset($_GET['row_id']) && isset($_GET['token'])){
         $log_in_user = Test::authenticate_token($_GET['row_id'],$_GET['token']);
         if($log_in_user){

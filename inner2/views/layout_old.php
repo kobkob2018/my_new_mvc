@@ -17,8 +17,8 @@
 		<link rel="stylesheet" href="https://ilbiz.co.il/ClientSite/version_1/style/bootstrap_2.3.2/bootstrap-datepicker.min.css" type="text/css" />
 		<script src="https://ilbiz.co.il/ClientSite/version_1/style/bootstrap_2.3.2/bootstrap-datepicker.min.js"></script>
 		<script src="https://ilbiz.co.il/ClientSite/version_1/style/bootstrap_2.3.2/bootstrap-datepicker.he.min.js"></script>	
-		<script src="style/js/main.js?v=<?php echo $this->cash_version; ?>"></script>
-		<link rel="stylesheet" href="style/css/main.css?v=<?php echo $this->cash_version; ?>"  type="text/css" />	
+		<script src="style/js/main.js?v=<?= get_config("cash_version") ?>"></script>
+		<link rel="stylesheet" href="style/css/main.css?v=<?= get_config("cash_version") ?>"  type="text/css" />	
         <link rel="stylesheet" href="style/css/bootstrap-multiselect.css" type="text/css">
         <script type="text/javascript" src="style/js/bootstrap-multiselect.js"></script>		
 		<script type="text/javascript">

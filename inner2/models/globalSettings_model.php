@@ -13,10 +13,8 @@
 
     protected static function get_settings_from_db(){
         return array(
-            'login_with_sms'=>'1',
+            'login_with_sms'=>'0',
         );
     }
-    
-	
   }
 ?>

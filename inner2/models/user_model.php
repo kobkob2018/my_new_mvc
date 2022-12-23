@@ -12,6 +12,13 @@
 		}
     }
 
+    private static function getInstance() {
+		if (!isset(self::$instance)) {
+			self::$instance = new User();
+		}
+		return self::$instance;
+	}
+
 	public static function get_loged_in_user() {
 		$user = self::getInstance();
 		return $user->user_data;
@@ -20,25 +27,18 @@
 	public static function get_login_state() {
 		$user = self::getInstance();
 		return $user->login_state;
-    }
-
-    private static function getInstance() {
-		if (!isset(self::$instance)) {
-		  self::$instance = new User();
-		}
-		return self::$instance;
-	  }
+    }	
 
     private function retrive_user_data_from_db(){
 		$db = Db::getInstance();
 		$login_trace_data = self::get_login_trace_data();
 		if(!$login_trace_data){
-			return $this->user_data;
+			return $this->user_data; //return false (no user yet)
 		}
 
 		if($login_trace_data['sms_code'] != ''){
 			$this->login_state = 'awaiting_sms_code';
-			return $this->user_data;
+			return $this->user_data; //return false (no user yet)
 		}
 		else{
 			$this->login_state = 'ok';
@@ -76,6 +76,32 @@
 		$login_trace_data = $req->fetch();
 		return $login_trace_data;
 	}
+
+	public static function add_login_trace($user_id,$add_sms_code = false){
+		$trace_array = array(
+			'user_id'=>$user_id,
+			'session_id'=>create_session_id(),
+			'ip'=>$_SERVER['REMOTE_ADDR'],
+			'sms_code'=>'',
+		);
+		
+		if($add_sms_code){
+			$trace_array['sms_code'] = rand(10000,99999);
+		}
+
+
+		$db = Db::getInstance();
+		$sql = "INSERT INTO login_trace(user_id, session_id, ip, login_time, sms_code) VALUES (:user_id,:session_id, :ip ,NOW(), :sms_code)";
+		$req = $db->prepare($sql);
+		$req->execute($trace_array);
+		
+		$user_session = array(
+			'user_id'=>$trace_array['user_id'],
+			'session_id'=>$trace_array['session_id']
+		);
+		session__set('login_user',$user_session);
+		return $trace_array;
+    }
 
 	public static function authenticate($username,$password) {
 		$db = Db::getInstance();
@@ -117,32 +143,6 @@
 			return true;
 		}
     }	
-
-	public static function add_login_trace($user_id,$add_sms_code = false){
-		$trace_array = array(
-			'user_id'=>$user_id,
-			'session_id'=>create_session_id(),
-			'ip'=>$_SERVER['REMOTE_ADDR'],
-			'sms_code'=>'',
-		);
-		
-		if($add_sms_code){
-			$trace_array['sms_code'] = rand(10000,99999);
-		}
-
-
-		$db = Db::getInstance();
-		$sql = "INSERT INTO login_trace(user_id, session_id, ip, login_time, sms_code) VALUES (:user_id,:session_id, :ip ,NOW(), :sms_code)";
-		$req = $db->prepare($sql);
-		$req->execute($trace_array);
-		
-		$user_session = array(
-			'user_id'=>$trace_array['user_id'],
-			'session_id'=>$trace_array['session_id']
-		);
-		session__set('login_user',$user_session);
-		return $trace_array;
-    }
 
 	public static function add_reset_password_token($user_id){
 		$insert_array = array(
@@ -201,7 +201,7 @@
 			return;
 		}
 		$update_params_arr = array();
-		$update_prepere_arr = array('uid'=>$user_data['id']);
+		$update_prepere_arr = array('user_id'=>$user_data['id']);
 		foreach($user_params as $p_key){
 			$insert_val = str_replace("'","''",trim($data_user[$p_key]));
 			$new_user[$p_key] = $insert_val;
@@ -210,7 +210,7 @@
 		}
 		$update_params = implode(",",$update_params_arr);
 		
-		$sql = "update users set $update_params WHERE id = :uid";
+		$sql = "update users set $update_params WHERE id = :user_id";
 		$db = Db::getInstance();
 		$req = $db->prepare($sql);
 		$req->execute($update_prepere_arr);
@@ -218,7 +218,6 @@
 		$user_model->retrive_user_data_from_db();
 		return $new_user;
     }
-
 
   }
 ?>
