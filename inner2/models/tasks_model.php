@@ -16,19 +16,13 @@
     }
 
     public static function get_list(){
-        return self::simple_get_list_by_table_name('tasks');
+        $filter_arr = array();
+        return self::simple_get_list_by_table_name($filter_arr, 'tasks');
     }
 
     public static function get_by_id($row_id){
         $filter_arr = array('id'=>$row_id);
         return self::simple_find_by_table_name($filter_arr,'tasks');
-		$db = Db::getInstance();
-		$sql = "SELECT * FROM tasks WHERE id  = :row_id";
-		$req = $db->prepare($sql);
-		$sql_arr = array('row_id'=>$row_id);
-		$req->execute($sql_arr);
-		return $req->fetch();
-	
     }
 
     public static $fields_colection = array(

@@ -1,5 +1,7 @@
 <h3>ניהול משימה: <?= $this->data['task_info']['title'] ?></h3>
-
+<p>
+        <a href="<?= inner_url("tasks/all/") ?>">חזרה</a>
+</p>
 <hr/>
 <div id="task_form_wrap" class="form-gen task-form">
     <?php $this->include_view("views/messages/formMessages.php"); ?>
@@ -69,6 +71,11 @@
 			<div class="form-group span3">
 				<label id="submit_label"></label>
 				<input type="submit"  class="submit-btn"  value="שליחה" />
+			</div>
+
+            <div class="form-group span3">
+                <hr/>
+				<a href="<?= inner_url('tasks/delete/') ?>?row_id=<?= $this->data['task_info']['id'] ?>"  class="delete-link" >מחיקה</a>
 			</div>
 		</div>
 	</form>

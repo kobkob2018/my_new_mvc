@@ -20,6 +20,16 @@
       $req->execute($execute_arr);
     }
 
+    public static function simple_delete_by_table_name($row_id, $table_name){
+
+      $execute_arr = array('row_identifier'=>$row_id);
+      
+      $sql = "DELETE FROM $table_name WHERE id = :row_identifier ";
+      $db = Db::getInstance();		
+      $req = $db->prepare($sql);
+      $req->execute($execute_arr);
+    }
+
     public static function simple_create_by_table_name($field_values, $table_name){
       $fields_keys_sql_arr = array();
       $fields_values_sql_arr = array();
@@ -39,8 +49,6 @@
       return $db->lastInsertId();
     }
 
-    
-
     public static function simple_find_by_table_name($filter_arr,$table_name){
       $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name);
       return $req->fetch();
@@ -52,9 +60,9 @@
       return $req->fetchAll();	
     }
     
-    protected function simple_find_with_filter_req_by_table_name($filter_arr,$table_name){
+    protected static function simple_find_with_filter_req_by_table_name($filter_arr,$table_name){
       $fields_sql_arr = array('1');
-      $execute_arr = array('row_identifier'=>$row_id);
+      $execute_arr = array();
       foreach($filter_arr as $key=>$value){
           $fields_sql_arr[] = "$key = :$key";
           $execute_arr[$key] = $value;

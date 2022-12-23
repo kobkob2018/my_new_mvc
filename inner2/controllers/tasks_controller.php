@@ -63,6 +63,19 @@ protected $stage_check = 1;
             include('views/tasks/add.php');           
 		}       
 
+        public function delete(){
+            if(!isset($_REQUEST['row_id'])){
+                SystemMessages::add_err_message("לא נבחרה שורה");
+                return $this->redirect_to(inner_url("tasks/all/"));
+            }
+
+            $row_id = $_REQUEST['row_id'];
+            Tasks::delete($row_id);
+            SystemMessages::add_success_message("המשימה נמחקה בהצלחה");
+            return $this->redirect_to(inner_url("tasks/all/"));
+                
+		}  
+
         public function createSend(){
             $form_handler = $this->init_form_handler();
             $validate_result = $form_handler->validate();
