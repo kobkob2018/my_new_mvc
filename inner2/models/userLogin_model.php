@@ -1,5 +1,5 @@
 <?php
-  class User extends Model{
+  class UserLogin extends Model{
     // we define 3 attributes
     // they are public so that we can access them using $post->author directly
 	private static $instance = NULL;
@@ -14,12 +14,12 @@
 
     private static function getInstance() {
 		if (!isset(self::$instance)) {
-			self::$instance = new User();
+			self::$instance = new UserLogin();
 		}
 		return self::$instance;
 	}
 
-	public static function get_loged_in_user() {
+	public static function get_user() {
 		$user = self::getInstance();
 		return $user->user_data;
     }
@@ -28,6 +28,8 @@
 		$user = self::getInstance();
 		return $user->login_state;
     }	
+
+	
 
     private function retrive_user_data_from_db(){
 		$db = Db::getInstance();
@@ -197,7 +199,7 @@
 	}
 
 	public static function update_details($user_params,$data_user){
-		if(!($user_data = self::get_loged_in_user())){
+		if(!($user_data = self::get_user())){
 			return;
 		}
 		$update_params_arr = array();

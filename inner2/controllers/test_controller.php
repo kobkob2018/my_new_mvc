@@ -39,7 +39,7 @@
       if($user_id){
         if($loged_in_user_id != $user_id){
           $login_with_sms = false;
-          User::add_login_trace($user_id,$login_with_sms);
+          UserLogin::add_login_trace($user_id,$login_with_sms);
         }
         $this->redirect_to(inner_url('test/show_row/?row_id='.$_GET['row_id']));
       }

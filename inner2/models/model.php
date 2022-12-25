@@ -49,18 +49,18 @@
       return $db->lastInsertId();
     }
 
-    public static function simple_find_by_table_name($filter_arr,$table_name){
-      $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name);
+    public static function simple_find_by_table_name($filter_arr,$table_name , $select_params = "*"){
+      $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params);
       return $req->fetch();
 
     }
 
-    public static function simple_get_list_by_table_name($filter_arr,$table_name){
+    public static function simple_get_list_by_table_name($filter_arr,$table_name, $select_params = "*"){
       $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name);
       return $req->fetchAll();	
     }
     
-    protected static function simple_find_with_filter_req_by_table_name($filter_arr,$table_name){
+    protected static function simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params = "*"){
       $fields_sql_arr = array('1');
       $execute_arr = array();
       foreach($filter_arr as $key=>$value){
@@ -69,7 +69,7 @@
       }
       
       $fields_sql = implode(" AND ",$fields_sql_arr);
-      $sql = "SELECT * FROM $table_name WHERE $fields_sql";
+      $sql = "SELECT $select_params FROM $table_name WHERE $fields_sql";
       $db = Db::getInstance();		
       $req = $db->prepare($sql);
       $req->execute($execute_arr);

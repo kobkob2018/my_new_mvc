@@ -1,6 +1,6 @@
 <?php
   class Controller {
-	public $use_models = array("user","systemMessages","globalSettings");
+	public $use_models = array("userLogin","users","systemMessages","globalSettings");
 	public $add_models = array();
 	public $data = array();
 	public $user = false;
@@ -21,7 +21,7 @@
 		foreach($this->add_models as $add_model){
 			require_once('models/'.$add_model.'_model.php');
 		}
-		$this->user = User::get_loged_in_user();
+		$this->user = Users::get_loged_in_user();
 		global $controller,$action;
 		$this->body_class = $controller."_".$action;
     }

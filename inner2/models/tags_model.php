@@ -7,7 +7,7 @@
 		$db = Db::getInstance();
 		$sql = "INSERT INTO user_lead_tag(user_id,tag_name)VALUES(:uid,:tag_name)";
 		$req = $db->prepare($sql);
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		$sql_arr = array(
 			"uid"=>$user['id'],
 			"tag_name"=>input_protect($tag_data['tag_name'])
@@ -18,7 +18,7 @@
 		$db = Db::getInstance();
 		$sql = "DELETE FROM user_lead_tag WHERE id = :tag_id";
 		$req = $db->prepare($sql);
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		$sql_arr = array(
 			"tag_id"=>$tag_data['tag_id']
 		);
@@ -29,7 +29,7 @@
 		$db = Db::getInstance();
 		$sql = "SELECT * FROM user_lead_tag WHERE user_id = :uid";
 		$req = $db->prepare($sql);
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		$sql_arr = array(
 			"uid"=>$user['id']
 		);

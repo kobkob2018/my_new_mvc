@@ -199,8 +199,9 @@
 
 		return $db->lastInsertId();
 	}
+
 	public function get_user_cat_tree(){
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		$db = Db::getInstance();
 		$sql = "SELECT bc.id,bc.cat_name,bc.father FROM user_cat uc LEFT JOIN biz_categories bc ON bc.id = uc.cat_id WHERE user_id = :user_id";
 		$req = $db->prepare($sql);

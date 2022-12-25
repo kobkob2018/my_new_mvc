@@ -30,10 +30,10 @@
    }	
 
 	public function loginSend(){
-		$log_in_user = User::authenticate($_REQUEST['user_username'],$_REQUEST['user_pass']);
+		$log_in_user = UserLogin::authenticate($_REQUEST['user_username'],$_REQUEST['user_pass']);
 		if($log_in_user){
 			$login_with_sms = GlobalSettings::get()['login_with_sms'];
-			$login_trace = User::add_login_trace($log_in_user['id'],$login_with_sms);
+			$login_trace = UserLogin::add_login_trace($log_in_user['id'],$login_with_sms);
 			if($login_with_sms){
 				$this->send_login_sms_code($log_in_user['phone'],$login_trace['sms_code']);
 				SystemMessages::add_success_message("רק עוד שלב אחד");
@@ -49,7 +49,7 @@
 	}
 
 	public function smsLoginSend(){
-		$log_in_user = User::authenticate_sms($_REQUEST['sms_code']);
+		$log_in_user = UserLogin::authenticate_sms($_REQUEST['sms_code']);
 		if(!$log_in_user){
 			SystemMessages::add_err_message("קוד אינו תואם למה ששלחנו");
 		}
@@ -70,9 +70,9 @@
 	}
 
 	public function forgotPasswordSend(){
-		$log_in_user = User::authenticate_mail($_REQUEST['user_email']);
+		$log_in_user = UserLogin::authenticate_mail($_REQUEST['user_email']);
 		if($log_in_user){
-			$token_array = User::add_reset_password_token($log_in_user['id']);
+			$token_array = UserLogin::add_reset_password_token($log_in_user['id']);
 			$this->data['forgot_password_user'] =  $log_in_user;
 			$this->data['forgot_password_token'] =  $token_array;
 			ob_start();
@@ -99,7 +99,7 @@
 			return;
 		}
 
-		$token_data = User::authenticate_password_token($_GET['row_id'],$_GET['token']);
+		$token_data = UserLogin::authenticate_password_token($_GET['row_id'],$_GET['token']);
 		$token_data['row_id'] = $token_data['id'];
 		session__set('reset_password_token',$token_data);
 		include('views/user/resetPassword.php');
@@ -112,7 +112,7 @@
 			$this->redirect_to(inner_url("userLogin/login/"));
 			return;
 		}
-		$token_data = User::authenticate_password_token($session_token['row_id'],$session_token['token']);
+		$token_data = UserLogin::authenticate_password_token($session_token['row_id'],$session_token['token']);
 
 		if(!$token_data){
 			SystemMessages::add_err_message("פג תוקף האפשרות לאיפוס הסיסמה -- ");
@@ -142,14 +142,14 @@
 			$this->redirect_to(current_url());
 			return;
 		}
-		User::reset_password_by_token($token_data, $new_pass);
+		UserLogin::reset_password_by_token($token_data, $new_pass);
 		SystemMessages::add_success_message("סיסמתך שונתה בהצלחה");
 		$this->redirect_to(inner_url("userLogin/login/"));
 		return;
 	}	
 
     public function login(){
-		if(User::get_login_state() == "awaiting_sms_code"){
+		if(UserLogin::get_login_state() == "awaiting_sms_code"){
 			include('views/user/smsLogin.php');
 		}
 		else{

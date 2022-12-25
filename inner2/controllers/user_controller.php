@@ -45,9 +45,9 @@
 			);
 
 			$data_user = $_REQUEST['usr'];			
-			User::update_details($user_params,$data_user);
+			Users::update_details($user_params,$data_user);
 			if($_REQUEST['usr']['password'] != ""){
-				User::update_details(array("password"),$data_user);
+				Users::update_details(array("password"),$data_user);
 			}
 			$this->user = $this->userModel->resetUser();
 			$this->success_messages[] = "הפרטים עודכנו בהצלחה";

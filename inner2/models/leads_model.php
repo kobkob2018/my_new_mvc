@@ -107,7 +107,7 @@
 			$lead['cat_name'] = $cat_name;		
 		}
 		$lead['recording_link'] = "0";
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		if($lead_data['lead_recource'] == "phone"){
 			
 			$sql = "SELECT * FROM sites_leads_stat WHERE id = :phone_lead_id";
@@ -241,7 +241,7 @@
 
     public static function all($filter){
 		
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
@@ -369,7 +369,7 @@
 		$lead_data = new Leads($lead,true);
 		$lead_cat = $lead_data->estimate_form_data['final_cat'];
 		if($lead_data->estimate_form_data['lead_recource'] == 'phone'){
-			$user = User::get_loged_in_user();
+			$user = Users::get_loged_in_user();
 			$cat_refund_reasons = self::get_user_refund_reasons($user['id']);
 		}
 		else{
@@ -382,7 +382,7 @@
 		return $lead_data;
     }
     public static function delete_lead($id) {
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
@@ -398,7 +398,7 @@
 	
     public static function buy_lead($id) {
 		$db = Db::getInstance();
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
@@ -446,7 +446,7 @@
     }
     public static function update_lead($id,$data_arr){
 		$db = Db::getInstance();
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
@@ -472,7 +472,7 @@
     public static function send_lead_refund_request($id,$data_arr){
 		//print_r($data_arr);
 		$db = Db::getInstance();
-		$user = User::get_loged_in_user();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
