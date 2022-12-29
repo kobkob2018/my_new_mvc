@@ -11,7 +11,6 @@
   }
   
   function print_view($controller,$action){
-		
 		// we're adding an entry for the new controller and its actions
 		if(system_file_exists('controllers/' . $controller . '_controller.php')){
 			system_require_once('controllers/' . $controller . '_controller.php');
@@ -19,11 +18,21 @@
 				call($controller, $action);
 			}
 			else{
-				print_view('pages', 'error');
+				if($action != get_config('error_action')){ //prevent loop if the error action not exists
+					print_view(get_config('error_controller'), get_config('error_action'));
+				}
+				else{
+					echo "the error method not exist";
+				}
 			}
 		}
 		else{
-			print_view('pages', 'error');
+			if($controller != get_config('error_controller')){ //prevent loop if the error controller file not exists
+				print_view(get_config('error_controller'), get_config('error_action'));
+			}
+			else{
+				echo "the pages controller for error not exist";
+			}
 		}
 	}
 
@@ -32,8 +41,8 @@
 		$controller = $_GET['controller'];
 		$action     = $_GET['action'];
 	} else {
-		$controller = 'pages';
-		$action     = 'home';
+		$controller = get_config('home_controller');
+		$action     = get_config('home_action');
 	}
 	
 	print_view($controller,$action);

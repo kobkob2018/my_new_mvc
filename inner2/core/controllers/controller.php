@@ -5,7 +5,7 @@
 	public $data = array();
 	public $user = false;
 	public $action_output = "";
-	public $action_params = array('layout_file'=>'layout.php','body_layout_file'=>'body/main.php'); 
+	public $action_params = array('layout_file'=>'layouts/layout.php','body_layout_file'=>'body/main.php'); 
 	public $action_result;
 	public $body_class = "";
 	public $form_handler;
@@ -165,7 +165,7 @@
 	}
 
 	protected function init_form_handler(){
-		system_require_once('core/helpers/form_handler.php');
+		require_once('core/helpers/form_handler.php');
 		if($this->form_handler){
 			return $this->form_handler;
 		}

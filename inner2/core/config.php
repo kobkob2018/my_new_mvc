@@ -9,10 +9,17 @@ $config = array(
     'db_user'=>'just',
     'db_password'=>'1234',
 
+    'default_system'=>'sites',
     'site_title'=>'רשת איי אל ביז',
     'session_prefix'=>'mymvc_',
     'base_url'=>'',
     'base_url_dir'=>'inner2',
+
+    'error_controller'=>'pages',
+    'error_action'=>'error',
+
+    'home_controller'=>'pages',
+    'home_action'=>'home',
 
     'email_sender'=>'info@ilbiz.co.il',
     'email_sender_name'=>'מנהל הרשת',

@@ -129,7 +129,7 @@ function system_path($file_path){
         return $_REQUEST['system']."/".$file_path;
     }
     else{
-        return "default/".$file_path;
+        return get_config("default_system")."/".$file_path;
     }
 }
 
