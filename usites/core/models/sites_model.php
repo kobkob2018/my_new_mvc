@@ -35,5 +35,18 @@
         return self::$sites_by_domain[$domain_name];
     }
 
+    public static function get_user_site_list(){
+        $user = UserLogin::get_user();
+        if(!$user){
+            return false;
+        }
+        $execute_arr = array('user_id'=>$user['id']);
+        $sql = "SELECT st.* FROM sites st LEFT JOIN user_sites us ON us.site_id = st.id WHERE us.user_id = :user_id";
+        $db = Db::getInstance();		
+        $req = $db->prepare($sql);
+        $req->execute($execute_arr);
+        return $req->fetchAll();
+    }   
+
   }
 ?>

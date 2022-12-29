@@ -144,6 +144,8 @@
 				$module->$action_name();
 			}
 			else{
+				print_help($module_name);
+				print_help($action_name);
 				//this param not exist so it will invoke notice here
 				echo $module_method_not_found_worning;
 				//do nothing
