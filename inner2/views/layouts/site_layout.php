@@ -9,11 +9,11 @@
 		<script src="style/js/main.js?v=<?= get_config("cash_version") ?>"></script>
 		<link rel="stylesheet" href="style/css/main.css?v=<?= get_config("cash_version") ?>"  type="text/css" />	
 
-		<title>il-biz מערכת ניהול לידים</title>
-		<?php include("registered_scripts/head.php"); ?>
+		<title><?= $this->data['page_meta_title']; ?></title>
+		<?php include("views/registered_scripts/head.php"); ?>
   </head>
   <body style="direction:rtl; text-align:right;" class="<?php echo $this->body_class; ?>">
 	<?php $this->print_body();  ?>
-	<?php include("registered_scripts/foot.php"); ?>
+	<?php include("views/registered_scripts/foot.php"); ?>
   </body>
 <html>

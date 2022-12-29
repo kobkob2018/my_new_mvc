@@ -8,11 +8,10 @@
 	public $action_params = array('layout_file'=>'views/layout.php','body_layout_file'=>'views/body/main.php'); 
 	public $action_result;
 	public $body_class = "";
-	public $form_return_params = array();
-	public $form_message = false;
 	public $form_handler;
+	public $registered_scripts = array("head"=>array(),"foot"=>array(),"all"=>array());
 	protected $send_action_state = false;
-
+	
     public function __construct() {
 		
 		foreach($this->use_models as $add_model){
@@ -30,6 +29,9 @@
 		return $this->handle_access_login_only($action);
 	}
 
+	protected function init_setup($action){
+		//this is a function to override
+	}
 	//Please note override functions in extending classes
 	protected function handle_access_login_only($action){
 		if(!$this->user){
@@ -52,7 +54,7 @@
 		if(!$this->handle_access($action)){
 			return;
 		}
-
+		$this->init_setup($action);
 			
 		ob_start();
 		$this->action_result = $this->$action();
@@ -169,14 +171,6 @@
 		$this->form_handler = new Form_handler($this);
 		return $this->form_handler;
 	}
-
-	function form_return_val($param){
-		if(isset($this->form_return_params[$param])){ 
-			return $this->form_return_params[$param];
-		}		
-		return "";
-	}
-
 	
 	protected function get_form_input($param){
 		return $this->init_form_handler()->get_form_input($param);
@@ -187,6 +181,39 @@
 		return $this->init_form_handler()->get_select_options($param);
 	}
 	
+	public function register_script($type,$label, $ref,$place = 'head',$order = array()){
+		if(!isset($this->registered_scripts["all"][$label])){
+			$this->registered_scripts["all"][$label] = true;
+			$new_script = array('type'=>$type,'ref'=>$ref);
+			$reg_arr = $this->registered_scripts[$place];
+
+
+			if(isset($order['before'])){
+				$keys = array_keys( $reg_arr );
+				$index = array_search( $order['before'], $keys );
+				$pos = false === $index ? count( $reg_arr ) : $index;
+				//array_merge( array_slice( $reg_arr, 0, $pos ), $new_script, array_slice( $reg_arr, $pos ) );
+
+				$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
+
+			}
+
+			elseif(isset($order['after'])){
+				$keys = array_keys( $reg_arr );
+				$index = array_search( $order['after'], $keys );
+				$pos = false === $index ? count( $reg_arr ) : $index + 1;
+				//array_merge( array_slice( $reg_arr, 0, $pos ), $new_script, array_slice( $reg_arr, $pos ) );
+
+				$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
+			}
+			else{
+				$pos = count( $reg_arr );
+				$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
+			}
+			$this->registered_scripts[$place] = $reg_arr;
+		}
+
+	}
 
 	public function print_json_page($print_result){
 		

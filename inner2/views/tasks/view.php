@@ -26,10 +26,13 @@
                 <input type="text" name="row[title]" id="row_title" class="form-input required" data-msg-required="*" value="<?= $this->get_form_input("title"); ?>"  />
                
 			</div>	
+			
+
+
 
             <div class="form-group span3">
 				<label for="row[description]">תיאור</label>
-                <textarea name="row[description]" id="row_title" class="form-input" data-msg-required="*"><?= $this->get_form_input("description"); ?></textarea>
+                <textarea name="row[description]" id="task_contend_textarea" class="form-input" data-msg-required="*"><?= $this->get_form_input("description"); ?></textarea>
                
 			</div>	
 
@@ -80,3 +83,20 @@
 		</div>
 	</form>
 </div>
+<?php $this->register_script("js","tiny_mce",inner_url("vendor/tinymce/tinymce/tinymce.min.js"),"head"); ?>
+<script type="text/javascript">
+
+tinymce.init({
+  selector: '#task_contend_textarea',
+  plugins: 'advlist link image lists code',
+ // toolbar: 'advlist link image lists',
+  toolbar: 'undo redo | link image  code | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+  /* without images_upload_url set, Upload tab won't show up*/
+  images_upload_url: 'postAcceptor.php',
+  width: 600,
+	height: 300,
+	directionality: 'rtl',
+
+});
+
+  </script>		

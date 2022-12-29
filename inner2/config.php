@@ -9,6 +9,7 @@ $config = array(
     'db_user'=>'just',
     'db_password'=>'1234',
 
+    'site_title'=>'רשת איי אל ביז',
     'session_prefix'=>'mymvc_',
     'base_url'=>'',
     'base_url_dir'=>'inner2',
