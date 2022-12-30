@@ -17,4 +17,5 @@ $system_config = array(
     'email_sender_name'=>'מנהל הרשת',
 
     'override_models'=>array('test'),
+    'access_module'=>'admin_access',
 );

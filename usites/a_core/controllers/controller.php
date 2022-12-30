@@ -27,37 +27,18 @@
     }
 
 	protected function handle_access($action){
-		switch(get_config('handle_access_default')){
-			case 'all':
-				return true;
-				break;
-			case 'login_only':
-			default:
-				return $this->handle_access_login_only($action);
-				break;	
+		$access_module = get_config('access_module');
+		if($access_module){
+			return $this->call_module($access_module,'handle_access_default',$action);
 		}
-		
+		else{
+			return true;
+		}
 	}
 
 	protected function init_setup($action){
 		//this is a function to override
 	}
-	//Please note override functions in extending classes
-	protected function handle_access_login_only($action){
-		if(!$this->user){
-			if(strpos($action, 'ajax_') === 0){
-				$this->print_json_page(array()); 
-			}
-			else{
-				$current_url = get_config('base_url') . $_SERVER["REQUEST_URI"];
-				session__set('last_requested_url',$current_url);
-				$this->redirect_to(outer_url('userLogin/login/'));
-			}
-			return false;
-		}
-		session__unset('last_requested_url');
-		return true;
-   }
 
 	public function print_layout($action){
 
@@ -94,8 +75,8 @@
 	}
 
 	public function add_model($model_name){
-		if(in_array($model_name,get_config('core_models')) && !in_array($model_name,get_config('override_models'))){
-			require_once('core/models/'.$model_name.'_model.php');
+		if(in_array($model_name,get_config('a_core_models')) && !in_array($model_name,get_config('override_models'))){
+			require_once('a_core/models/'.$model_name.'_model.php');
 		}
 		else{
 			system_require_once('models/'.$model_name.'_model.php');
@@ -141,18 +122,15 @@
 			$module_class = ucfirst($module_name)."Module";
 			if(method_exists(ucfirst($module_class),$action_name)){		
 				$module = new $module_class($this, $action_data);
-				$module->$action_name();
+				return $module->$action_name();
 			}
 			else{
-				print_help($module_name);
-				print_help($action_name);
 				//this param not exist so it will invoke notice here
 				echo $module_method_not_found_worning;
 				//do nothing
 			}			
 		}
 		else{
-			echo $module_name."<hr/>";
 			//this param not exist so it will invoke notice here
 			echo $modulenotfound_worning;
 
@@ -184,7 +162,7 @@
 	}
 
 	protected function init_form_handler(){
-		require_once('core/helpers/form_handler.php');
+		require_once('a_core/helpers/form_handler.php');
 		if($this->form_handler){
 			return $this->form_handler;
 		}

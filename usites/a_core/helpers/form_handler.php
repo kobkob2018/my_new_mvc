@@ -18,7 +18,7 @@
 
     public function validate($input_group = 'row'){
       //generate a validation handler
-      require_once('core/helpers/validation_handler.php');
+      require_once('a_core/helpers/validation_handler.php');
       $this->validation_handler = new Validation_handler();
 
       $validate_result = array(

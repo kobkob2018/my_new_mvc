@@ -13,21 +13,12 @@
 					return true;
 				break;
 			default:
-				return $this->handle_access_loggedout_only($action);
+				return $this->call_module('admin_access','handle_access_loggedout_only');
 			  break;
 			
 		  }
 		
-    }
-
-	//Please note override functions in extending classes
-	protected function handle_access_loggedout_only($action){
-		if($this->user){
-			$this->redirect_to(outer_url(''));
-			return false;
-		}
-		return true;
-   }	
+    }	
 
 	public function loginSend(){
 		$log_in_user = UserLogin::authenticate($_REQUEST['user_username'],$_REQUEST['user_pass']);

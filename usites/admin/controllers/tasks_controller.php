@@ -9,8 +9,7 @@ protected $stage_check = 1;
                     break;
                 default:
                     return parent::handle_access($action);
-                    break;
-                
+                    break;               
             }
         }
 
