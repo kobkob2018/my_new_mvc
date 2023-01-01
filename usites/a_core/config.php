@@ -28,7 +28,7 @@ $config = array(
 
     'a_core_models'=>array('userLogin','users','systemMessages','globalSettings','sites','pages','test'),
     'override_models'=>array(),
-    'access_module'=>false,
+    'access_module'=>'main',
 );
 
 

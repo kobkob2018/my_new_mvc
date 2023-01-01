@@ -8,14 +8,14 @@
 	</div>
     <div id="page_wrap" class="row-fluid">
         <div id="right_bar_wrap" class="page-bar right-bar">
-            <?php $this->include_view('page_bars/left_bar.php'); ?>
+            <?php $this->include_view('page_bars/right_bar.php'); ?>
         </div>
         <div id="right_bar_wrap" class="page-bar center-bar">
             <?php $this->call_module('system_messages','show'); ?>
             <?php $this->print_action_output(); ?>
         </div>
         <div id="left_bar_wrap" class="page-bar left-bar">
-            <?php $this->include_view('page_bars/right_bar.php'); ?>
+            <?php $this->include_view('page_bars/left_bar.php'); ?>
         </div>
     </div>
 

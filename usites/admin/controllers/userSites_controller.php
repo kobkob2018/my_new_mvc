@@ -6,19 +6,19 @@
         switch ($action){
             case 'list':
             case 'checkin':
-                return $this->call_module('admin_access','handle_access_login_only');
+                return $this->call_module('admin','handle_access_login_only');
                 break;
             default:
                 return parent::handle_access($action);
                 break;               
         }
-      }
+    }
 
     public function list() {
         $this->call_module('user_sites','raff_list');
     }
 
-    public function checkin() {
+    public function checkin(){
         $workon_site = false;
         if(isset($_REQUEST['workon'])){
             $workon_site = Sites::check_user_workon_site($_REQUEST['workon']);
@@ -31,9 +31,7 @@
         else{
             session__set('workon_site',$workon_site);
             $this->redirect_to(inner_url(''));
-        }
-
-        
+        }       
     }
   }
 ?>

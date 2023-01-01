@@ -1,7 +1,11 @@
 <?php
 //only for loged out user
    class UserController extends Controller{
-	   
+	
+	protected function handle_access($action){
+		return $this->call_module(get_config('main_module'),'handle_access_login_only',$action);
+	}
+
 	public function updateSend(){
 		$error_msg = array();
 		$required_params = array(

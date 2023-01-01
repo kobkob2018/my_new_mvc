@@ -3,22 +3,22 @@
 
     protected static $sites_by_domain = array();
     protected static $sites_by_id = array();
-    protected static $sites_by_roll = array();
+    protected static $sites_arr = array();
 
     public static function get_current_site(){
-        if(!isset(self::$sites_by_roll['current'])){
+        if(!isset(self::$sites_arr['current'])){
             if(session__isset("site_id")){
-                self::$sites_by_roll['current'] = self::get_by_id(session__get("site_id"));
+                self::$sites_arr['current'] = self::get_by_id(session__get("site_id"));
             }
             else{              
                 $current_site = self::get_by_domain($_SERVER["HTTP_HOST"]);
                 if($current_site){
-                    self::$sites_by_roll['current'] = $current_site;
-                    session__set("site_id",self::$sites_by_roll['current']['id']);
+                    self::$sites_arr['current'] = $current_site;
+                    session__set("site_id",self::$sites_arr['current']['id']);
                 }
             }
         }
-        return self::$sites_by_roll['current'];
+        return self::$sites_arr['current'];
     }
 
     public static function get_by_id($site_id){
@@ -56,8 +56,8 @@
         if(!session__isset('workon_site')){
             return false;
         }
-        if(isset(self::$sites_by_roll['workon'])){
-            return self::$sites_by_roll['workon'];
+        if(isset(self::$sites_arr['workon'])){
+            return self::$sites_arr['workon'];
         }
 
         $site_id = session__get('workon_site');
@@ -71,8 +71,8 @@
         $db = Db::getInstance();		
         $req = $db->prepare($sql);
         $req->execute($execute_arr);
-        self::$sites_by_roll['workon'] = $req->fetch();
-        return self::$sites_by_roll['workon'];
+        self::$sites_arr['workon'] = $req->fetch();
+        return self::$sites_arr['workon'];
     }
 
     public static function check_user_workon_site($site_id){

@@ -13,7 +13,7 @@
 					return true;
 				break;
 			default:
-				return $this->call_module('admin_access','handle_access_loggedout_only');
+				return $this->call_module('admin','handle_access_loggedout_only');
 			  break;
 			
 		  }
@@ -157,6 +157,11 @@
 		$this->include_view('user/forgotPassword.php');
     }
 	
+	public function register(){
+		echo "register is under construction";
+		$this->include_view('user/login.php');
+    }
+
 	protected function send_login_sms_code($user_phone, $sms_code){
 		$this->data['sms_login_code'] = $sms_code;
 		//todo: send sms. this small task includes menny sicrets:
@@ -167,6 +172,8 @@
 		// currently send via email
 		mail('johndo@gmail.com','sms code for login','the code is:'.$sms_code." and tour phone is: ".$user_phone);
 	}
+
+
 
   }
 ?>

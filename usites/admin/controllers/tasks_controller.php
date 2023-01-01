@@ -1,6 +1,5 @@
 <?php
 	class TasksController extends Controller{
-protected $stage_check = 1;
 		public $add_models = array("tasks");
         protected function handle_access($action){
             switch ($action){

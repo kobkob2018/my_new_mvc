@@ -10,6 +10,7 @@
 	public $body_class = "";
 	public $form_handler;
 	public $registered_scripts = array("head"=>array(),"foot"=>array(),"all"=>array());
+	protected $view;
 	protected $send_action_state = false;
 	
     public function __construct() {
@@ -21,19 +22,14 @@
 		foreach($this->add_models as $add_model){
 			$this->add_model($add_model);
 		}
+		$this->view = new View($this);
 		$this->user = Users::get_loged_in_user();
 		global $controller,$action;
 		$this->body_class = $controller."_".$action;
     }
 
 	protected function handle_access($action){
-		$access_module = get_config('access_module');
-		if($access_module){
-			return $this->call_module($access_module,'handle_access_default',$action);
-		}
-		else{
-			return true;
-		}
+		return $this->call_module(get_config('main_module'),'handle_access_default',$action);
 	}
 
 	protected function init_setup($action){
@@ -45,6 +41,11 @@
 		if(!$this->handle_access($action)){
 			return;
 		}
+		
+		//ask main module of the system to colect vital global data 
+		$this->call_module(get_config('main_module'),'init_layout',$action);
+
+		//call the override setup function of the specific controller
 		$this->init_setup($action);
 			
 		ob_start();
@@ -105,6 +106,7 @@
 
 	//this is to add view from modules
 	public function include_view($view_path, $info_payload = array()){
+		$view = $this->view;
 		$info = $info_payload;
 		$views_dir_path = "views/";
 		include(system_path($views_dir_path.$view_path));
@@ -133,7 +135,6 @@
 		else{
 			//this param not exist so it will invoke notice here
 			echo $modulenotfound_worning;
-
 			//do nothing
 		}
 	}
@@ -185,30 +186,20 @@
 			$new_script = array('type'=>$type,'ref'=>$ref);
 			$reg_arr = $this->registered_scripts[$place];
 
-
+			$index = false;
+			$place = 0;
+			$keys = array_keys( $reg_arr );
 			if(isset($order['before'])){
-				$keys = array_keys( $reg_arr );
 				$index = array_search( $order['before'], $keys );
-				$pos = false === $index ? count( $reg_arr ) : $index;
-				//array_merge( array_slice( $reg_arr, 0, $pos ), $new_script, array_slice( $reg_arr, $pos ) );
-
-				$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
-
 			}
-
-			elseif(isset($order['after'])){
-				$keys = array_keys( $reg_arr );
+			if(isset($order['after'])){
 				$index = array_search( $order['after'], $keys );
-				$pos = false === $index ? count( $reg_arr ) : $index + 1;
-				//array_merge( array_slice( $reg_arr, 0, $pos ), $new_script, array_slice( $reg_arr, $pos ) );
-
-				$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
+				$place = 1;
 			}
-			else{
-				$pos = count( $reg_arr );
-				$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
-			}
+			$pos = false === $index ? count( $reg_arr ) : $index + $place;
+			$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
 			$this->registered_scripts[$place] = $reg_arr;
+
 		}
 
 	}

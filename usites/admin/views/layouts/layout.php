@@ -9,7 +9,7 @@
 		<script src="style/js/main.js?v=<?= get_config("cash_version") ?>"></script>
 		<link rel="stylesheet" href="style/css/main.css?v=<?= get_config("cash_version") ?>"  type="text/css" />	
 
-		<title>il-biz מערכת ניהול לידים</title>
+		<title><?= $this->data['meta_title'] ?></title>
 		<?php $this->include_view('registered_scripts/head.php'); ?>
   </head>
   <body style="direction:rtl; text-align:right;" class="<?php echo $this->body_class; ?>">
