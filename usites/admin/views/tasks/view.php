@@ -5,7 +5,7 @@
 <hr/>
 <div id="task_form_wrap" class="form-gen task-form">
     <?php $this->include_view('messages/formMessages.php'); ?>
-	<form name="send_form" class="send-form form-validate" id="send_form" method="post" action="">
+	<form name="send_form" class="send-form form-validate" id="send_form" method="post" action=""  enctype="multipart/form-data">
 		<input type="hidden" name="sendAction" value="updateSend" />
         <input type="hidden" name="row_id" value="<?= $this->data['task_info']['id'] ?>" />
 		<div class="row-fluid">	
@@ -32,8 +32,25 @@
 
             <div class="form-group span3">
 				<label for="row[description]">תיאור</label>
-                <textarea name="row[description]" id="task_contend_textarea" class="form-input" data-msg-required="*"><?= $this->get_form_input("description"); ?></textarea>
+                <textarea name="row[description]" id="task_content_textarea" class="form-input" data-msg-required="*"><?= $this->get_form_input("description"); ?></textarea>
                
+			</div>	
+
+			<div class="form-group span3">
+				<label for="row[banner]">באנר</label>
+                <input type="file" name="row[banner]" id="task_banner_file" class="form-input" data-msg-required="*" value="" />
+				<?php if($banner_url = $this->get_form_file_url('banner')): ?>
+					<div>
+
+						<a href="<?= $banner_url ?>" target="_BLANK">
+							<img src='<?= $banner_url ?>?cache=<?= rand() ?>'  style="max-width:200px;"/>
+						</a>
+						<br/>
+						<a href="<?= current_url() ?>&remove_file=banner">הסר באנר</a>
+					</div>
+				<?php endif; ?>
+				
+				
 			</div>	
 
 		</div>
@@ -67,6 +84,23 @@
                 </select>
 				
             </div>
+
+			<div class="form-group span3">
+				<label for="row[form_img]">תמונת טופס</label>
+                <input type="file" name="row[form_img]" id="task_form_img_file" class="form-input" data-msg-required="*" value="" />
+				<?php if($form_img_url = $this->get_form_file_url('form_img')): ?>
+					<div>
+
+						<a href="<?= $form_img_url ?>" target="_BLANK">
+							<img src='<?= $form_img_url ?>?cache=<?= rand() ?>'  style="max-width:200px;"/>
+						</a>
+						<br/>
+						<a href="<?= current_url() ?>&remove_file=form_img">הסר</a>
+					</div>
+				<?php endif; ?>
+				
+				
+			</div>	
 
 		</div>
 		<hr/>

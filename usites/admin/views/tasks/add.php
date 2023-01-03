@@ -5,7 +5,7 @@
 <hr/>
 <div id="task_form_wrap" class="form-gen task-form">
     <?php $this->include_view('messages/formMessages.php'); ?>
-	<form name="send_form" class="send-form form-validate" id="send_form" method="post" action="">
+	<form name="send_form" class="send-form form-validate" id="send_form" method="post" action="" enctype="multipart/form-data">
 		<input type="hidden" name="sendAction" value="createSend" />
 		<div class="row-fluid">	
 

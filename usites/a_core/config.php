@@ -29,8 +29,20 @@ $config = array(
     'a_core_models'=>array('userLogin','users','systemMessages','globalSettings','sites','pages','test'),
     'override_models'=>array(),
     'access_module'=>'main',
-);
+    /*
+    //to change configuration to main pointer, change following 2 lines 
+    'sites_build_format'=>'pointer_to_main',
+    #'domains_path'=>'/domains',
+    */
+    'sites_build_format'=>'symlinks',
+    /*
+    // the real domain path
+    'domains_path'=>'///home/ilan123/domains/',
+    */
+    'domains_path'=>'domains',
 
+    'mode'=>'dev',
+);
 
 $config['base_url'] = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
 

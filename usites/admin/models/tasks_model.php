@@ -25,6 +25,42 @@
         return self::simple_find_by_table_name($filter_arr,'tasks');
     }
 
+
+    public static $fields_colection_small = array(
+        'user_id'=>array(
+            'label'=>'שיוך למשתמש',
+            'type'=>'select',
+            'options_method'=>array('model'=>'Tasks','method'=>'get_select_user_options'),
+            'validation'=>'required'
+        ),
+        'title'=>array(
+            'label'=>'כותרת',
+            'type'=>'text',
+            'validation'=>'required'
+        ),
+        'description'=>array(
+            'label'=>'תיאור',
+            'type'=>'textbox',
+        ),
+        'status'=>array(
+            'label'=>'סטטוס',
+            'type'=>'select',
+            'default'=>'1',
+            'options'=>array(
+                array('value'=>'0', 'title'=>'לא'),
+                array('value'=>'1', 'title'=>'כן')
+            ),
+            'validation'=>'required'
+        ),
+        'phone'=>array(
+            'label'=>'טלפון',
+            'type'=>'text',
+            'validation'=>'phone'
+        ),
+              
+
+    );
+
     public static $fields_colection = array(
         'user_id'=>array(
             'label'=>'שיוך למשתמש',
@@ -54,13 +90,31 @@
         'phone'=>array(
             'label'=>'טלפון',
             'type'=>'text',
-            'validation'=>'required, phone'
+            'validation'=>'phone'
         ),
         'email'=>array(
             'label'=>'אימייל',
             'validation'=>'required, email',
             'custom_validation'=>'task_email_validate_by',
             'readonly'=> true
+        ),
+
+        'banner'=>array(
+            'label'=>'באנר',
+            'type'=>'file',
+            'validation'=>'required, img',
+            'img_max'=>'100000',
+            'upload_to'=>'tasks/banners',
+            'name_file'=>'banner_{{row_id}}.{{ext}}'
+        ),
+
+        'form_img'=>array(
+            'label'=>'תמונת טופס',
+            'type'=>'file',
+            'validation'=>'img',
+            'img_max'=>'100000',
+            'upload_to'=>'tasks/banners',
+            'name_file'=>'form_img_{{row_id}}.{{ext}}'
         ),
 
         'visible'=>array(

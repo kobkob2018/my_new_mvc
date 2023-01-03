@@ -162,11 +162,11 @@
 		mail($email_to,$email_title,$email_content,$headers);
 	}
 
-	protected function init_form_handler(){
-		require_once('a_core/helpers/form_handler.php');
+	protected function init_form_handler(){		
 		if($this->form_handler){
 			return $this->form_handler;
 		}
+		require_once('a_core/helpers/form_handler.php');
 		$this->form_handler = new Form_handler($this);
 		return $this->form_handler;
 	}
@@ -175,11 +175,23 @@
 		return $this->init_form_handler()->get_form_input($param);
 	}
 
+	protected function get_form_file_url($param){
+		return $this->init_form_handler()->get_form_file_url($param);
+	}
 
 	protected function get_select_options($param){
 		return $this->init_form_handler()->get_select_options($param);
 	}
+
+	protected function get_file_input($param){
+		return $this->init_form_handler()->get_file_input($param);
+	}	
 	
+	public function get_assets_dir(){
+		//this function is to be overrided
+		return '/main_assets';
+	}
+
 	public function register_script($type,$label, $ref,$place = 'head',$order = array()){
 		if(!isset($this->registered_scripts["all"][$label])){
 			$this->registered_scripts["all"][$label] = true;

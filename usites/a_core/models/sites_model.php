@@ -96,5 +96,43 @@
         return false;
     }   
 
+    public static function get_user_workon_site_asset_dir(){
+        $workon_site = self::get_user_workon_site();
+        return self::get_site_asset_dir($workon_site);
+    }
+
+    public static function get_current_site_asset_dir(){
+        $workon_site = self::get_current_site();
+        return self::get_site_asset_dir($workon_site);
+    }
+
+    public static function get_site_asset_dir($site){
+        $return_array = array(
+            'url'=>'',
+            'path'=>'',
+        );
+        
+        $sites_build_format = get_config('sites_build_format');
+        $site_url_http_s = 'http://';
+        if($site['is_secure']){
+            $site_url_http_s = 'https://';
+        }
+        $site_url = $site_url_http_s.$site['domain'];
+        if(get_config('base_url_dir') != ''){
+            $site_url.='/'.get_config('base_url_dir');
+        }
+        if($sites_build_format == 'symlinks'){
+            $return_array['path'] = get_config('domains_path').'/'.$site['domain'].'/public_html/'.'assets/';
+            $return_array['url'] = $site_url.'/assets/';
+            if(get_config('mode') == 'dev'){
+                $return_array['url'] = $site_url.'/'.get_config('domains_path').'/'.$site['domain'].'/public_html/'.'assets/';
+            }
+        }
+        elseif($sites_build_format == 'pointer_to_main'){
+            $return_array['path'] = '/sites_assets/'.$site['id'].'/';
+            $return_array['url'] = $site_url.'/sites_assets/'.$site['id'].'/';
+        }
+        return $return_array;
+    }
   }
 ?>

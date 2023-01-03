@@ -33,10 +33,18 @@
             if(!$this->data['task_info']){
                 return $this->redirect_to(inner_url('tasks/all/'));
             }
-            
+
             $form_handler = $this->init_form_handler();
             $form_handler->setup_fields_collection(Tasks::$fields_colection);
             $form_handler->setup_db_values($this->data['task_info']);
+
+            if(isset($_REQUEST['remove_file'])){
+                $form_handler->remove_file($_REQUEST['remove_file']);
+                $update_values = array('banner'=>'');
+                Tasks::update($_GET['row_id'],$update_values);
+                SystemMessages::add_success_message("הבאנר הוסר");
+                return $this->redirect_to(inner_url("tasks/view/?row_id=".$_GET['row_id']));
+            }
 
             $this->send_action_proceed();
 
@@ -45,6 +53,11 @@
             
 		}
 
+        public function get_assets_dir(){
+            $assets_dir = Sites::get_user_workon_site_asset_dir();
+            return $assets_dir;
+        }
+
         public function updateSend(){
             if(!isset($_REQUEST['row_id'])){
                 return;
@@ -52,8 +65,14 @@
             $row_id = $_REQUEST['row_id'];
             $form_handler = $this->init_form_handler();
             $validate_result = $form_handler->validate();
+            $fixed_values = $validate_result['fixed_values'];
+            foreach($fixed_values as $key=>$value){
+                $fixed_values[$key] = str_replace('{{row_id}}',$row_id,$value);
+            }
+            $validate_result['fixed_values'] = $fixed_values;
             if($validate_result['success']){
-                Tasks::update($row_id,$validate_result['fixed_values']);
+                Tasks::update($row_id,$fixed_values);
+                $files_result = $form_handler->upload_files($validate_result, $row_id);
                 SystemMessages::add_success_message("המשימה נשמרה בהצלחה");
                 $this->redirect_to(current_url());
             }
@@ -85,10 +104,27 @@
 		}  
 
         public function createSend(){
+            $work_on_site = Sites::get_user_workon_site();
+            $site_id = $work_on_site['id'];
             $form_handler = $this->init_form_handler();
             $validate_result = $form_handler->validate();
+            $fixed_values = $validate_result['fixed_values'];
             if($validate_result['success']){
-                $row_id = Tasks::create($validate_result['fixed_values']);
+                $fixed_values['site_id'] = $site_id;
+                $row_id = Tasks::create($fixed_values);
+
+                $fixed_row_values = array();
+                foreach($fixed_values as $key=>$value){
+                    $fixed_row_value = str_replace('{{row_id}}',$row_id,$value);
+                    if($fixed_row_value != $value){
+                        $fixed_row_values[$key] = $fixed_row_value;
+                    }
+                }
+                if(!empty($fixed_row_values)){
+                    Tasks::update($row_id,$fixed_row_values);
+                }
+                $validate_result['fixed_values'] = $fixed_values;
+                $files_result = $form_handler->upload_files($validate_result, $row_id);
                 SystemMessages::add_success_message("המשימה נוספה בהצלחה");
                 $this->redirect_to(inner_url("tasks/view/?row_id=$row_id"));
             }
