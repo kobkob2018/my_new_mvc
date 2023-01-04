@@ -5,3 +5,36 @@
     font-size: 20px;
     margin: 20px 0;
 }
+
+.flex-table .row {
+    display: table-row;
+  }
+  .flex-table .col {
+    display: table-cell;
+    border: 1px solid grey;
+    padding: 5px;
+  }
+  .flex-table .col-first {
+    background: #cdcdfa;
+    width:10px;
+  }
+
+  .flex-table .col-tiny {
+    max-width:50px;
+  }
+
+  .flex-table .col-small{
+    max-width: 100px;
+  }
+
+  .flex-table .table-input{
+    width: 100px;
+  }
+
+  .flex-table .col-tiny .table-input{
+    width: 30px;
+  }
+
+  .flex-table .col-small .table-input{
+    width: 80px;
+  }

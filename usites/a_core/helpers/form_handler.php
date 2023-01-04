@@ -218,7 +218,6 @@
         $options = $options_method['model']::$method_name();
       }
 
-
       $i=0;
 
       foreach($options as $option){

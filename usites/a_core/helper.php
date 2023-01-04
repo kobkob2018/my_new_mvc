@@ -103,9 +103,21 @@ function outer_url($url = ''){
     return $base_url.$inner_url;
 }
 
-function current_url(){
+function current_url($add_params = array()){
     $base_url = get_config('base_url');
     $current_url = $base_url . $_SERVER["REQUEST_URI"];
+    if(!empty($add_params)){
+        $current_url_arr = explode("?",$current_url);
+        $add_params_str_arr = array();
+        if(isset($current_url_arr[1])){
+            $add_params_str_arr[] = $current_url_arr[1];
+        }
+        foreach($add_params as $key=>$value){
+            $add_params_str_arr[] = "$key=$value";
+        }
+        $add_params_str = implode("&",$add_params_str_arr);
+        $current_url = $current_url_arr[0]."?".$add_params_str;
+    }
     return $current_url;
 }
 

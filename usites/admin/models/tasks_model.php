@@ -15,8 +15,7 @@
         return self::simple_update_by_table_name($row_id, $field_values,'tasks');
     }
 
-    public static function get_list(){
-        $filter_arr = array();
+    public static function get_list($filter_arr = array()){
         return self::simple_get_list_by_table_name($filter_arr, 'tasks');
     }
 

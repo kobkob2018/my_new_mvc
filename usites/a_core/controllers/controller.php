@@ -8,7 +8,7 @@
 	public $action_params = array('layout_file'=>'layouts/layout.php','body_layout_file'=>'body/main.php'); 
 	public $action_result;
 	public $body_class = "";
-	public $form_handler;
+	public $form_handlers = array();
 	public $registered_scripts = array("head"=>array(),"foot"=>array(),"all"=>array());
 	protected $view;
 	protected $send_action_state = false;
@@ -162,29 +162,29 @@
 		mail($email_to,$email_title,$email_content,$headers);
 	}
 
-	protected function init_form_handler(){		
-		if($this->form_handler){
-			return $this->form_handler;
+	protected function init_form_handler($form_id = 'main'){		
+		if(isset($this->form_handlers[$form_id])){
+			return $this->form_handlers[$form_id];
 		}
 		require_once('a_core/helpers/form_handler.php');
-		$this->form_handler = new Form_handler($this);
-		return $this->form_handler;
+		$this->form_handlers[$form_id] = new Form_handler($this);
+		return $this->form_handlers[$form_id];
 	}
 	
-	protected function get_form_input($param){
-		return $this->init_form_handler()->get_form_input($param);
+	protected function get_form_input($param,$form_id='main'){
+		return $this->init_form_handler($form_id)->get_form_input($param);
 	}
 
-	protected function get_form_file_url($param){
-		return $this->init_form_handler()->get_form_file_url($param);
+	protected function get_form_file_url($param,$form_id='main'){
+		return $this->init_form_handler($form_id)->get_form_file_url($param);
 	}
 
-	protected function get_select_options($param){
-		return $this->init_form_handler()->get_select_options($param);
+	protected function get_select_options($param,$form_id='main'){
+		return $this->init_form_handler($form_id)->get_select_options($param);
 	}
 
-	protected function get_file_input($param){
-		return $this->init_form_handler()->get_file_input($param);
+	protected function get_file_input($param,$form_id='main'){
+		return $this->init_form_handler($form_id)->get_file_input($param);
 	}	
 	
 	public function get_assets_dir(){

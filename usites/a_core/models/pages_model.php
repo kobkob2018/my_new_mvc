@@ -21,7 +21,7 @@
         if(!$current_site){
             return false;
         }
-        if(!isset(self::$pages_by_id[$site_id])){
+        if(!isset(self::$pages_by_id[$page_id])){
             self::$pages_by_id[$page_id] = self::simple_find_by_table_name(array('id'=>$page_id,'site_id'=>$current_site['id']),'content_pages');
         }
         return self::$pages_by_id[$page_id];
@@ -37,6 +37,7 @@
         }
         return self::$pages_by_link[$link];
     }
+
 
   }
 ?>
