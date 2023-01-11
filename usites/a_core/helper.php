@@ -65,7 +65,12 @@ function create_session_id(){
 }
 
 
-function inner_url($url = ''){
+function global_url($url = ''){
+    $remove_from_url = array('system');
+    return inner_url($url,$remove_from_url);
+}
+
+function inner_url($url = '', $remove_from_url = array()){
     
     $url_arr = array();
 
@@ -84,6 +89,11 @@ function inner_url($url = ''){
     }
     $final_url = "";
     $ending_slash = "";
+    foreach($remove_from_url as $part){
+        if(isset($url_arr[$part])){
+            unset($url_arr[$part]);
+        }
+    }
     foreach($url_arr as $part){
         if($url == ''){
             $ending_slash = "/";

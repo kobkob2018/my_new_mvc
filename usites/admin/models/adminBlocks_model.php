@@ -22,6 +22,8 @@
         'content'=>array(
             'label'=>'תוכן',
             'type'=>'textbox',
+            'reachtext'=>true,
+            'css_class'=>'big-text'
         ),    
 
     );

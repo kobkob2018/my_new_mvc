@@ -203,16 +203,16 @@
 			$reg_arr = $this->registered_scripts[$place];
 
 			$index = false;
-			$place = 0;
+			$order_place = 0;
 			$keys = array_keys( $reg_arr );
 			if(isset($order['before'])){
 				$index = array_search( $order['before'], $keys );
 			}
 			if(isset($order['after'])){
 				$index = array_search( $order['after'], $keys );
-				$place = 1;
+				$order_place = 1;
 			}
-			$pos = false === $index ? count( $reg_arr ) : $index + $place;
+			$pos = false === $index ? count( $reg_arr ) : $index + $order_place;
 			$reg_arr = array_slice( $reg_arr, 0, $pos ) + array($label=>$new_script) + array_slice( $reg_arr, $pos );
 			$this->registered_scripts[$place] = $reg_arr;
 
