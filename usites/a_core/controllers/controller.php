@@ -34,6 +34,7 @@
 
 	protected function init_setup($action){
 		//this is a function to override
+		return true;
 	}
 
 	public function print_layout($action){
@@ -46,8 +47,11 @@
 		$this->call_module(get_config('main_module'),'init_layout',$action);
 
 		//call the override setup function of the specific controller
-		$this->init_setup($action);
-			
+		$init_setup_result = $this->init_setup($action);
+		if(!$init_setup_result){
+			return;
+		}
+
 		ob_start();
 		$this->action_result = $this->$action();
 		$this->action_output = ob_get_clean();

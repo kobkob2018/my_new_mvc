@@ -1,40 +1,14 @@
 <?php
-  class MenuItems extends Model{
-    // we define 3 attributes
-    // they are public so that we can access them using $post->author directly
+  class MenuItems extends TableModel{
+
+
+    protected static $main_table = 'menu_items';
 
     protected static $select_page_options = false;
 
-    public static function create($field_values){
-		return self::simple_create_by_table_name($field_values,'menu_items');
-    }
-
-    public static function delete($row_id){
-		return self::simple_delete_by_table_name($row_id,'menu_items');
-    }
-
-    public static function update($row_id, $field_values){
-        return self::simple_update_by_table_name($row_id, $field_values,'menu_items');
-    }
-
     public static function get_parent_list_of($site_id,$menu_id){
         $filter_arr = array('site_id'=>$site_id,'menu_id'=>$menu_id,'parent'=>'0');
-        return self::simple_get_list_by_table_name($filter_arr, 'menu_items');
-    }
-
-    public static function get_children_list_of($parent_id){
-        $filter_arr = array('parent'=>$parent_id);
-        return self::simple_get_list_by_table_name($filter_arr, 'menu_items');
-    }
-
-    public static function get_item($filter_arr = array()){
-        $filter_arr = array();
-        return self::simple_get_list_by_table_name($filter_arr, 'menu_items');
-    }
-
-    public static function get_by_id($row_id){
-        $filter_arr = array('id'=>$row_id);
-        return self::simple_find_by_table_name($filter_arr,'menu_items');
+        return self::simple_get_list($filter_arr);
     }
 
     public static function get_select_page_options(){
@@ -57,15 +31,6 @@
         self::$select_page_options = $return_options;
         return self::$select_page_options;
     }
-    
-    public static function get_select_yes_no_options(){
-        return array(
-            array('value'=>'0', 'title'=>'לא'),
-            array('value'=>'1', 'title'=>'כן')
-        );
-    }    
-    
-    
 
     public static $menu_type_list = array(
         'top'=>'1',
@@ -76,7 +41,18 @@
 
 
 
-    public static $item_fields_colection = array(
+    public static $item_fields_collection = array(
+        'parent'=>array(
+            'type'=>'hidden'
+        ),
+        'site_id'=>array(
+            'type'=>'hidden'
+        ),
+
+        'menu_id'=>array(
+            'type'=>'hidden'
+        ),   
+
         'priority'=>array(
             'label'=>'מיקום',
             'type'=>'text',
@@ -84,7 +60,7 @@
         ),
 
         'title'=>array(
-            'title'=>'תווית',
+            'label'=>'תווית',
             'type'=>'text',
             'validation'=>'required'
         ),
@@ -95,7 +71,8 @@
             'default'=>'0',
             'options'=>array(
                 array('value'=>'0', 'title'=>'כתובת'),
-                array('value'=>'1', 'title'=>'קישור לדף')
+                array('value'=>'1', 'title'=>'קישור לדף'),
+                array('value'=>'2', 'title'=>'קבוצה'),
             ),
             'validation'=>'required'
         ),

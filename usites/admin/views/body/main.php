@@ -4,14 +4,14 @@
 			<img src="style/image/logo.png" alt="מערכת הלידים של איי-אל-ביז" />
 		</div>	
 		<?php if($this->data['work_on_site']): ?>
-			<h2>ניהול אתר <?= $this->data['work_on_site']['title'] ?></h2>
+			<h2 class="admin-title">ניהול אתר <?= $this->data['work_on_site']['title'] ?></h2>
 		<?php endif; ?>	
 		
 		<?php $this->call_module('system_messages','show'); ?>
 		<div class="clear"></div>	
 	</div>
 
-    <div id="page_wrap" class="row-fluid">
+    <div id="middle_wrap" class="row-fluid">
         <div id="right_bar_wrap" class="page-bar right-bar">
             <?php $this->include_view('page_bars/right_bar.php'); ?>
         </div>

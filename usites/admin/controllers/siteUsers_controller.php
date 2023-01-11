@@ -38,7 +38,7 @@
 
         
         $form_handler = $this->init_form_handler();
-        $form_handler->setup_fields_collection(SiteUsers::$fields_colection);
+        $form_handler->setup_fields_collection(SiteUsers::$fields_collection);
         $form_handler->setup_db_values($this->data['site_user_info']);
 
         $this->send_action_proceed();
@@ -69,7 +69,7 @@
 
     public function add(){
       $form_handler = $this->init_form_handler();
-      $form_handler->setup_fields_collection(SiteUsers::$fields_colection);
+      $form_handler->setup_fields_collection(SiteUsers::$fields_collection);
       $this->send_action_proceed();
       $this->include_view('site_users/add.php');           
 		}       

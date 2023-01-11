@@ -26,7 +26,7 @@ $config = array(
     'email_sender_name'=>'מנהל הרשת',
     'is_mobile'=>false,
 
-    'a_core_models'=>array('userLogin','users','systemMessages','globalSettings','sites','pages','test'),
+    'a_core_models'=>array('userLogin','users','systemMessages','globalSettings','sites','test'),
     'override_models'=>array(),
     'access_module'=>'main',
     /*

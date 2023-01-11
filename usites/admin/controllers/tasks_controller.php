@@ -34,8 +34,10 @@
                 return $this->redirect_to(inner_url('tasks/all/'));
             }
 
+            $fields_collection = Tasks::$fields_collection;
+
             $form_handler = $this->init_form_handler();
-            $form_handler->setup_fields_collection(Tasks::$fields_colection);
+            $form_handler->setup_fields_collection($fields_collection);
             $form_handler->setup_db_values($this->data['task_info']);
 
             if(isset($_REQUEST['remove_file'])){
@@ -48,6 +50,14 @@
 
             $this->send_action_proceed();
 
+            $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
+
+            $form_builder_data = array();
+            $form_builder_data['enctype_str'] = 'enctype="multipart/form-data"';
+            $form_builder_data['sendAction'] = "updateSend";
+            $form_builder_data['row_id'] = $this->data['task_info']['id'];
+            $form_builder_data['fields_collection'] = $fields_collection;
+            $this->data['form_builder'] = $form_builder_data;           
 
             $this->include_view('tasks/view.php');
             
@@ -84,32 +94,35 @@
         }
 
         public function add(){
+            $fields_collection = Tasks::$fields_collection;
             $form_handler = $this->init_form_handler();
-            $form_handler->setup_fields_collection(Tasks::$fields_colection);
+            $form_handler->setup_fields_collection(Tasks::$fields_collection);
+
             $this->send_action_proceed();
+
+            $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
+
+            $form_builder_data = array();
+            $form_builder_data['enctype_str'] = 'enctype="multipart/form-data"';
+            $form_builder_data['sendAction'] = "createSend";
+            $form_builder_data['row_id'] = 'new';
+            $form_builder_data['fields_collection'] = $fields_collection;
+            $this->data['form_builder'] = $form_builder_data;
+
+            $this->send_action_proceed();
+
+
             $this->include_view('tasks/add.php');           
 		}       
-
-        public function delete(){
-            if(!isset($_REQUEST['row_id'])){
-                SystemMessages::add_err_message("לא נבחרה שורה");
-                return $this->redirect_to(inner_url("tasks/all/"));
-            }
-
-            $row_id = $_REQUEST['row_id'];
-            Tasks::delete($row_id);
-            SystemMessages::add_success_message("המשימה נמחקה בהצלחה");
-            return $this->redirect_to(inner_url("tasks/all/"));
-                
-		}  
 
         public function createSend(){
             $work_on_site = Sites::get_user_workon_site();
             $site_id = $work_on_site['id'];
             $form_handler = $this->init_form_handler();
             $validate_result = $form_handler->validate();
-            $fixed_values = $validate_result['fixed_values'];
+            
             if($validate_result['success']){
+                $fixed_values = $validate_result['fixed_values'];
                 $fixed_values['site_id'] = $site_id;
                 $row_id = Tasks::create($fixed_values);
 
@@ -134,6 +147,19 @@
                 }
             }
         }
+
+        public function delete(){
+            if(!isset($_REQUEST['row_id'])){
+                SystemMessages::add_err_message("לא נבחרה שורה");
+                return $this->redirect_to(inner_url("tasks/all/"));
+            }
+
+            $row_id = $_REQUEST['row_id'];
+            Tasks::delete($row_id);
+            SystemMessages::add_success_message("המשימה נמחקה בהצלחה");
+            return $this->redirect_to(inner_url("tasks/all/"));
+                
+		}
 
         public function task_email_validate_by($value){
             $return_array =  array(

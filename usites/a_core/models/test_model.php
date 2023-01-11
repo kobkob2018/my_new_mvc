@@ -1,7 +1,7 @@
 <?php
-  class Test extends Model{
-    // we define 3 attributes
-    // they are public so that we can access them using $post->author directly
+  class Test extends TableModel{
+
+    protected static $main_table = 'test';
 
 	public static function get_by_id($row_id){
 		$db = Db::getInstance();

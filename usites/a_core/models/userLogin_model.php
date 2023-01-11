@@ -1,7 +1,10 @@
 <?php
-  class UserLogin extends Model{
-    // we define 3 attributes
-    // they are public so that we can access them using $post->author directly
+  class UserLogin extends TableModel{
+
+
+	//user login use not simple functions... still main table will be login_trace
+    protected static $main_table = 'login_trace';
+   
 	private static $instance = NULL;
     private $user_data = false;
 	private $login_state = false;

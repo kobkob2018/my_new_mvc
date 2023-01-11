@@ -7,12 +7,34 @@
     }
 
     public function a_class($relative_url){
-        global $controller,$action;
-        $current_relative_url = "$controller/$action/";
-        if($relative_url == $current_relative_url){
+        if($this->routing_is($relative_url)){
             return "a-selected";
         }
         return "a-simpel";
+    }
+
+    public function a_c_class($controller_check){
+      if($this->controller_is($controller_check)){
+          return "c-selected";
+      }
+      return "c-simpel";
+    }
+
+    public function controller_is($controller_check){
+      global $controller;
+      if($controller_check == $controller){
+          return true;
+      }
+      return false;
+    }    
+
+    public function routing_is($relative_url){
+        global $controller,$action;
+        $current_relative_url = "$controller/$action/";
+        if($relative_url == $current_relative_url){
+            return true;
+        }
+        return false;
     }
 
     public function user_is($needed_roll){

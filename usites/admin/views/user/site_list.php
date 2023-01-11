@@ -6,8 +6,5 @@
              <a href="http://<?= $site['domain']; ?>/usites/" title="<?= $site['title']; ?>" target="_BLANK">צפה באתר</a>
         </li>
     <?php endforeach; ?>
-    <li>
-        <a href="http://love.com/usites/" title="אתר ספינת האהבה">גישה זמנית לאתר love.com</a>
-    </li>
 </ul>
 

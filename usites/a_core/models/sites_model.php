@@ -1,5 +1,7 @@
 <?php
-  class Sites extends Model{
+  class Sites extends TableModel{
+
+    protected static $main_table = 'sites';
 
     protected static $sites_by_domain = array();
     protected static $sites_by_id = array();
@@ -21,18 +23,24 @@
         return self::$sites_arr['current'];
     }
 
-    public static function get_by_id($site_id){
-        if(!isset(self::$sites_by_id[$site_id])){
-            self::$sites_by_id[$site_id] = self::simple_find_by_table_name(array('id'=>$site_id),'sites');
+    public static function get_by_id($site_id, $select_params = "*"){
+        if(!isset(self::$sites_by_id[$select_params])){
+            self::$sites_by_id[$select_params] = array();
         }
-        return self::$sites_by_id[$site_id];
+        if(!isset(self::$sites_by_id[$select_params][$site_id])){
+            self::$sites_by_id[$select_params][$site_id] = self::find(array('id'=>$site_id),$select_params);
+        }
+        return self::$sites_by_id[$select_params][$site_id];
     }
 
-    public static function get_by_domain($domain_name){
-        if(!isset(self::$sites_by_domain[$domain_name])){
-            self::$sites_by_domain[$domain_name] = self::simple_find_by_table_name(array('domain'=>$domain_name),'sites');
+    public static function get_by_domain($domain_name, $select_params = "*"){
+        if(!isset(self::$sites_by_domain[$select_params])){
+            self::$sites_by_domain[$select_params] = array();
         }
-        return self::$sites_by_domain[$domain_name];
+        if(!isset(self::$sites_by_domain[$select_params][$domain_name])){
+            self::$sites_by_domain[$select_params][$domain_name] = self::simple_find(array('domain'=>$domain_name),$select_params);
+        }
+        return self::$sites_by_domain[$select_params][$domain_name];
     }
 
     public static function get_user_site_list(){
@@ -71,7 +79,12 @@
         $db = Db::getInstance();		
         $req = $db->prepare($sql);
         $req->execute($execute_arr);
-        self::$sites_arr['workon'] = $req->fetch();
+        $site = $req->fetch();
+        if(is_array($site)){
+            $site['url'] = self::get_site_url($site);
+        }
+        $site_url = self::get_site_url($site);
+        self::$sites_arr['workon'] = $site;
         return self::$sites_arr['workon'];
     }
 
@@ -113,14 +126,7 @@
         );
         
         $sites_build_format = get_config('sites_build_format');
-        $site_url_http_s = 'http://';
-        if($site['is_secure']){
-            $site_url_http_s = 'https://';
-        }
-        $site_url = $site_url_http_s.$site['domain'];
-        if(get_config('base_url_dir') != ''){
-            $site_url.='/'.get_config('base_url_dir');
-        }
+        $site_url = self::get_site_url($site);
         if($sites_build_format == 'symlinks'){
             $return_array['path'] = get_config('domains_path').'/'.$site['domain'].'/public_html/'.'assets/';
             $return_array['url'] = $site_url.'/assets/';
@@ -133,6 +139,18 @@
             $return_array['url'] = $site_url.'/sites_assets/'.$site['id'].'/';
         }
         return $return_array;
+    }
+
+    public static function get_site_url($site){
+        $site_url_http_s = 'http://';
+        if($site['is_secure']){
+            $site_url_http_s = 'https://';
+        }
+        $site_url = $site_url_http_s.$site['domain'];
+        if(get_config('base_url_dir') != ''){
+            $site_url.='/'.get_config('base_url_dir');
+        }
+        return $site_url;
     }
   }
 ?>
