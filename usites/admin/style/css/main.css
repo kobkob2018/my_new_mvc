@@ -65,12 +65,22 @@ h4{
 }
 
 #right_bar ul li.bar-item a{
-    padding: 5px 14px 5px 25px;
+    padding: 5px 14px 3px 25px;
+    border-bottom: 2px solid #dde0f4;
     background: #dde0f4;
     margin-bottom: 4px;
     text-decoration:none;
     color:black;
     display:block;
+}
+
+#right_bar ul li.c-selected a{
+    border-color: blue;
+}
+
+#right_bar ul li.child-item a{
+    border-right:12px solid yellow;
+    padding-left: 2px;
 }
 
 #right_bar ul li.bar-item:hover a, #right_bar ul li.a-selected a{
@@ -186,7 +196,7 @@ h4{
     text-align: center;
 }
 
-.item-edit-menu a.a-selected{
+.item-edit-menu a.c-selected{
     color:black;
     text-decoration: none;
     font-weight: bold;
@@ -209,6 +219,10 @@ h4{
     background: floralwhite;
     box-shadow: 5px 5px 5px #c9c9c9;
     
+}
+.content-block .block-content img{
+    max-width:100%;
+    height:auto;
 }
 
 .block-buttons{

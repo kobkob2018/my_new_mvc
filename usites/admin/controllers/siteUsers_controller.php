@@ -12,7 +12,7 @@
       $site_users = array();
       $roll_options = SiteUsers::get_admin_roll_options();
       $roll_options_indexed = Helper::eazy_index_arr_by('value',$roll_options,'title');
-      foreach(SiteUsers::get_list($this->data['work_on_site']['id']) as $site_user){
+      foreach(SiteUsers::get_site_users_list($this->data['work_on_site']['id']) as $site_user){
           $user_name_arr = Users::get_by_id($site_user['user_id'],"full_name");
           $site_user['user_name'] = $user_name_arr['full_name'];
           $site_user['roll_title'] = $roll_options_indexed[$site_user['roll']];

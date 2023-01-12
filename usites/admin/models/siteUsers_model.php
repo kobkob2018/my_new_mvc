@@ -3,7 +3,7 @@
 
     protected static $main_table = 'user_sites';
 
-    public static function get_list($site_id){
+    public static function get_site_users_list($site_id){
         $filter_arr = array('site_id'=>$site_id);
         return self::simple_get_list_by_table_name($filter_arr, 'user_sites');
     }

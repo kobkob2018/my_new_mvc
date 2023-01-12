@@ -13,9 +13,13 @@
         return "a-simpel";
     }
 
-    public function a_c_class($controller_check){
-      if($this->controller_is($controller_check)){
+    public function a_c_class($controllers_check){
+      $controller_check_arr = explode(",",$controllers_check);
+      foreach($controller_check_arr as $controller_check){
+        $controller_check = trim($controller_check);
+        if($this->controller_is($controller_check)){
           return "c-selected";
+        }
       }
       return "c-simpel";
     }

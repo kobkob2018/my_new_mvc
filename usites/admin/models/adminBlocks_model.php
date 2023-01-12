@@ -5,19 +5,18 @@
 
 
     public static $fields_collection = array(
-        
-        'priority'=>array(
-            'label'=>'מיקום',
-            'type'=>'text',
-            'validation'=>'required',
-            'default'=>'0'
-        ),
 
         'label'=>array(
             'label'=>'שם לצורך זיהוי',
             'type'=>'text',
             'validation'=>'required'
         ),
+
+        'css_class'=>array(
+            'label'=>'תגית עיצוב',
+            'type'=>'text',
+            'default'=>'c-block'
+        ),        
 
         'content'=>array(
             'label'=>'תוכן',

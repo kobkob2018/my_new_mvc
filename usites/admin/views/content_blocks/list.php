@@ -35,7 +35,7 @@
         <?php endif; ?>
         <div class="content-block">
             <div class="block-label">
-                <?= $content_block['label'] ?>
+                <?= $content_block['label'] ?> [<?= $content_block['css_class'] ?>]
             </div>
             <div class="block-content">
                 <?= $content_block['content'] ?>

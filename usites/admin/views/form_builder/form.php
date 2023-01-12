@@ -38,17 +38,16 @@
                                 
                                 <textarea name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>_textarea" class="form-input form-textarea" data-msg-required="*"><?= $this->get_form_input($field_key); ?></textarea>
                                 <?php if(isset($build_field['reachtext']) && $build_field['reachtext']): ?>
-<?php $this->register_script('js','tinymce',global_url('vendor/tinymce/tinymce/tinymce.min.js')); ?>
-<script type="text/javascript">
-    tinymce.init({
-  selector: 'textarea#row_<?= $field_key ?>_textarea',
-  plugins: 'image code',
-  toolbar: 'undo redo | image code',
+                                    <?php $this->register_script('js','tinymce',global_url('vendor/tinymce/tinymce/tinymce.min.js')); ?>
+                                    <?php $this->register_script('js','tinymce_helper',inner_url('style/js/tinymce_helper.js')); ?>
 
-  /* without images_upload_url set, Upload tab won't show up*/
-  images_upload_url: '<?= inner_url('media/upload/') ?>'
-});
-</script>
+                                    <script type="text/javascript">
+                                        init_tinymce(
+                                            'textarea#row_<?= $field_key ?>_textarea', 
+                                            '<?= inner_url('media/upload/') ?>',
+                                            '<?= inner_url('media/librarypopup/') ?>'
+                                        );
+                                    </script>
                                 <?php endif; ?>
                             </div>	
                 <?php endif; ?>

@@ -51,6 +51,8 @@
     }       
 
     public function createSend(){
+      print_r_help($_FILES,"files");
+      exit("exit in createsend pages_cotroller");
       return parent::createSend();
     }
 

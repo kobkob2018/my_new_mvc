@@ -69,17 +69,17 @@
 
         <ul class="item-group">
 
-            <li class="bar-item <?= $view->a_class("pages/list/") ?> <?= $view->a_c_class("pages") ?>">
-                <a href="<?= inner_url('pages/list/') ?>" title="דפים באתר" class="a-link">דפים באתר</a>
+            <li class="bar-item <?= $view->a_class("pages/list/") ?> <?= $view->a_c_class("pages, blocks") ?>">
+                <a href="<?= inner_url('pages/list/') ?>" title="דפים באתר" class="a-link">דפים באתר sdf sdf sdf sd sdf </a>
             </li>
-            <?php if($view->controller_is("pages")): ?>
-                <li class="bar-item <?= $view->a_class("pages/add/") ?>">
+            <?php if($view->controller_is("pages") || $view->controller_is("blocks")): ?>
+                <li class="bar-item child-item <?= $view->a_class("pages/add/") ?>">
                     <a href="<?= inner_url('pages/add/') ?>" title="דף חדש" class="a-link">דף חדש</a>
                 </li>
-                <li class="bar-item <?= $view->a_class("pages/dir_list/") ?>">
+                <li class="bar-item child-item <?= $view->a_class("pages/dir_list/") ?>">
                     <a href="<?= inner_url('pages/dir_list/') ?>" title="רשימת תיקיות" class="a-link">רשימת תיקיות</a>
                 </li>
-                <li class="bar-item <?= $view->a_class("pages/dir_add/") ?>">
+                <li class="bar-item child-item <?= $view->a_class("pages/dir_add/") ?>">
                     <a href="<?= inner_url('pages/dir_add/') ?>" title="הוספת תיקייה" class="a-link">הוספת תיקייה</a>
                 </li>
             <?php endif; ?>          

@@ -46,7 +46,7 @@
         if(!isset($this->user_values[$field_key])){
           continue; 
         }
-
+        
         $user_value = $this->user_values[$field_key];
         $user_fixed_value = $user_value;
         $field_validate_result = array(
@@ -142,7 +142,11 @@
       $assets_dir = $this->controller_interface->get_assets_dir();
       foreach($validate_result['upload_files'] as $field_key=>$field){
 
-        $old_file_name = $this->db_values[$field_key];
+        $old_file_name = '';
+        if(isset($this->db_values[$field_key])){
+
+          $old_file_name = $this->db_values[$field_key];
+        }
         $new_file_name = $validate_result['fixed_values'][$field_key];
 
         $dir_path = $assets_dir['path'];
@@ -217,6 +221,7 @@
         $method_name = $options_method['method'];
         $options = $options_method['model']::$method_name();
       }
+
 
       $i=0;
 

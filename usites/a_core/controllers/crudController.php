@@ -14,6 +14,9 @@
         }
 
         $this->data['item_info'] = $this->get_item_info($_GET['row_id']);
+
+
+
         if(!$this->data['item_info']){
             $this->row_error_message();
             return $this->eject_redirect();
@@ -26,20 +29,12 @@
         $form_handler->setup_db_values($this->data['item_info']);
 
         if(isset($_REQUEST['remove_file'])){
-            return $this->remove_file($fields_collection,$form_handler);
+            return $this->remove_file($fields_collection, $form_handler);
         }
 
         $this->send_action_proceed();
 
-        $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
-
-        $form_builder_data = array();
-        $form_builder_data['enctype_str'] = 'enctype="multipart/form-data"';
-        $form_builder_data['sendAction'] = "updateSend";
-        $form_builder_data['row_id'] = $this->data['item_info']['id'];
-        $form_builder_data['fields_collection'] = $fields_collection;
-        $this->data['form_builder'] = $form_builder_data;           
-
+        $this->add_form_builder_data($fields_collection,'updateSend',$this->data['item_info']['id']);  
         $this->include_edit_view();
   
     }
@@ -69,9 +64,10 @@
         }
     }
 
-    protected function remove_file($fields_collection,$form_handler){
+    protected function remove_file($fields_collection, $form_handler){
         $item_info = $this->data['item_info'];
         $item_id = $item_info['id'];
+        
         $field_key_for_file = $_REQUEST['remove_file'];
         if(isset($fields_collection[$field_key_for_file])){
             $form_handler->remove_file($field_key_for_file);
@@ -88,22 +84,28 @@
         $form_handler->setup_fields_collection($fields_collection);
   
         $this->send_action_proceed();
-  
-        $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
-  
-        $form_builder_data = array();
-        $form_builder_data['enctype_str'] = 'enctype="multipart/form-data"';
-        $form_builder_data['sendAction'] = "createSend";
-        $form_builder_data['row_id'] = 'new';
-        $form_builder_data['fields_collection'] = $fields_collection;
-        $this->data['form_builder'] = $form_builder_data;
-  
+        $this->add_form_builder_data($fields_collection,'createSend','new');
         $this->send_action_proceed();
-  
-  
         $this->include_add_view();           
     }       
   
+    protected function add_form_builder_data($fields_collection, $sendAction, $row_id){
+        $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
+
+        $form_builder_data = array();
+        $enctype_str = '';
+        foreach($fields_collection as $field){
+            if($field['type'] == 'file'){
+                $enctype_str = 'enctype="multipart/form-data"';
+            }
+        }
+        $form_builder_data['enctype_str'] = $enctype_str;
+        $form_builder_data['sendAction'] = $sendAction;
+        $form_builder_data['row_id'] = $row_id;
+        $form_builder_data['fields_collection'] = $fields_collection;
+        $this->data['form_builder'] = $form_builder_data;
+    }
+
     public function createSend(){
         $form_handler = $this->init_form_handler();
         $validate_result = $form_handler->validate();
