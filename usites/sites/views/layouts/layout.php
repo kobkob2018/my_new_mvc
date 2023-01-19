@@ -6,8 +6,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />	
 		<link rel="shortcut icon" type="image/x-icon" href="style/image/favicon.ico">
 
-		<script src="style/js/main.js?v=<?= get_config("cash_version") ?>"></script>
-		<link rel="stylesheet" href="style/css/main.css?v=<?= get_config("cash_version") ?>"  type="text/css" />	
+		<script src="style/js/site.js?v=<?= get_config("cash_version") ?>"></script>
+		<link rel="stylesheet" href="<?= styles_url("style/css/site.css") ?>?v=<?= get_config("cash_version") ?>"  type="text/css" />	
 
 		<title><?= $this->data['page_meta_title']; ?></title>
 		<?php $this->include_view('registered_scripts/head.php'); ?>

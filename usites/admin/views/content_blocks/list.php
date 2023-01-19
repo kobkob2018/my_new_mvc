@@ -39,6 +39,7 @@
             </div>
             <div class="block-content">
                 <?= $content_block['content'] ?>
+                <div class='clear'></div>
             </div>
             <?php if(!isset($this->data['set_priority_item'])): ?>
                 <div class="block-buttons">

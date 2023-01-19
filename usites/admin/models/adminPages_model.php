@@ -18,7 +18,7 @@
         'link'=>array(
             'label'=>'כתובת URL',
             'type'=>'text',
-            'validation'=>'required url'
+            'validation'=>'required, url'
         ),       
         'description'=>array(
             'label'=>'תיאור',

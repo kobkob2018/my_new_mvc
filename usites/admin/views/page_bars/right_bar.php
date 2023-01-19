@@ -70,7 +70,7 @@
         <ul class="item-group">
 
             <li class="bar-item <?= $view->a_class("pages/list/") ?> <?= $view->a_c_class("pages, blocks") ?>">
-                <a href="<?= inner_url('pages/list/') ?>" title="דפים באתר" class="a-link">דפים באתר sdf sdf sdf sd sdf </a>
+                <a href="<?= inner_url('pages/list/') ?>" title="דפים באתר" class="a-link">דפים באתר</a>
             </li>
             <?php if($view->controller_is("pages") || $view->controller_is("blocks")): ?>
                 <li class="bar-item child-item <?= $view->a_class("pages/add/") ?>">

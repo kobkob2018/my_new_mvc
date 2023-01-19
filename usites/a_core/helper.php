@@ -65,6 +65,16 @@ function create_session_id(){
 }
 
 
+function styles_url($url){
+    if(isset($_REQUEST['system'])){
+        return $url;
+    }
+    else{
+        $system_dir = get_config('default_system');
+        return $system_dir."/".$url;
+    }
+}
+
 function global_url($url = ''){
     $remove_from_url = array('system');
     return inner_url($url,$remove_from_url);

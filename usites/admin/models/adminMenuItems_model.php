@@ -1,5 +1,5 @@
 <?php
-  class MenuItems extends TableModel{
+  class AdminMenuItems extends TableModel{
 
 
     protected static $main_table = 'menu_items';
@@ -85,7 +85,7 @@
         'page_id'=>array(
             'label'=>'קישור לדף',
             'type'=>'select',
-            'options_method'=>array('model'=>'MenuItems','method'=>'get_select_page_options'),
+            'options_method'=>array('model'=>'AdminMenuItems','method'=>'get_select_page_options'),
         ),
 
         'target'=>array(

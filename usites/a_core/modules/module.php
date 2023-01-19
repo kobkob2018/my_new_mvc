@@ -26,5 +26,9 @@
         $this->controller->redirect_to($url);
     }
 
+    protected function add_asset_mapping($mapping_arr){
+      $this->controller->add_asset_mapping($mapping_arr);
+    }
+
   }
 ?>

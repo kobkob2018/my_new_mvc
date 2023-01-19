@@ -1,19 +1,26 @@
 <?php
   class CrudController extends Controller{
 
+    protected $assets_map = array();
     protected function init_setup($action){
         $this->set_priority_from_session();
         return parent::init_setup($action);
     }
 
     public function edit(){
-      
-        if(!isset($_GET['row_id'])){
+        $row_id = false;
+        if(isset($_REQUEST['row_id'])){
+            $row_id = $_REQUEST['row_id'];
+        }
+        elseif(isset($this->data['row_id'])){
+            $row_id = $this->data['row_id'];
+        }
+        if(!$row_id){
             $this->row_error_message();
             return $this->eject_redirect();
         }
 
-        $this->data['item_info'] = $this->get_item_info($_GET['row_id']);
+        $this->data['item_info'] = $this->get_item_info($row_id);
 
 
 
@@ -40,10 +47,16 @@
     }
   
     public function updateSend(){
-        if(!isset($_REQUEST['row_id'])){
+        $row_id = false;
+        if(isset($_REQUEST['row_id'])){
+            $row_id = $_REQUEST['row_id'];
+        }
+        elseif(isset($this->data['row_id'])){
+            $row_id = $this->data['row_id'];
+        }
+        if(!$row_id){
             return;
         }
-        $row_id = $_REQUEST['row_id'];
         $form_handler = $this->init_form_handler();
         $validate_result = $form_handler->validate();
         $fixed_values = $validate_result['fixed_values'];
@@ -89,6 +102,28 @@
         $this->include_add_view();           
     }       
   
+    public function file_url_of($field_name, $file_name){
+        $fileds_arr = $this->get_assets_mapping();
+        if($fileds_arr && isset($fileds_arr[$field_name])){
+            $file_dir = $fileds_arr[$field_name];
+            $assets_dir = $this->get_assets_dir();
+            return $assets_dir['url'].$file_dir."/".$file_name;
+
+        }
+        return $file_name;
+
+    }
+
+    public function add_asset_mapping($mapping_arr){
+        foreach($mapping_arr as $mapping_key=>$mapping){
+            $this->assets_map[$mapping_key] = $mapping;
+        }
+    }
+
+    protected function get_assets_mapping(){
+        return $this->assets_map;
+    }
+
     protected function add_form_builder_data($fields_collection, $sendAction, $row_id){
         $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
 

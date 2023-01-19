@@ -192,8 +192,7 @@
 	}	
 	
 	public function get_assets_dir(){
-		//this function is to be overrided
-		return '/main_assets';
+		return $this->call_module(get_config('main_module'),'get_assets_dir');
 	}
 
 	public function register_script($type,$label, $ref,$place = 'head',$order = array()){

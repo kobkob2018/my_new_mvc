@@ -50,11 +50,6 @@
         return $filter_arr;     
     }
 
-    public function get_assets_dir(){
-        $assets_dir = Sites::get_user_workon_site_asset_dir();
-        return $assets_dir;
-    }
-
     public function edit(){
         return parent::edit();
     }

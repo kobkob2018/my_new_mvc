@@ -12,9 +12,15 @@
             return self::$current_page;
         }
         if(!isset($_REQUEST['page'])){
-            return false;
+            $site = Sites::get_current_site();
+            if($site['home_page'] == '0'){
+                return false;
+            }
+            self::$current_page = self::get_by_id($site['home_page']);
         }
-        self::$current_page = self::get_by_link($_REQUEST['page']);
+        else{
+            self::$current_page = self::get_by_link($_REQUEST['page']);
+        }
         return self::$current_page; 
     }
 
@@ -40,6 +46,9 @@
         return self::$pages_by_link[$link];
     }
 
+    public static $assets_mapping = array(
+        'right_banner'=>'pages/banners'
+    );
 
   }
 ?>

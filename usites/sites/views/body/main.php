@@ -1,16 +1,19 @@
-<div id="main_wrap" class="page-wrap">
+<div id="page_wrap" class="page-wrap">
 	<div class="header page-fixed-top">
 		<div id="logo_wrap" class="">
-			<img src="style/image/logo.png" alt="<?= $this->data['site']['title']; ?>" />
+			
+			<img src="<?= $this->file_url_of('logo',$this->data['site']['logo']) ?>" alt="<?= $this->data['site']['title']; ?>" />
 		</div>
-		
+		<div id="top_menu_wrap">
+			<?php $this->call_module('site_menus','top_menu'); ?>
+		</div>
 		<div class="clear"></div>	
 	</div>
-    <div id="page_wrap" class="row-fluid">
+    <div id="page_middle" class="page-middle">
         <div id="right_bar_wrap" class="page-bar right-bar">
             <?php $this->include_view('page_bars/right_bar.php'); ?>
         </div>
-        <div id="right_bar_wrap" class="page-bar center-bar">
+        <div id="center_bar_wrap" class="page-bar center-bar">
             <?php $this->call_module('system_messages','show'); ?>
             <?php $this->print_action_output(); ?>
         </div>
@@ -24,6 +27,5 @@
 	 © כל הזכויות שומורות <a href="http://www.ilbiz.co.il" class="copyrightBottom" title="פורטל עסקים ישראל">פורטל עסקים ישראל</a>&nbsp;&nbsp;&nbsp; <a href="http://www.il-biz.com" class="copyrightBottom" target="_blank" title="IL-BIZ קידום עסקים באינטרנט">IL-BIZ קידום עסקים באינטרנט</a>&nbsp;&nbsp;&nbsp; <a href="http://kidum.ilbiz.co.il/" class="copyrightBottom" target="_blank" title="קידום באינטרנט">קידום באינטרנט</a> - אילן שוורץ&nbsp;&nbsp;&nbsp; <a href="http://www.il-biz.co.il/" class="copyrightBottom" target="_blank" title="בניית אתרים">בניית אתרים</a>
 	*/ 
 	?>
-	<?php $this->call_module('test','help');  ?>
 	</div>
 </div>

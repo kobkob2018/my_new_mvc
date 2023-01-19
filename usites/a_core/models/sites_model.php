@@ -115,8 +115,8 @@
     }
 
     public static function get_current_site_asset_dir(){
-        $workon_site = self::get_current_site();
-        return self::get_site_asset_dir($workon_site);
+        $current_site = self::get_current_site();
+        return self::get_site_asset_dir($current_site);
     }
 
     public static function get_site_asset_dir($site){
@@ -152,5 +152,9 @@
         }
         return $site_url;
     }
+
+    public static $asset_mapping = array(
+        'logo'=>'site'
+    );
   }
 ?>

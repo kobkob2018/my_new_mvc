@@ -1,6 +1,6 @@
 <?php
   class MenusController extends Controller{
-    public $add_models = array("menuItems");
+    public $add_models = array("adminMenuItems");
     protected $list_forms = array();
 
     protected function init_setup($action){
@@ -49,7 +49,7 @@
         }
 
 
-        $this->data['menu_id'] = MenuItems::$menu_type_list[$this->data['menu_identifier']];
+        $this->data['menu_id'] = AdminMenuItems::$menu_type_list[$this->data['menu_identifier']];
         
         if(isset($_REQUEST['move_item'])){
             return $this->move_item_prepare($_REQUEST['move_item']);
@@ -57,7 +57,7 @@
         
         if(session__isset('menu_item_to_move')){
             $move_item_id = session__get('menu_item_to_move');
-            $move_menu_item_tree = MenuItems::get_item_parents_tree($move_item_id,'id, title');
+            $move_menu_item_tree = AdminMenuItems::get_item_parents_tree($move_item_id,'id, title');
             $this->data['move_menu_item'] = array(
                 'item_id'=>$move_item_id,
                 'tree'=>$move_menu_item_tree
@@ -70,17 +70,17 @@
             $this->data['item_id'] = $item_id;
 
             //setup form for the current item
-            $main_menu_item = MenuItems::get_by_id($item_id);
-            $menu_item_list = MenuItems::get_children_list_of($item_id);
+            $main_menu_item = AdminMenuItems::get_by_id($item_id);
+            $menu_item_list = AdminMenuItems::get_children_list_of($item_id);
             $item_identifier = "item_".$item_id;
             $main_menu_item = $this->setup_item_form_handler($item_identifier,$main_menu_item);
         }
         else{
             $main_menu_item = false;
-            $menu_item_list = MenuItems::get_parent_list_of($this->data['site']['id'],$this->data['menu_id']);
+            $menu_item_list = AdminMenuItems::get_parent_list_of($this->data['site']['id'],$this->data['menu_id']);
         }
 
-        $item_parent_tree = MenuItems::get_item_parents_tree($item_id,'id, title');
+        $item_parent_tree = AdminMenuItems::get_item_parents_tree($item_id,'id, title');
         $this->data['item_parent_tree'] = $item_parent_tree;
 
         foreach($menu_item_list as $item_key=>$item){
@@ -98,7 +98,7 @@
 
         //setup form for the new item (with the 'main' identifier)
         $form_handler = $this->init_form_handler();
-        $form_handler->setup_fields_collection(MenuItems::$item_fields_collection);
+        $form_handler->setup_fields_collection(AdminMenuItems::$item_fields_collection);
 
         $this->send_action_proceed();
 
@@ -121,7 +121,7 @@
         $validate_result = $form_handler->validate();
         $fixed_values = $validate_result['fixed_values'];
         if($validate_result['success']){
-            MenuItems::update($row_id,$fixed_values);
+            AdminMenuItems::update($row_id,$fixed_values);
             SystemMessages::add_success_message("הקישור נשמר בהצלחה");
             $this->redirect_to(current_url());
         }
@@ -140,7 +140,7 @@
         $validate_result = $form_handler->validate();
         $fixed_values = $validate_result['fixed_values'];
         if($validate_result['success']){
-            MenuItems::create($fixed_values);
+            AdminMenuItems::create($fixed_values);
             SystemMessages::add_success_message("הקישור נשמר בהצלחה");
             $this->redirect_to(current_url());
         }
@@ -153,7 +153,7 @@
 
     
     public function delete_item($item_id){
-        MenuItems::delete_with_offsprings($item_id);
+        AdminMenuItems::delete_with_offsprings($item_id);
         SystemMessages::add_success_message("הקישור נמחק בהצלחה"); 
         return $this->redirect_to($this->data['return_url']);      
     }  
@@ -168,14 +168,14 @@
             if(isset($_GET['item_id'])){
                 $parent_id = $_GET['item_id'];
             }
-            $parent_tree = MenuItems::get_item_parents_tree($parent_id,'id');
+            $parent_tree = AdminMenuItems::get_item_parents_tree($parent_id,'id');
             foreach($parent_tree as $branch){
                 if($item_to_move_id == $branch['id']){
                     SystemMessages::add_err_message("לא ניתן להעביר קישור לצאצאיו");
                     return $this->redirect_to($this->data['return_url']);
                 }
             }
-            MenuItems::update($item_to_move_id,array('parent'=>$parent_id));
+            AdminMenuItems::update($item_to_move_id,array('parent'=>$parent_id));
             SystemMessages::add_success_message("הקישור הועבר בהצלחה");
             session__unset('menu_item_to_move');
         }
@@ -190,7 +190,7 @@
         if(!$item || $item == null){
             return $item;
         }
-        $item_fields_collection = MenuItems::$item_fields_collection;
+        $item_fields_collection = AdminMenuItems::$item_fields_collection;
         //setup form for specific item (like the parent item or the children items) children items
         $form_handler = $this->init_form_handler($item_key);
         $form_handler->setup_fields_collection($item_fields_collection);

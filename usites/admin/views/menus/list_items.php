@@ -90,6 +90,7 @@
         </div>
         <div class="col">
             <select name='row[page_id]' class='table-select'>
+                <option value="-1">--- בחר דף ---</option>
                 <?php foreach($this->get_select_options('page_id') as $option): ?>
                     <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
                 <?php endforeach; ?>
@@ -152,6 +153,7 @@
             </div>
             <div class="col">
                 <select name='row[page_id]' class='table-select'>
+                    <option value="-1">--- בחר דף ---</option>
                     <?php foreach($this->get_select_options('page_id',$menu_item['form_identifier']) as $option): ?>
                         <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
                     <?php endforeach; ?>

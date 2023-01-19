@@ -9,7 +9,7 @@
         'label'=>array(
             'label'=>'שם לצורך זיהוי',
             'type'=>'text',
-            'validation'=>'required'
+            'validation'=>''
         ),
 
         'css_class'=>array(
