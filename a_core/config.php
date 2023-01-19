@@ -13,7 +13,7 @@ $config = array(
     'site_title'=>'רשת איי אל ביז',
     'session_prefix'=>'mymvc_',
     'base_url'=>'',
-    'base_url_dir'=>'usites',
+    'base_url_dir'=>'',
 
     'error_controller'=>'pages',
     'error_action'=>'error',
@@ -40,7 +40,7 @@ $config = array(
     'domains_path'=>'///home/ilan123/domains/',
     */
     'domains_path'=>'domains',
-
+    'cookie_prefix'=>'crudor',
     'mode'=>'dev',
 );
 

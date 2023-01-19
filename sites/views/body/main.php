@@ -1,11 +1,17 @@
 <div id="page_wrap" class="page-wrap">
+	<?php $this->include_view('modules/accessibility.php'); ?>
 	<div class="header page-fixed-top">
-		<div id="logo_wrap" class="">
+		<div id="logo_wrap" class="fix-top-right">
 			
 			<img src="<?= $this->file_url_of('logo',$this->data['site']['logo']) ?>" alt="<?= $this->data['site']['title']; ?>" />
 		</div>
-		<div id="top_menu_wrap">
+		<div id="top_menu_wrap" class="fix-top-center">
 			<?php $this->call_module('site_menus','top_menu'); ?>
+		</div>
+		<div id="accessebility_and_phone" class="fix-top-left">
+			<a class="accessibility-door"  href="javascript://" onclick="openDrawer('accessibility')"><i class="fa fa-wheelchair"></i></a>
+			
+		
 		</div>
 		<div class="clear"></div>	
 	</div>

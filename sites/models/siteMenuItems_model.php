@@ -91,7 +91,17 @@
                 }
             }
         }
+        $items = self::adjust_urls_to_items($items);
         return $items;
+    }
+
+    public static function adjust_urls_to_items($items_arr){
+        $item_urls = self::match_urls_to_items($items_arr);
+        foreach($items_arr as $item_key=>$item){
+            $items_arr[$item_key]['final_url'] = $item_urls[$item['id']];
+
+        }
+        return $items_arr;
     }
 
     public static function match_urls_to_items($items_arr){
