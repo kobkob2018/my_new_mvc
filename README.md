@@ -1,33 +1,35 @@
-A Most Simple PHP MVC Beginners Tutorial
+The CRUDor MVC system enterprise
 ====================
 
-Just a demo application related to one of my blog posts: [A Most Simple PHP MVC Beginners Tutorial](http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial/).
+I would like to invite contributors to participate and help the building of this very simple, yet beautyfull system that I currently construct.
 
-This shows how one can build an MVC app with PHP.
+// at the bottom of this post I will put some tasks list of where you can help and fill in some codes.
 
-## License
+it is written in php and mysql and it is based on simple MVC methodology.
 
-MIT License (MIT)
+but here, the main focus and most affords are put in to simplify and straight foreword all CRUD functionality.
 
-Copyright (c) <2013> <Neil Rosenstech>
+talking about form creation on the fly, straight attached to a mysql table.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+talking about field validation server side before saving, files uploads and saving all at once, and all you have to do is to write very few lines of code. where all the validation, files upload etc.. are taken care of in the background.
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+this project also gives a very vast permissions handling, called handle_access. it is mapping access for controllers a and each function in it, based on users log-in or logout, user types and rolls given for each function.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+I know it sounds complicated to write such access_handling, but thanks to a cascading defaults fallback mechanism it is really simple to do.
+
+you, actually don't have to worry about this at all!! unless you want to add special access to specific functionality. it is done with very few lines of code, inside the controller, inside the handle_access() function.
+
+well.. this was a short description of what this system can do and there is much more to it...
+
+so what do I need from you contributors?
+
+one thing I need help with is commenting functions and describing what they do. this is one thing I keep failing to do. basically I do worry about naming the functions in a way that the name tells the whole story of what the function can do. so it is easy to understand but I really could help some commenting as well.
+
+another thing I like to plan some multy language translation mechanism
+
+I will put more task in the comments bellow in the future
+
+So it is an open source, ofcourse! and i store it in github, an a public repository,so you can easilly clone and start commiting changes.
 
 
 // todo
