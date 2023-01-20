@@ -5,26 +5,26 @@ ini_set('display_errors', 1);
 
 session_start();
 
-require_once('config.php');
-require_once('connection.php');
-require_once('routes.php');
-require_once('models/model.php');
-require_once('controllers/controller.php');
-require_once('modules/module.php');
-require_once('helper.php');
-if (isset($_GET['controller']) && isset($_GET['action'])) {
-	$controller = $_GET['controller'];
-	$action     = $_GET['action'];
-} else {
-	$controller = 'pages';
-	$action     = 'home';
+require_once('a_core/config.php');
+require_once('a_core/connection.php');
+require_once('a_core/models/model.php');
+require_once('a_core/models/tableModel.php');
+require_once('a_core/controllers/controller.php');
+require_once('a_core/controllers/crudController.php');
+require_once('a_core/modules/module.php');
+require_once('a_core/helper.php');
+require_once('a_core/helpers/helper.php');
+require_once('a_core/helpers/view.php');
+//now merge a_core config with system config!!
+$system = isset($_REQUEST['system'])? $_REQUEST['system']: get_config('default_system');
+require_once($system."/config.php");
+foreach($system_config as $key=>$value){
+    $config[$key] = $value;
 }
+//here is where the action begin
+require_once('a_core/routes.php');
 
-print_view($controller,$action);
 
-function hebdt($datetime_str){
-	$date = new DateTime($datetime_str);
-	return $date->format('d-m-Y H:i:s');
-}
+
  
 ?>
