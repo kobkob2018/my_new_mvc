@@ -1,11 +1,9 @@
 <div id="page_wrap" class="page-wrap">
 	<div class="header">
 		<div id="logo_wrap" class="">
-			<img src="style/image/logo.png" alt="מערכת הלידים של איי-אל-ביז" />
-		</div>	
-		<?php if($this->data['work_on_site']): ?>
-			<h2 class="admin-title">ניהול אתר <?= $this->data['work_on_site']['title'] ?></h2>
-		<?php endif; ?>	
+			<img src="style/image/logo.png" alt="ניהול ראשי" />
+		</div>
+		<h2 class="admin-title">ניהול ראשי של מערכת איי אל ביז</h2>
 		<div class="clear"></div>	
 	</div>
 

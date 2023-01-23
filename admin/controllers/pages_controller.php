@@ -67,7 +67,7 @@
     }   
 
     protected function update_success_message(){
-      SystemMessages::add_success_message("הדף נמחק בהצלחה");
+      SystemMessages::add_success_message("הדף עודכן בהצלחה");
 
     }
 

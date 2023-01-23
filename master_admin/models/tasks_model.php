@@ -38,7 +38,7 @@
         'email'=>array(
             'label'=>'אימייל',
             'validation'=>'required, email',
-            'custom_validation'=>'task_email_validate_by',
+            //'custom_validation'=>'task_email_validate_by',
             'readonly'=> true
         ),
 

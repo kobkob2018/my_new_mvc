@@ -8,6 +8,10 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
 
+RewriteRule ^master_admin/(.+)/(.+)/$ index.php?system=master_admin&controller=$1&action=$2 [QSA,L]
+RewriteRule ^master_admin/(.+)/$ index.php?system=master_admin&controller=$1 [QSA,L]
+RewriteRule ^master_admin/$ index.php?system=master_admin [QSA,L]
+
 RewriteRule ^admin/(.+)/(.+)/$ index.php?system=admin&controller=$1&action=$2 [QSA,L]
 RewriteRule ^admin/(.+)/$ index.php?system=admin&controller=$1 [QSA,L]
 RewriteRule ^admin/$ index.php?system=admin [QSA,L]

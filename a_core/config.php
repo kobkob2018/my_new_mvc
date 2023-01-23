@@ -15,6 +15,8 @@ $config = array(
     'base_url'=>'',
     'base_url_dir'=>'',
 
+    'master_domain'=>'usites.com',
+
     'error_controller'=>'pages',
     'error_action'=>'error',
 

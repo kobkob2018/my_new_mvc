@@ -132,11 +132,13 @@
 			}
 			else{
 				//this param not exist so it will invoke notice here
+				
 				echo $module_method_not_found_worning;
 				//do nothing
 			}			
 		}
 		else{
+			echo $module_name;
 			//this param not exist so it will invoke notice here
 			echo $modulenotfound_worning;
 			//do nothing

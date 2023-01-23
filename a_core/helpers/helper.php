@@ -25,10 +25,17 @@
       return $index_arr;
     }
 
-    public static function user_is($needed_roll,$user,$work_on_site){
+    public static function user_is($needed_roll,$user,$work_on_site = false){
       $user_is = 'logout';
+      $login_user_roll_hirachy = array(
+        //can go in between these numbers
+        5=>'master_admin',
+        10=>'admin',
+        15=>'author',
+        20=>'login'
+      );
       if($user){
-        $user_is = 'login';
+        $user_is = $login_user_roll_hirachy[$user['roll']];
         if($needed_roll == 'logout'){
           return false;
         }
@@ -42,14 +49,7 @@
       if($work_on_site){
         $user_is = $work_on_site['admin_roll'];
       }
-      
-      $login_user_roll_hirachy = array(
-        //can go in between these numbers
-        5=>'master_admin',
-        10=>'admin',
-        15=>'author',
-        20=>'login'
-      );
+
       $exepted_rolls = array();
       foreach($login_user_roll_hirachy as $roll){
         $exepted_rolls[] = $roll;
