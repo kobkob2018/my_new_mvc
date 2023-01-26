@@ -42,7 +42,7 @@
                 return false;
             }
 
-            if(Helper::user_is('master_admin',$this->user)){
+            if(!Helper::user_is('master_admin',$this->user)){
                 SystemMessages::add_err_message('אינך רשאי לצפות בתוכן זה');
                 $this->redirect_to(inner_url('tasks/list/'));
                 return false;

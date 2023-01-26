@@ -56,8 +56,7 @@
         }
     
         public function rearange_priority($filter_arr){
-            $filter_arr['user_id'] = $this->user['id'];
-            return Tasks::rearange_priority($filter_arr);
+            return Tasks::rearange_priority($this->get_base_filter());
         }
     
     

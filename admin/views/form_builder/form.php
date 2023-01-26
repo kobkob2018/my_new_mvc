@@ -25,33 +25,33 @@
                 <?php if($build_field['type'] == 'select'): ?>
                     <div class='form-group span3'>
                         
-                        <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
-                            <?php foreach($this->get_select_options($field_key) as $option): ?>
-                                <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>	
-                        <?php endif; ?>
-                        
-                        <?php if($build_field['type'] == 'textbox'): ?>
-                            <div class="form-group span3">
-                                
-                                <textarea name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>_textarea" class="form-input form-textarea" data-msg-required="*"><?= $this->get_form_input($field_key); ?></textarea>
-                                <?php if(isset($build_field['reachtext']) && $build_field['reachtext']): ?>
-                                    <?php $this->register_script('js','tinymce',global_url('vendor/tinymce/tinymce/tinymce.min.js')); ?>
-                                    <?php $this->register_script('js','tinymce_helper',styles_url('style/js/tinymce_helper.js')); ?>
-
-                                    <script type="text/javascript">
-                                        init_tinymce(
-                                            'textarea#row_<?= $field_key ?>_textarea', 
-                                            '<?= inner_url('media/upload/') ?>',
-                                            '<?= inner_url('media/librarypopup/') ?>'
-                                        );
-                                    </script>
-                                <?php endif; ?>
-                            </div>	
+                    <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
+                        <?php foreach($this->get_select_options($field_key) as $option): ?>
+                            <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>	
                 <?php endif; ?>
-            
+                        
+                <?php if($build_field['type'] == 'textbox'): ?>
+                    <div class="form-group span3">
+                        
+                        <textarea name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>_textarea" class="form-input form-textarea" data-msg-required="*"><?= $this->get_form_input($field_key); ?></textarea>
+                        <?php if(isset($build_field['reachtext']) && $build_field['reachtext']): ?>
+                            <?php $this->register_script('js','tinymce',global_url('vendor/tinymce/tinymce/tinymce.min.js')); ?>
+                            <?php $this->register_script('js','tinymce_helper',styles_url('style/js/tinymce_helper.js')); ?>
+
+                            <script type="text/javascript">
+                                init_tinymce(
+                                    'textarea#row_<?= $field_key ?>_textarea', 
+                                    '<?= inner_url('media/upload/') ?>',
+                                    '<?= inner_url('media/librarypopup/') ?>'
+                                );
+                            </script>
+                        <?php endif; ?>
+                    </div>	
+                <?php endif; ?>
+
                 <?php if($build_field['type'] == 'file'): ?>
                     <div class="form-group span3">
                         
@@ -71,6 +71,12 @@
                         </div>
                         <?php endif; ?>
                     </div>	
+                <?php endif; ?>
+
+
+                <?php if($build_field['type'] = 'build_method' && isset($build_field['build_method'])): ?>
+                    <?php $build_method = $build_field['build_method']; ?>
+                    <?php $this->$build_method($field_key, $build_field); ?>
                 <?php endif; ?>
             </div>
             

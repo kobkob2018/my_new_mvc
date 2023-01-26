@@ -32,6 +32,11 @@
       return false;
     }    
 
+    public function list_url(){
+      global $controller;
+      return inner_url("$controller/list/");
+    }
+
     public function routing_is($relative_url){
         global $controller,$action;
         $current_relative_url = "$controller/$action/";
@@ -49,6 +54,18 @@
         $work_on_site = $data['work_on_site'];
       }
       return Helper::user_is($needed_roll,$user,$work_on_site);
+    }
+
+    public function site_user_is($needed_roll){
+      $work_on_site = false;
+      $data = $this->controller->data;
+      if(isset($data['work_on_site'])){
+        $work_on_site = $data['work_on_site'];
+      }
+      if(!$work_on_site){
+        return false;
+      }
+      return self::user_is($needed_roll);
     }
 }
 

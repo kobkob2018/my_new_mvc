@@ -30,15 +30,15 @@
                 </li>
                 <?php endif; ?>
                 
-                <?php if($view->user_is('author')): ?>
+                <?php if($view->site_user_is('author')): ?>
                     <li class="bar-item <?= $view->a_class("tasks/all/") ?>">
                         <a href="<?= inner_url('tasks/all/') ?>" title="המשימות שלי" class="a-link">המשימות שלי</a>
-            </li>
+                </li>
             <?php endif; ?>
             
 
             
-            <?php if($view->user_is('master_admin')): ?>
+            <?php if($view->site_user_is('master_admin')): ?>
                 <li class="bar-item <?= $view->a_class("siteUsers/list/") ?>">
                 <a href="<?= inner_url('siteUsers/list/') ?>" title="מנהלי אתר" class="a-link">מנהלי אתר</a>
             </li>        
@@ -46,7 +46,7 @@
 
     </ul>
 
-    <?php if($view->user_is('admin')): ?>
+    <?php if($view->site_user_is('admin')): ?>
         <h4>ניהול תפריטים</h4>
         <ul class="item-group">
 
