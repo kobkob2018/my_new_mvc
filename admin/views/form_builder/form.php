@@ -2,10 +2,10 @@
 
     <?php $this->include_view('messages/formMessages.php'); ?>
     <form name="send_form" class="send-form form-validate" id="send_form" method="post" action="" <?= $this->data['form_builder']['enctype_str'] ?>>
-    <input type="hidden" name="sendAction" value="<?= $this->data['form_builder']['sendAction'] ?>" />
+        <input type="hidden" name="sendAction" value="<?= $this->data['form_builder']['sendAction'] ?>" />
     
-    <?php if(isset($this->data['form_builder']['row_id'])): ?>
-        <input type="hidden" name="row_id" value="<?= $this->data['form_builder']['row_id'] ?>" />
+        <?php if(isset($this->data['form_builder']['row_id'])): ?>
+            <input type="hidden" name="row_id" value="<?= $this->data['form_builder']['row_id'] ?>" />
         <?php endif; ?>
 
             
@@ -15,19 +15,19 @@
 
                 <label for='row[<?= $field_key ?>]'><?= $build_field['label'] ?></label>
                 <?php if($build_field['type'] == 'text'): ?>
-                <div class='form-group span3'>
+                    <div class='form-group span3'>
                     
-                    <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value='<?= $this->get_form_input($field_key); ?>'  />
+                        <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value='<?= $this->get_form_input($field_key); ?>'  />
                     
-                </div>	
+                    </div>	
                 <?php endif; ?>
                     
                 <?php if($build_field['type'] == 'select'): ?>
                     <div class='form-group span3'>
                         
-                    <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
-                        <?php foreach($this->get_select_options($field_key) as $option): ?>
-                            <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
+                        <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
+                            <?php foreach($this->get_select_options($field_key) as $option): ?>
+                                <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>	
@@ -73,7 +73,6 @@
                     </div>	
                 <?php endif; ?>
 
-
                 <?php if($build_field['type'] = 'build_method' && isset($build_field['build_method'])): ?>
                     <?php $build_method = $build_field['build_method']; ?>
                     <?php $this->$build_method($field_key, $build_field); ?>
@@ -91,9 +90,5 @@
                 <a href="<?= inner_url('pages/delete/') ?>?row_id=<?= $this->data['item_info']['id'] ?>"  class="delete-link" >מחיקה</a>
             </div>
         <?php endif; ?>
-        
-        
-    
     </form>
-
 </div>
