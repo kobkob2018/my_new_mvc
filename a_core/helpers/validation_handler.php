@@ -168,12 +168,10 @@
         $file_name = $file["name"];
         $file_type = $file['type'];
 
-        $allowed_extensions = array("webm", "mp4", "ogv");
-        $pattern = implode ("|", $allowed_extensions);
+        $allowed_extensions = array("webm", "mp4", "ogv", "ogg");
+        $ext = strtolower(pathinfo($file_name,PATHINFO_EXTENSION));
 
-        $check = (preg_match("/({$pattern})$/i", $file_name) && $file_type == "video/webm");
-
-        if(!$check){
+        if(!in_array($ext,$allowed_extensions)){
             $is_valid = false;
             $return_array['success'] = false;
             $return_array['message'] = $this->error_messages['video_format'];

@@ -146,12 +146,20 @@ class TableModel extends Model{
         return self::simple_delete_with_offsprings_by_table_name($row_id, $table_name);
     }
 
-    public static function simple_get_item_offsprings($item_id, $select_params = "*", $recursive_arr = array(), $generation = 0, $item = false){
+    public static function simple_get_item_offsprings($item_id, $select_params = "*", $filter_arr = array(), $payload = array(), $recursive_arr = array(), $generation = 0, $item = false){
         if(!static::$main_table){
             return false;
         }
         $table_name = static::$main_table;
-        return self::simple_get_item_offsprings_by_table_name($item_id, $table_name, $select_params, $recursive_arr, $generation, $item);
+        return self::simple_get_item_offsprings_by_table_name($item_id, $table_name, $select_params, $filter_arr, $payload, $recursive_arr, $generation, $item);
+    }
+
+    public static function simple_get_item_offsprings_tree($item_id, $select_params = "*", $filter_arr = array(), $payload = array(), $generation = 0, $item = false){
+        if(!static::$main_table){
+            return false;
+        }
+        $table_name = static::$main_table;
+        return self::simple_get_item_offsprings_tree_by_table_name($item_id, $table_name, $select_params, $filter_arr, $payload, $generation, $item);
     }
 
 

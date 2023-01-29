@@ -16,9 +16,9 @@
                 <label for='row[<?= $field_key ?>]'><?= $build_field['label'] ?></label>
                 <?php if($build_field['type'] == 'text'): ?>
                     <div class='form-group span3'>
-                        
+                    
                         <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value='<?= $this->get_form_input($field_key); ?>'  />
-                        
+                    
                     </div>	
                 <?php endif; ?>
                     
@@ -51,7 +51,7 @@
                         <?php endif; ?>
                     </div>	
                 <?php endif; ?>
-            
+
                 <?php if($build_field['type'] == 'file'): ?>
                     <div class="form-group span3">
                         
@@ -62,8 +62,13 @@
                             <a href="<?= $file_url ?>" target="_BLANK">
                                 <?php if($build_field['file_type'] == 'img'): ?>
                                     <img src='<?= $file_url ?>?cache=<?= rand() ?>'  style="max-width:200px;"/>
-                                    <?php else: ?>
-                                        צפה בקובץ
+                                <?php elseif($build_field['file_type'] == 'video'): ?>
+                                    <video width="320" height="240" controls>
+                                        <source src="<?= $file_url ?>?cache=<?= rand() ?>" type="<?= $view->get_video_embed_type($this->get_form_input($field_key));  ?>">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                <?php else: ?>
+                                    צפה בקובץ
                                 <?php endif; ?>
                             </a>
                             <br/>
@@ -76,7 +81,7 @@
                 <?php if($build_field['type'] = 'build_method' && isset($build_field['build_method'])): ?>
                     <?php $build_method = $build_field['build_method']; ?>
                     <?php $this->$build_method($field_key, $build_field); ?>
-                <?php endif; ?>                
+                <?php endif; ?>
             </div>
             
         <?php endforeach; ?>
@@ -89,6 +94,6 @@
                 <hr/>
                 <a href="<?= inner_url('pages/delete/') ?>?row_id=<?= $this->data['item_info']['id'] ?>"  class="delete-link" >מחיקה</a>
             </div>
-        <?php endif; ?> 
+        <?php endif; ?>
     </form>
 </div>

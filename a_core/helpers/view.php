@@ -67,6 +67,21 @@
       }
       return self::user_is($needed_roll);
     }
+
+
+    public function get_video_embed_type($file_name){
+      $video_types = array(
+        "webm"=>"video/webm", 
+        "mp4"=>"video/mp4", 
+        "ogv"=>"video/ogg",
+        "ogg"=>"video/ogg"
+      );
+      $ext = strtolower(pathinfo($file_name,PATHINFO_EXTENSION));
+      if(isset($video_types[$ext])){
+        return $video_types[$ext];
+      }
+      return $video_types['mp4'];
+    }
 }
 
 ?>

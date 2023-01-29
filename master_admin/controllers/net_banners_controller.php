@@ -44,6 +44,94 @@
         }
     }
 
+    public function select_cats(){
+        $this->add_model("net_banner_cat");
+        $this->add_model("biz_categories");
+        $row_id = false;
+        if(isset($_REQUEST['row_id'])){
+            $row_id = $_REQUEST['row_id'];
+        }
+        elseif(isset($this->data['row_id'])){
+            $row_id = $this->data['row_id'];
+        }
+        if(!$row_id){
+            $this->row_error_message();
+            return $this->eject_redirect();
+        }
+
+        $this->data['item_info'] = $this->get_item_info($row_id);
+
+        if(!$this->data['item_info']){
+            $this->row_error_message();
+            return $this->eject_redirect();
+        }
+
+        $banner_cat_arr = Net_banners::get_banner_cat_list($row_id);
+        $checked_cats = array();
+        foreach($banner_cat_arr as $banner_cat){
+            $checked_cats[$banner_cat['cat_id']] = true;
+        }
+
+        $add_is_checked_value = array(
+            'controller'=>$this,
+            'method'=>'add_cat_is_checked_param',
+            'more_info'=>array(
+                'banner_cat_arr'=>$checked_cats
+            ),
+        );
+
+        $payload = array('add_custom_param'=>$add_is_checked_value);
+
+        $category_tree = Biz_categories::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
+
+        $category_tree = $this->add_has_checked_children_param($category_tree);
+
+
+        print_r_help($category_tree);
+        $this->include_view("net_banners/select_cats.php");
+    }
+
+    public function add_cat_is_checked_param($cat_info, $more_info){
+        $cat_info['checked'] = '0';
+        if(isset($more_info['banner_cat_arr']) && is_array($more_info['banner_cat_arr'])){
+            if(isset($more_info['banner_cat_arr'][$cat_info['id']])){
+                $cat_info['checked'] = '1';
+            }
+        }
+        return $cat_info;
+    }
+
+    protected function add_has_checked_children_param($category_tree, $count = 0){
+        $count++;
+        if($count>10){
+            exit("count is $count");
+        }
+        foreach($category_tree as $key=>$child_item){
+            
+            $child_item['has_checked_children'] = false;
+            if($child_item['children']){
+                $child_item['children'] = $this->add_has_checked_children_param($child_item['children']);
+                $child_item['has_checked_children'] = $this->has_checked_children($child_item['children']);
+            }
+            if($child_item['checked']){
+                $child_item['has_checked_children'] = true;
+            }
+            $category_tree[$key] = $child_item;
+        }
+        return $category_tree;
+    }
+
+    protected function has_checked_children($category_tree){
+        foreach($category_tree as $child_item){
+            print_help("checkinffffff", $child_item['id']);
+            if($child_item['checked'] || $child_item['has_checked_children']){
+                exit("yes yes yes");
+                return true;
+            }
+            return false;
+        }
+    }
+
     protected function get_base_filter(){
         $dir_id = $this->add_dir_info_data();
         if(!$dir_id){
@@ -119,7 +207,7 @@
     }
 
     public function url_back_to_item($item_info){
-      return inner_url("net_banners/list/?dir_id=".$this->data['dir_info']['id']);
+      return inner_url("net_banners/edit/?row_id=".$item_info['id']."&dir_id=".$this->data['dir_info']['id']);
     }
 
     protected function get_fields_collection(){

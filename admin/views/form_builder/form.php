@@ -62,8 +62,13 @@
                             <a href="<?= $file_url ?>" target="_BLANK">
                                 <?php if($build_field['file_type'] == 'img'): ?>
                                     <img src='<?= $file_url ?>?cache=<?= rand() ?>'  style="max-width:200px;"/>
-                                    <?php else: ?>
-                                        צפה בקובץ
+                                <?php elseif($build_field['file_type'] == 'video'): ?>
+                                    <video width="320" height="240" controls>
+                                        <source src="<?= $file_url ?>?cache=<?= rand() ?>" type="<?= $view->get_video_embed_type($this->get_form_input($field_key));  ?>">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                <?php else: ?>
+                                    צפה בקובץ
                                 <?php endif; ?>
                             </a>
                             <br/>

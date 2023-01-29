@@ -1,6 +1,11 @@
 <?php $this->include_view("net_directories/header.php"); ?>
 
 <h3>באנרים בתיקייה</h3>
+
+<div class="add-cat-button-wrap add-button">
+    <a class="button-focus" href="<?= inner_url('net_banners/add/') ?>?dir_id=<?= $this->data['dir_info']['id'] ?>">הוספת באנר בתיקייה</a>
+</div>
+
 <div class="items-table flex-table">
     <div class="table-th row">
         <div class="col">עדכון באנר</div>
