@@ -3,14 +3,66 @@
 
     protected static $main_table = 'users';
 
-	public static function get_loged_in_user() {
-		return UserLogin::get_user();
+    public static function get_loged_in_user() {
+      return UserLogin::get_user();
     }
 
-	public static function get_by_id($user_id, $select_params = "*") {
-		$filter_arr = array('id'=>$user_id);
-		return self::simple_find($filter_arr, $select_params);
+    public static function get_by_id($user_id, $select_params = "*") {
+      $filter_arr = array('id'=>$user_id);
+      return self::simple_find($filter_arr, $select_params);
     }
+
+    public static $fields_collection = array(
+      'username'=>array(
+          'label'=>'שם משתמש',
+          'type'=>'text',
+          'validation'=>'required'
+      ),
+
+      'password'=>array(
+        'label'=>'סיסמא',
+        'edit_tip'=>'השאר ריק אם אינך רוצה לשנות',
+        'type'=>'password',
+        'custom_validation'=>'validate_by_password'
+      ),
+
+      'full_name'=>array(
+        'label'=>'שם מלא',
+        'type'=>'text',
+        'validation'=>'required'
+      ),
+
+      'email'=>array(
+        'label'=>'אימייל',
+        'type'=>'text',
+        'validation'=>'required, email'
+      ),
+
+      'phone'=>array(
+        'label'=>'טלפון',
+        'type'=>'text',
+        'validation'=>'phone'
+      ),
+
+      'active'=>array(
+          'label'=>'סטטוס',
+          'type'=>'select',
+          'default'=>'1',
+          'options'=>array(
+              array('value'=>'0', 'title'=>'לא פעיל'),
+              array('value'=>'1', 'title'=>'פעיל')
+          ),
+          'validation'=>'required'
+      ),
+
+      'roll'=>array(
+        'label'=>'תפקיד משתמש',
+        'type'=>'select',
+        'select_blank'=>array('value'=>'0','label'=>'---'),
+        'options_method'=>array('model'=>'User_rolls','method'=>'get_select_options')
+      ),
+
+    );  
 
   }
 ?>

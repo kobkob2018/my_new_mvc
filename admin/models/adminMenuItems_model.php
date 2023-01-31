@@ -41,7 +41,7 @@
 
 
 
-    public static $item_fields_collection = array(
+    public static $fields_collection = array(
         'parent'=>array(
             'type'=>'hidden'
         ),

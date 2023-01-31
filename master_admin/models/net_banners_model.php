@@ -3,13 +3,6 @@
 
     protected static $main_table = 'net_banners';
 
-
-    public static function get_banner_cat_list($banner_id){
-        $filter_arr = array("banner_id"=>$banner_id);
-        return self::simple_get_list_by_table_name($filter_arr,"net_banner_cat");
-    }
-
-
     public static $fields_collection = array(
 
         'label'=>array(

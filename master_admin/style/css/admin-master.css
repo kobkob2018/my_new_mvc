@@ -272,11 +272,11 @@ h4{
     display: flex;
 }
 
-.cat-checkbox-parent-wrap{
+.assign-checkbox-parent-wrap{
     
 }
 
-.cat-checkbox-parent-wrap .a-gap{
+.assign-checkbox-parent-wrap .a-gap{
     width: 28px;
     display: inline-block;
     font-size: 38px;
@@ -285,23 +285,23 @@ h4{
     font-weight: bold;
 }
 
-.cat-checkbox-parent-wrap .check-label{
+.assign-checkbox-parent-wrap .check-label{
     display: block;
     margin-top: 1px;
     font-size: 20px;
 }
 
-.cat-checkbox-parent-wrap .input-checkbox{
+.assign-checkbox-parent-wrap .input-checkbox{
     width: 20px;
     height: 20px;
 }
 
-.cat-checkbox-parent-wrap .children-wrap{
+.assign-checkbox-parent-wrap .children-wrap{
     margin: 0px 22px;
     border-right: 5px solid yellow;
 }
 
-.cat-checkbox-parent-wrap.closed .children-wrap{
+.assign-checkbox-parent-wrap.closed .children-wrap{
     display: none;
 }
 

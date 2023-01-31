@@ -98,7 +98,7 @@
 
         //setup form for the new item (with the 'main' identifier)
         $form_handler = $this->init_form_handler();
-        $form_handler->setup_fields_collection(AdminMenuItems::$item_fields_collection);
+        $form_handler->update_fields_collection(AdminMenuItems::setup_field_collection());
 
         $this->send_action_proceed();
 
@@ -190,10 +190,10 @@
         if(!$item || $item == null){
             return $item;
         }
-        $item_fields_collection = AdminMenuItems::$item_fields_collection;
+        
         //setup form for specific item (like the parent item or the children items) children items
         $form_handler = $this->init_form_handler($item_key);
-        $form_handler->setup_fields_collection($item_fields_collection);
+        $form_handler->update_fields_collection(AdminMenuItems::setup_field_collection());
         $form_handler->setup_db_values($item);
         $item['form_identifier'] = $item_key;
         return $item;

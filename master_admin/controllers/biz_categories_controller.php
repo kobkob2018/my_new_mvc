@@ -125,7 +125,7 @@
     }
 
     protected function get_fields_collection(){
-      return Biz_categories::$fields_collection;
+      return Biz_categories::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){

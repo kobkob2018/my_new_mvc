@@ -11,7 +11,7 @@
       
       $filter_arr = array();
       $net_directories = Net_directories::get_list($filter_arr, 'id, label, active');
-      $fields_collection = Net_directories::$fields_collection;
+      $fields_collection = Net_directories::setup_field_collection();
       $active_strings = array();
       foreach($fields_collection['active']['options'] as $option){
         $active_strings[$option['value']] = $option['title'];
@@ -48,7 +48,7 @@
         $this->add_model("net_banner_cat");
         $dir_banners = Net_banners::get_list(array('dir_id'=>$_GET['row_id']));
         if(is_array($dir_banners)){
-          $fields_collection = Net_banners::$fields_collection;
+          $fields_collection = Net_banners::setup_field_collection();
           foreach($dir_banners as $banner){
             $this->delete_item_files($banner, $fields_collection);
             Net_banner_cat::delete_banner_assignments($banner['id']);
@@ -109,7 +109,7 @@
     }
 
     protected function get_fields_collection(){
-      return Net_directories::$fields_collection;
+      return Net_directories::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){

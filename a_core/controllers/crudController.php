@@ -32,7 +32,7 @@
         $fields_collection = $this->get_fields_collection();
 
         $form_handler = $this->init_form_handler();
-        $form_handler->setup_fields_collection($fields_collection);
+        $form_handler->update_fields_collection($fields_collection);
         $form_handler->setup_db_values($this->data['item_info']);
 
         if(isset($_REQUEST['remove_file'])){
@@ -94,7 +94,7 @@
     public function add(){
         $fields_collection = $this->get_fields_collection();
         $form_handler = $this->init_form_handler();
-        $form_handler->setup_fields_collection($fields_collection);
+        $form_handler->update_fields_collection($fields_collection);
   
         $this->send_action_proceed();
         $this->add_form_builder_data($fields_collection,'createSend','new');
@@ -127,7 +127,6 @@
     protected function add_form_builder_data($fields_collection, $sendAction, $row_id){
         global $controller;
         global $action;
-        $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
 
         $form_builder_data = array(
             'controller'=>$controller,
@@ -203,7 +202,7 @@
 
     protected function delete_item_files($item_info, $fields_collection){
         $form_handler = $this->init_form_handler();
-        $form_handler->setup_fields_collection($fields_collection);
+        $form_handler->update_fields_collection($fields_collection);
         $form_handler->setup_db_values($item_info);
 
         if(is_array($fields_collection)){
@@ -296,6 +295,156 @@
                 'tree'=>$move_menu_item_tree
             );
         }
+    }
+
+    public function get_label_value($value_identifier, $item, $fields_collection = false){
+        if(!$fields_collection){
+            if(isset($this->data['fields_collection'])){
+                $fields_collection = $this->data['fields_collection'];
+            }
+        }
+        if(!$fields_collection){
+            return "";
+        }
+        if(!isset($fields_collection[$value_identifier])){
+            return "";
+        }
+        if(!isset($item[$value_identifier])){
+            return "";
+        }
+
+        $value = $item[$value_identifier];
+
+        $field = $fields_collection[$value_identifier];
+
+        if(!isset($field['option_labels'])){
+            return "";
+        }
+        $option_labels = $field['option_labels'];
+        if(!isset($option_labels[$value])){
+            return "";
+        }
+        return $option_labels[$value];
+    }
+
+    public function setup_tree_select_info($assign_info){
+        $this->data['assign_info'] = $assign_info;
+        
+        $row_id = false;
+        if(isset($_REQUEST['row_id'])){
+            $row_id = $_REQUEST['row_id'];
+        }
+        elseif(isset($this->data['row_id'])){
+            $row_id = $this->data['row_id'];
+        }
+        if(!$row_id){
+            $this->row_error_message();
+            return $this->eject_redirect();
+        }
+
+        $this->data['item_info'] = $this->get_item_info($row_id);
+        if(!$this->data['item_info']){
+            $this->row_error_message();
+            return $this->eject_redirect();
+        }
+        $get_item_assign_list_method_name = "get_item_assign_list_for_".$assign_info['alias'];
+        $item_assign_arr = $this->$get_item_assign_list_method_name($row_id);
+        $checked_assigns = array();
+        foreach($item_assign_arr as $item_assign){
+            $checked_assigns[$item_assign[$assign_info['assign_1']]] = true;
+        }
+
+        $add_is_checked_value = array(
+            'controller'=>$this,
+            'method'=>'add_assign_is_checked_param',
+            'more_info'=>array(
+                'item_assign_arr'=>$checked_assigns
+            ),
+        );
+
+        $payload = array('add_custom_param'=>$add_is_checked_value);
+
+
+        $get_offsprings_method_name = "get_assign_item_offsprings_tree_for_".$assign_info['alias'];
+        $assign_tree_item = array(
+            'id'=>'0',
+            'checked'=>true,
+            'label'=>'begin',
+            'open_state'=>true,
+
+            'children'=>$this->$get_offsprings_method_name($payload));
+
+
+
+        $assign_tree_item = $this->add_has_checked_children_param($assign_tree_item);
+        if(!isset($this->data['assign_trees'])){
+            $this->data['assign_trees'] = array();
+        }
+
+        $this->data['assign_trees'][$assign_info['table']] = $assign_tree_item;
+    }
+
+    public function add_recursive_assign_select_view($assign_tree_item){
+
+        $open_state_class = "closed";
+        if($assign_tree_item['open_state']){
+            $open_state_class = "open";
+        }
+        $assign_tree_item['open_class'] = $open_state_class;
+        $this->include_view("tree/select_assigns_children.php",array('item'=>$assign_tree_item));
+    }
+
+
+    protected function add_has_checked_children_param($assign_tree_item, $count = 0){
+        $count++;
+        if($count>10){
+            exit("count is $count");
+        }
+        $has_checked_children = false;
+        $open_state = false;
+        if($assign_tree_item['checked']){
+            $open_state = true;
+        }
+        if($assign_tree_item['children']){
+            foreach($assign_tree_item['children'] as $key=>$child_item){
+                $child_item = $this->add_has_checked_children_param($child_item, $count);
+                if($child_item['checked'] || $child_item['has_checked_children'] || $child_item['open_state']){
+                    $has_checked_children = true;
+                    $open_state = true;                
+                }
+                $assign_tree_item['children'][$key] = $child_item;
+            }
+        }
+        $assign_tree_item['has_checked_children'] = $has_checked_children;
+        $assign_tree_item['open_state'] = $open_state;
+        return $assign_tree_item;
+    }
+
+
+    public function add_assign_is_checked_param($check_info, $more_info){
+        $check_info['checked'] = '0';
+        if(isset($more_info['item_assign_arr']) && is_array($more_info['item_assign_arr'])){
+            if(isset($more_info['item_assign_arr'][$check_info['id']])){
+                $check_info['checked'] = '1';
+            }
+        }
+        return $check_info;
+    }
+
+    public function set_assignsSend(){
+        $row_id = $_REQUEST['row_id'];
+        $selected_assigns = array();
+        if(isset($_REQUEST['assign'])){
+            $selected_assigns = $_REQUEST['assign'];
+        }
+
+        $assign_to_item_method_name = "assign_to_item_for_".$this->data['assign_info']['alias'];
+
+        $add_assign_success_message = "add_assign_success_message_for_".$this->data['assign_info']['alias'];
+
+        $this->$assign_to_item_method_name($row_id, $selected_assigns);
+        $this->$add_assign_success_message();
+        $this->redirect_to(current_url());
     }
 
     protected function get_item_parents_tree($parent_id,$select_params){

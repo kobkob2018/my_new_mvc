@@ -4,43 +4,70 @@
     public $add_models = array("users");
 
     protected function init_setup($action){
-      return parent::init_setup($action);
+        
+        if(isset($_GET['row_id'])){
+            
+        }
+        return parent::init_setup($action);
     }
 
 
     public function list(){
       
-      $filter_arr = array();
-      $users = Users::get_list($filter_arr, '*');
-      $fields_collection = Users::$fields_collection;
-      $active_strings = array();
-      foreach($fields_collection['active']['options'] as $option){
-        $active_strings[$option['value']] = $option['title'];
-      }
-      foreach($net_directories as $key=>$dir){
-        $net_directories[$key]['active_str'] = $active_strings[$dir['active']];
-      }
-      $this->data['net_directories'] = $net_directories;
-
-      $this->include_view('net_directories/list.php');
+        $filter_arr = array();
+        $users = Users::get_list($filter_arr, '*');
+        $this->data['users'] = $users;
+        $this->data['fields_collection'] = Users::setup_field_collection();
+        $this->include_view('users/list.php');
 
     }
 
-    protected function add_string_values_to_list($fields_collection, $item_list){
-        $option_strings = array();
-
-        foreach($fields_collection as $field_key=>$build_field){
-            if($build_field['type'] == 'select'){
-
-            }
+    public function select_cats(){
+        $this->add_model('user_cat');
+        $this->setup_tree_select_info(User_cat::$tree_select_info);
+        if(isset($this->data['item_info'])){
+            $this->data['user_info'] = $this->data['item_info'];
         }
+        $this->include_view("users/select_cats.php");
+    }
 
-        foreach($fields_collection['active']['options'] as $option){
-          $active_strings[$option['value']] = $option['title'];
-        }
-        foreach($net_directories as $key=>$dir){
-          $net_directories[$key]['active_str'] = $active_strings[$dir['active']];
-        }        
+    public function assign_to_item_for_cat($row_id,$selected_assigns){
+        $this->add_model('user_cat');   
+        User_cat::assign_cats_to_item($row_id,$selected_assigns);
+    }
+
+    public function assign_to_item_for_city($row_id,$selected_assigns){
+        $this->add_model('user_city');
+        User_city::assign_cities_to_item($row_id,$selected_assigns);
+    }
+
+    public function get_assign_item_offsprings_tree_for_cat($payload){
+        $this->add_model('biz_categories');
+        return Biz_categories::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
+    }
+
+    public function get_assign_item_offsprings_tree_for_city($payload){
+        $this->add_model('cities');
+        return Cities::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
+    }
+
+    public function get_item_assign_list_for_cat($row_id){
+        $this->add_model("user_cat");
+        return User_cat::get_item_cat_list($row_id);
+    }
+
+    public function get_item_assign_list_for_city($row_id){
+        $this->add_model("user_city");
+        return User_city::get_item_cat_list($row_id);
+    }
+
+    public function add_assign_success_message_for_cat(){
+        SystemMessages::add_success_message("הקטגוריות שוייכו בהצלחה");
+    }
+
+
+    public function add_assign_success_message_for_city(){
+        SystemMessages::add_success_message("הערים שוייכו בהצלחה");
     }
 
     public function edit(){
@@ -60,82 +87,130 @@
     }
 
     public function delete(){
-      if(isset($_GET['row_id'])){
-
-        $this->add_model("net_banners");
-        $this->add_model("net_banner_cat");
-        $dir_banners = Net_banners::get_list(array('dir_id'=>$_GET['row_id']));
-        if(is_array($dir_banners)){
-          $fields_collection = Net_banners::$fields_collection;
-          foreach($dir_banners as $banner){
-            $this->delete_item_files($banner, $fields_collection);
-            Net_banner_cat::delete_banner_assignments($banner['id']);
-            Net_banners::delete($banner['id']);
-          }
+        if(!isset($_GET['row_id'])){
+            $this->eject_redirect();
         }
-      }
-      return parent::delete();      
+        
+        if(!isset($_REQUEST['confirm_delete'])){
+            $this->data['user'] = Users::get_by_id($_GET['row_id']);
+            $this->include_view('users/confirm_delete.php');
+            return;
+        }
+        return $this->delete_final();
+    }
+
+    public function delete_final(){
+        if(isset($_GET['row_id'])){
+            $this->add_model("user_cat");
+            User_cat::delete_item_assignments($_GET['row_id']);
+            $this->add_model("user_city");
+            User_city::delete_item_assignments($_GET['row_id']);
+        }
+        return parent::delete();  
+    }
+
+    public function validate_by_password($value, $validate_payload){
+
+        global $action;
+
+        $return_array =  array(
+            'success'=>true
+        );
+
+        if($value == '' && $action == 'add'){
+            $return_array['success'] = false;
+            $return_array['message'] = "יש לבחור סיסמא חזקה יותר";
+            return $return_array;
+        }
+
+        if($value == '' && $action == 'edit'){
+            $return_array['fixed_value'] = $this->data['item_info'][$validate_payload['key']];
+            return $return_array;
+            
+        }
+
+        $password_confirm = $_REQUEST['row'][$validate_payload['key'].'_confirm'];
+
+        if($value != $password_confirm){
+            $return_array['success'] = false;
+            $return_array['message'] = "הסיסמאות אינן תואמות";
+            return $return_array;
+        }
+
+        if(strlen($value) < 6 ){
+            $return_array['success'] = false;
+            $return_array['message'] = "יש לבחור סיסמא חזקה יותר";
+            return $return_array;
+        }
+
+
+
+        $return_array['fixed_value'] = md5($value);
+
+
+
+        return $return_array;
     }
 
     public function include_edit_view(){
       if(isset($this->data['item_info'])){
-        $this->data['dir_info'] = $this->data['item_info'];
+        $this->data['user_info'] = $this->data['item_info'];
       }
-      $this->include_view('net_directories/edit.php');
+      $this->include_view('users/edit.php');
     }
 
     public function include_add_view(){
-      $this->include_view('net_directories/add.php');
+      $this->include_view('users/add.php');
     }   
 
     protected function update_success_message(){
-      SystemMessages::add_success_message("התיקייה עודכנה בהצלחה");
+      SystemMessages::add_success_message("הפרטים עודכנו בהצלחה");
 
     }
 
     protected function create_success_message(){
-      SystemMessages::add_success_message("התיקייה נוצרה בהצלחה");
+      SystemMessages::add_success_message("המשתמש נוצר בהצלחה");
 
     }
 
     protected function delete_success_message(){
-      SystemMessages::add_success_message("התיקייה נמחקה");
+      SystemMessages::add_success_message("המשתמש נמחק");
     }
 
     protected function row_error_message(){
-      SystemMessages::add_err_message("לא נבחרה תיקייה");
+      SystemMessages::add_err_message("לא נבחר משתמש");
     }   
 
     protected function delete_item($row_id){
-      return Net_directories::delete($row_id);
+      return Users::delete($row_id);
     }
 
     protected function get_item_info($row_id){
-      return Net_directories::get_by_id($row_id);
+      return Users::get_by_id($row_id);
     }
 
     public function eject_url(){
-      return inner_url('net_directories/list/');
+      return inner_url('users/list/');
     }
 
     public function url_back_to_item($item_info){
-      return inner_url("net_directories/edit/?row_id=".$item_info['id']);
+      return inner_url("users/edit/?row_id=".$item_info['id']);
     }
 
     public function delete_url($item_info){
-      return inner_url("net_directories/delete/?row_id=".$item_info['id']);
+      return inner_url("users/delete/?row_id=".$item_info['id']);
     }
 
     protected function get_fields_collection(){
-      return Net_directories::$fields_collection;
+      return Users::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){
-      return Net_directories::update($item_id,$update_values);
+      return Users::update($item_id,$update_values);
     }
 
     protected function create_item($fixed_values){
-      return Net_directories::create($fixed_values);
+      return Users::create($fixed_values);
     }
   }
 ?>
