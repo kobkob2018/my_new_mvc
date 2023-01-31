@@ -244,7 +244,7 @@ class TableModel extends Model{
         return $fields_collection;
     }
 
-    public $fields_collection = array();
+    public static $fields_collection = array();
 }
 
 ?>
