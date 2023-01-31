@@ -100,6 +100,10 @@
       return inner_url("pages/edit/?row_id=".$item_info['id']);
     }
 
+    public function delete_url($item_info){
+      return inner_url("pages/delete/?row_id=".$item_info['id']);
+    }
+
     protected function get_fields_collection(){
       return AdminPages::$fields_collection;
     }

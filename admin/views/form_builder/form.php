@@ -1,5 +1,4 @@
 <div class = "form-wrap">
-
     <?php $this->include_view('messages/formMessages.php'); ?>
     <form name="send_form" class="send-form form-validate" id="send_form" method="post" action="" <?= $this->data['form_builder']['enctype_str'] ?>>
         <input type="hidden" name="sendAction" value="<?= $this->data['form_builder']['sendAction'] ?>" />
@@ -92,7 +91,7 @@
         <?php if(isset($this->data['form_builder']['row_id'])): ?>
             <div class="form-group span3">
                 <hr/>
-                <a href="<?= inner_url('pages/delete/') ?>?row_id=<?= $this->data['item_info']['id'] ?>"  class="delete-link" >מחיקה</a>
+                <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>
             </div>
         <?php endif; ?>
     </form>

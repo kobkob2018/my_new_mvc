@@ -1,5 +1,4 @@
 <div class = "form-wrap">
-
     <?php $this->include_view('messages/formMessages.php'); ?>
     <form name="send_form" class="send-form form-validate" id="send_form" method="post" action="" <?= $this->data['form_builder']['enctype_str'] ?>>
         <input type="hidden" name="sendAction" value="<?= $this->data['form_builder']['sendAction'] ?>" />
@@ -54,8 +53,13 @@
 
                 <?php if($build_field['type'] == 'file'): ?>
                     <div class="form-group span3">
-                        
-                        <input type="file" name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>" class="form-input" value="" />
+                        <?php if($build_field['file_type'] == 'img'): ?>
+                            <input type="file" name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>" accept="image/png, image/gif, image/jpeg" class="form-input" value="" />
+                        <?php elseif($build_field['file_type'] == 'video'): ?>
+                            <input type="file" name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>" accept="video/mp4,video/x-m4v,video/*" class="form-input" value="" />
+                        <?php else: ?>
+                            <input type="file" name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>" class="form-input" value="" />
+                        <?php endif; ?>
                         <?php if($file_url = $this->get_form_file_url($field_key)): ?>
                         <div>
                             
@@ -92,7 +96,7 @@
         <?php if(isset($this->data['form_builder']['row_id'])): ?>
             <div class="form-group span3">
                 <hr/>
-                <a href="<?= inner_url('pages/delete/') ?>?row_id=<?= $this->data['item_info']['id'] ?>"  class="delete-link" >מחיקה</a>
+                <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>
             </div>
         <?php endif; ?>
     </form>

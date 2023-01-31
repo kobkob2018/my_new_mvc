@@ -235,7 +235,7 @@
         $options = $field['options'];
 
       }
-      if(isset($field['options_method'])){
+      elseif(isset($field['options_method'])){
         $options_method = $field['options_method'];
         $method_name = $options_method['method'];
         $options = $options_method['model']::$method_name();

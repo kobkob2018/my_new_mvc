@@ -1,6 +1,7 @@
 <?php
-  class Net_directoriesController extends CrudController{
-    public $add_models = array("net_directories");
+  class UsersController extends CrudController{
+
+    public $add_models = array("users");
 
     protected function init_setup($action){
       return parent::init_setup($action);
@@ -10,8 +11,8 @@
     public function list(){
       
       $filter_arr = array();
-      $net_directories = Net_directories::get_list($filter_arr, 'id, label, active');
-      $fields_collection = Net_directories::$fields_collection;
+      $users = Users::get_list($filter_arr, '*');
+      $fields_collection = Users::$fields_collection;
       $active_strings = array();
       foreach($fields_collection['active']['options'] as $option){
         $active_strings[$option['value']] = $option['title'];
@@ -23,6 +24,23 @@
 
       $this->include_view('net_directories/list.php');
 
+    }
+
+    protected function add_string_values_to_list($fields_collection, $item_list){
+        $option_strings = array();
+
+        foreach($fields_collection as $field_key=>$build_field){
+            if($build_field['type'] == 'select'){
+
+            }
+        }
+
+        foreach($fields_collection['active']['options'] as $option){
+          $active_strings[$option['value']] = $option['title'];
+        }
+        foreach($net_directories as $key=>$dir){
+          $net_directories[$key]['active_str'] = $active_strings[$dir['active']];
+        }        
     }
 
     public function edit(){

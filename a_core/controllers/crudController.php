@@ -125,9 +125,15 @@
     }
 
     protected function add_form_builder_data($fields_collection, $sendAction, $row_id){
+        global $controller;
+        global $action;
         $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
 
-        $form_builder_data = array();
+        $form_builder_data = array(
+            'controller'=>$controller,
+            'action'=>$action
+        );
+        
         $enctype_str = '';
         foreach($fields_collection as $field){
             if($field['type'] == 'file'){
@@ -184,11 +190,21 @@
             return $this->eject_redirect();
         }
 
+        $item_info = $this->data['item_info'];
+
         $fields_collection = $this->get_fields_collection();
 
+        $this->delete_item_files($item_info,$fields_collection);
+
+        $this->delete_item($this->data['item_info']['id']);
+        $this->delete_success_message();
+        return $this->eject_redirect();
+    }
+
+    protected function delete_item_files($item_info, $fields_collection){
         $form_handler = $this->init_form_handler();
         $form_handler->setup_fields_collection($fields_collection);
-        $form_handler->setup_db_values($this->data['item_info']);
+        $form_handler->setup_db_values($item_info);
 
         if(is_array($fields_collection)){
             foreach($fields_collection as $field_key=>$field){
@@ -197,10 +213,6 @@
                 }
             }
         }
-
-        $this->delete_item($this->data['item_info']['id']);
-        $this->delete_success_message();
-        return $this->eject_redirect();
     }
 
     protected function set_priority(){
@@ -308,6 +320,10 @@
     }
   
     public function url_back_to_item($item_info){
+        return null;
+    }
+
+    public function delete_url($item_info){
         return null;
     }
 

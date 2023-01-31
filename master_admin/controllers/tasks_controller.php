@@ -102,7 +102,11 @@
         public function url_back_to_item($item_info){
           return inner_url("tasks/list/");
         }
-    
+
+        public function delete_url($item_info){
+            return inner_url("tasks/delete/?row_id=".$item_info['id']);
+        }        
+
         protected function get_fields_collection(){
           return Tasks::$fields_collection;
         }

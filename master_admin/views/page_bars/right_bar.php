@@ -28,6 +28,10 @@
             <li class="bar-item <?= $view->a_c_class("biz_categories") ?>">
                 <a href="<?= inner_url('biz_categories/list/') ?>" title="ניהול קטגוריות בפורטל" class="a-link">ניהול קטגוריות</a>
             </li> 
+
+            <li class="bar-item <?= $view->a_c_class("net_directories, net_banners") ?>">
+                <a href="<?= inner_url('net_directories/list/') ?>" title="ניהול באנרים" class="a-link">ניהול באנרים</a>
+            </li> 
         <?php endif; ?>
 
     </ul>

@@ -127,6 +127,10 @@
       return inner_url("blocks/list/?page_id=".$this->data['page_info']['id']);
     }
 
+    public function delete_url($item_info){
+        return inner_url("blocks/delete/?page_id=".$this->data['page_info']['id']."&row_id=".$item_info['id']);
+    }
+
     protected function get_fields_collection(){
       return AdminBlocks::$fields_collection;
     }

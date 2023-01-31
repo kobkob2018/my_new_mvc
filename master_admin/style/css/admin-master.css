@@ -266,3 +266,53 @@ h4{
 .form-group.big-text textarea{
     min-height: 400px;
 }
+
+.checkbox-head{
+    margin-bottom: 5px;
+    display: flex;
+}
+
+.cat-checkbox-parent-wrap{
+    
+}
+
+.cat-checkbox-parent-wrap .a-gap{
+    width: 28px;
+    display: inline-block;
+    font-size: 38px;
+    text-decoration: none;
+    line-height: 20px;
+    font-weight: bold;
+}
+
+.cat-checkbox-parent-wrap .check-label{
+    display: block;
+    margin-top: 1px;
+    font-size: 20px;
+}
+
+.cat-checkbox-parent-wrap .input-checkbox{
+    width: 20px;
+    height: 20px;
+}
+
+.cat-checkbox-parent-wrap .children-wrap{
+    margin: 0px 22px;
+    border-right: 5px solid yellow;
+}
+
+.cat-checkbox-parent-wrap.closed .children-wrap{
+    display: none;
+}
+
+.replacable-plus-sign, .replacable-minus-sign{
+   // display:none;
+}
+
+.a-closed .replacable-minus-sign{
+    display: none;
+}
+
+.a-open .replacable-plus-sign{
+    display: none;
+}

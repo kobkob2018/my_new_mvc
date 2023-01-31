@@ -120,6 +120,10 @@
       return inner_url("biz_categories/list/?item_id=".$item_info['id']);
     }
 
+    public function delete_url($item_info){
+      return inner_url("biz_categories/delete/?row_id=".$item_info['id']);
+    }
+
     protected function get_fields_collection(){
       return Biz_categories::$fields_collection;
     }
