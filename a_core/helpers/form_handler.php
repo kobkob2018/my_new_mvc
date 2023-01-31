@@ -150,7 +150,19 @@
         $new_file_name = $validate_result['fixed_values'][$field_key];
 
         $dir_path = $assets_dir['path'];
-
+        /*
+          To be alble to upload files to a website directory, make sure you have an avaiable directory with valid permissions
+          1 - create a directory : domains/<YOUR DOMAIN>/public_html/assets
+          2 - put this command in the command line:  chmod a+rwx domains/<YOUR DOMAIN>/public_html/assets
+          
+        */
+        if( !is_dir($dir_path) )
+        {
+          SystemMessages::add_err_message("Files can not be uploaded to this domain. Please create directory");
+          SystemMessages::add_err_message("Please create directory ".$dir_path);
+          SystemMessages::add_err_message("Please ask developer about this (look in helpers/form_handler.php line 153)");
+          return;
+        }
         $upload_to_arr = explode("/",$field['upload_to']);
         
         foreach($upload_to_arr as $dirname){
@@ -158,7 +170,13 @@
           if( !is_dir($dir_path) )
           {
             $oldumask = umask(0) ;
-            mkdir( $dir_path, 0755 ) ;
+            $mkdir = @mkdir( $dir_path, 0755 ) ;
+            if(!$mkdir){
+              SystemMessages::add_err_message("Files can not be uploaded to this domain. Please create directory");
+              SystemMessages::add_err_message("Please create directory ".$dir_path);
+              SystemMessages::add_err_message("Please ask developer about this (look in helpers/form_handler.php line 153)");
+              return;
+            }
             umask( $oldumask ) ;
           }
         }
@@ -171,6 +189,7 @@
         }
         $new_file_path = $dir_path.'/'.$new_file_name;
         $tmp_name = $field['file_info']['tmp_name'];
+
         move_uploaded_file($tmp_name, $new_file_path);
       }
     }
@@ -216,7 +235,7 @@
         $options = $field['options'];
 
       }
-      if(isset($field['options_method'])){
+      elseif(isset($field['options_method'])){
         $options_method = $field['options_method'];
         $method_name = $options_method['method'];
         $options = $options_method['model']::$method_name();

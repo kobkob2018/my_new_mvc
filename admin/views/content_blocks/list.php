@@ -1,10 +1,5 @@
 <?php $this->include_view("content_pages/header.php"); ?>
 
-<?php if(true): ?>
-
-
-<?php endif; ?>
-
 <?php if(isset($this->data['set_priority_item'])): ?>
     <?php $set_priority_item = $this->data['set_priority_item']; ?>
     <div class = 'move-item-wrap alt-box'>

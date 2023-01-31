@@ -23,7 +23,12 @@
             $action_name = $this->action_data;
              if(!$this->user){
                 if(strpos($action_name, 'ajax_') === 0){
-                    $this->controller->print_json_page(array()); 
+                    $print_result = array(
+                        'success'=>false,
+                        'err_message'=>'User loged out',
+                        'fail_reason'=>'logout_user'
+                    );
+                    $this->controller->print_json_page($print_result);
                 }
                 else{
                     session__set('last_requested_url',current_url());
@@ -82,5 +87,12 @@
             $assets_dir = Sites::get_user_workon_site_asset_dir();
             return $assets_dir;
         }
+
+        public function add_global_essential_ajax_info(){
+            $print_resut = $this->action_data;
+            $print_resut['system'] = 'admin';
+            return $print_resut;
+        }
+
 	}
 ?>

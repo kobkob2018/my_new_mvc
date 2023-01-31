@@ -67,7 +67,7 @@
     }   
 
     protected function update_success_message(){
-      SystemMessages::add_success_message("הדף נמחק בהצלחה");
+      SystemMessages::add_success_message("הדף עודכן בהצלחה");
 
     }
 
@@ -98,6 +98,10 @@
 
     public function url_back_to_item($item_info){
       return inner_url("pages/edit/?row_id=".$item_info['id']);
+    }
+
+    public function delete_url($item_info){
+      return inner_url("pages/delete/?row_id=".$item_info['id']);
     }
 
     protected function get_fields_collection(){

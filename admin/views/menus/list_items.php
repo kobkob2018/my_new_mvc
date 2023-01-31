@@ -16,12 +16,7 @@
         </h3>
         <p>בחר את קישור האב ולחץ "העבר לכאן"</p>
         <div class='bottom-buttons'>
-                <div class='go-button-wrap'>
-
-                    <a class='go-button' href="<?= current_url(array('move_item'=>'here')) ?>">העבר לכאן</a>
-                </div>
                 <div class='cancel-button-wrap'>
-
                     <a class='cancel-button' href="<?= current_url(array('move_item'=>'cancel')) ?>">ביטול</a> 
                 </div>
         </div>
@@ -166,7 +161,11 @@
                     <?php endforeach; ?>
                 </select>
                 <br/>
-                <a href="<?= $this->data['action_url'] ?>?move_item=<?= $menu_item['id'] ?>" title="העבר קטגוריה">העבר קטגוריה</a>
+                <?php if(isset($this->data['move_menu_item'])): ?>
+                    <a class='go-button' href="<?= $this->data['action_url'] ?>?item_id=<?= $menu_item['id'] ?>&move_item=here">העבר לכאן</a>
+                <?php else: ?>
+                    <a href="<?= $this->data['action_url'] ?>?move_item=<?= $menu_item['id'] ?>" title="העבר קטגוריה">העבר קטגוריה</a>
+                <?php endif; ?>
             </div>
             <div class="col col-small">
                 <input type="text" class = 'table-input' name = 'row[css_class]' value = '<?= $this->get_form_input('css_class',$menu_item['form_identifier']) ?>' />

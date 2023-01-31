@@ -1,7 +1,7 @@
 <h3>הוספת מנהל</h3>
-<p>
-        <a href="<?= inner_url("siteUsers/list/") ?>">חזרה לרשימה</a>
-</p>
+<div class="eject-box">
+    <a href="<?= inner_url("siteUsers/list/") ?>">חזרה לרשימה</a>
+</div>
 <hr/>
 <div id="site_user_form_wrap" class="form-gen site-user-form">
     <?php $this->include_view('messages/formMessages.php'); ?>

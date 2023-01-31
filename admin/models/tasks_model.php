@@ -47,7 +47,7 @@
             'type'=>'file',
             'file_type'=>'img',
             'validation'=>'required, img',
-            'img_max'=>'100000',
+            'img_max'=>'1000000',
             'upload_to'=>'tasks/banners',
             'name_file'=>'banner_{{row_id}}.{{ext}}'
         ),
@@ -57,7 +57,7 @@
             'type'=>'file',
             'file_type'=>'img',
             'validation'=>'img',
-            'img_max'=>'100000',
+            'img_max'=>'1000000',
             'upload_to'=>'tasks/banners',
             'name_file'=>'form_img_{{row_id}}.{{ext}}'
         ),

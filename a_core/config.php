@@ -15,6 +15,8 @@ $config = array(
     'base_url'=>'',
     'base_url_dir'=>'',
 
+    'master_domain'=>'usites.com',
+
     'error_controller'=>'pages',
     'error_action'=>'error',
 
@@ -26,7 +28,7 @@ $config = array(
     'email_sender_name'=>'מנהל הרשת',
     'is_mobile'=>false,
 
-    'a_core_models'=>array('userLogin','users','systemMessages','globalSettings','sites','test'),
+    'a_core_models'=>array('userLogin','users','systemMessages','globalSettings','sites','biz_categories','test'),
     'override_models'=>array(),
     'access_module'=>'main',
     /*

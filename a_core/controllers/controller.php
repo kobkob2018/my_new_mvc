@@ -132,11 +132,13 @@
 			}
 			else{
 				//this param not exist so it will invoke notice here
+				
 				echo $module_method_not_found_worning;
 				//do nothing
 			}			
 		}
 		else{
+			echo $module_name;
 			//this param not exist so it will invoke notice here
 			echo $modulenotfound_worning;
 			//do nothing
@@ -219,47 +221,15 @@
 
 	}
 
-	public function print_json_page($print_result){
-		
-
-
-		$user_arr = array();
-		$user_arr['login'] = '0';
-		if($this->user){
-			$user_arr['login'] = '1';
-			$user_params = array(
-				"id",
-				"unk",
-				"city",
-				"city_area",
-				"creditMoney",
-				"deleted",
-				"domain",
-				"email",
-				"end_date",
-				"fax",
-				"fb_campaign_phone",
-				"full_name",
-				"gender",
-				"gl_campaign_phone",
-				"h_refund",
-				"leadPrice",
-				"leads_credit",
-				"name",
-				"phone",
-				"birthday",
-				"freeSend",
-				"open_mode",
-				"autoSendLeadContact",
-				"hasSpecialClosedLeadAlert",
-			);
-			foreach($user_params as $user_param){
-				$user_arr[$user_param] = $this->user[$user_param];
-			}
-		}	
-		$print_result['user'] = $user_arr;
+	public function print_json_page($print_result){		
+		$print_result = $this->add_essential_ajax_info($print_result);
 		$this->set_layout('blank');
 		echo json_encode($print_result);
+	}
+
+	protected function add_essential_ajax_info($print_result){
+		//to be overriden
+		return $this->call_module(get_config('main_module'),'add_global_essential_ajax_info',$print_result);
 	}
 	
   }

@@ -60,13 +60,37 @@
 
     public static function simple_find_by_table_name($filter_arr,$table_name , $select_params = "*", $payload = array()){
       $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
-      return $req->fetch();
+      $result = $req->fetch();
+      if(isset($payload['add_custom_param'])){
+        $add_custom_param = $payload['add_custom_param'];
+        $controller_interface = $add_custom_param['controller'];
+        $method = $add_custom_param['method'];
+        $more_info = array();
+        if(isset($add_custom_param['more_info'])){
+          $more_info = $add_custom_param['more_info'];
+        }
+        $result = $controller_interface->$method($result,$more_info);
+      }
+      return $result;
 
     }
 
     public static function simple_get_list_by_table_name($filter_arr,$table_name, $select_params = "*", $payload = array()){
       $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
-      return $req->fetchAll();	
+      $result = $req->fetchAll();
+      if(isset($payload['add_custom_param'])){
+        $add_custom_param = $payload['add_custom_param'];
+        $controller_interface = $add_custom_param['controller'];
+        $method = $add_custom_param['method'];
+        $more_info = array();
+        if(isset($add_custom_param['more_info'])){
+          $more_info = $add_custom_param['more_info'];
+        }
+        foreach($result as $key=>$item){
+          $result[$key] = $controller_interface->$method($item, $more_info);
+        }      
+      }      
+      return $result;
     }
     
     protected static function simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params = "*", $payload = array()){
@@ -101,9 +125,9 @@
 
     }   
 
-    public static function simple_get_children_list_of_by_table_name($parent_id, $table_name, $select_params = "*"){
-      $filter_arr = array('parent'=>$parent_id);
-      return self::simple_get_list_by_table_name($filter_arr, $table_name, $select_params);
+    public static function simple_get_children_list_of_by_table_name($parent_id, $table_name, $select_params = "*", $filter_arr = array(), $payload = array()){
+      $filter_arr['parent'] = $parent_id;
+      return self::simple_get_list_by_table_name($filter_arr, $table_name, $select_params, $payload);
     }
 
     public static function simple_delete_with_offsprings_by_table_name($row_id, $table_name){
@@ -113,10 +137,11 @@
       return self::simple_delete_arr_by_table_name($item_offsprings,$table_name);
     }
 
-    public static function simple_get_item_offsprings_by_table_name($item_id, $table_name, $select_params = "*", $recursive_arr = array(), $generation = 0, $item = false){
+    public static function simple_get_item_offsprings_by_table_name($item_id, $table_name, $select_params = "*", $filter_arr = array(), $payload = array(), $recursive_arr = array(), $generation = 0, $item = false){
       $generation++;
       $children_arr = array();
-      $item_children = self::simple_get_children_list_of_by_table_name($item_id, $table_name, $select_params);
+      $item_children = self::simple_get_children_list_of_by_table_name($item_id, $table_name, $select_params, $filter_arr, $payload);
+
       if(is_array($item_children)){
           foreach($item_children as $child_item){
               $child_item['generation'] = $generation;
@@ -124,14 +149,35 @@
           }
       }
       foreach($children_arr as $child_item){
-          $recursive_arr = self::simple_get_item_offsprings_by_table_name($child_item['id'],$table_name, $select_params, $recursive_arr, $generation, $child_item);
+          $recursive_arr = self::simple_get_item_offsprings_by_table_name($child_item['id'],$table_name, $select_params, $filter_arr, $payload, $recursive_arr, $generation, $child_item);
       }
       if($item){
+        
           $recursive_arr[] = $item;
       }
       return $recursive_arr;
     }
 
+
+    public static function simple_get_item_offsprings_tree_by_table_name($item_id, $table_name, $select_params = "*", $filter_arr = array(), $payload = array(), $generation = 0){
+      $generation++;
+      $children_arr = array();
+      $item_children = self::simple_get_children_list_of_by_table_name($item_id, $table_name, $select_params, $filter_arr, $payload);
+      if(is_array($item_children)){
+          foreach($item_children as $child_item){
+              $child_item['generation'] = $generation;
+              $child_item['children'] = self::simple_get_item_offsprings_tree_by_table_name($child_item['id'], $table_name, $select_params, $filter_arr, $payload, $generation);
+              if(empty($child_item['children'])){
+                $child_item['has_children'] = false;
+              }
+              else{
+                $child_item['has_children'] = true;
+              }
+              $children_arr[] = $child_item;
+          }
+      }
+      return $children_arr;
+    }
 
     public static function simple_get_item_parents_tree_by_table_name($item_id, $table_name, $select_params = "*", $recursive_arr = array(), $deep = 0){
       $select_params_with_parent = $select_params;

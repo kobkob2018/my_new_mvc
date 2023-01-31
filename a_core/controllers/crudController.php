@@ -125,9 +125,15 @@
     }
 
     protected function add_form_builder_data($fields_collection, $sendAction, $row_id){
+        global $controller;
+        global $action;
         $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
 
-        $form_builder_data = array();
+        $form_builder_data = array(
+            'controller'=>$controller,
+            'action'=>$action
+        );
+        
         $enctype_str = '';
         foreach($fields_collection as $field){
             if($field['type'] == 'file'){
@@ -184,11 +190,21 @@
             return $this->eject_redirect();
         }
 
+        $item_info = $this->data['item_info'];
+
         $fields_collection = $this->get_fields_collection();
 
+        $this->delete_item_files($item_info,$fields_collection);
+
+        $this->delete_item($this->data['item_info']['id']);
+        $this->delete_success_message();
+        return $this->eject_redirect();
+    }
+
+    protected function delete_item_files($item_info, $fields_collection){
         $form_handler = $this->init_form_handler();
         $form_handler->setup_fields_collection($fields_collection);
-        $form_handler->setup_db_values($this->data['item_info']);
+        $form_handler->setup_db_values($item_info);
 
         if(is_array($fields_collection)){
             foreach($fields_collection as $field_key=>$field){
@@ -197,10 +213,6 @@
                 }
             }
         }
-
-        $this->delete_item($this->data['item_info']['id']);
-        $this->delete_success_message();
-        return $this->eject_redirect();
     }
 
     protected function set_priority(){
@@ -242,6 +254,55 @@
         }
     }
 
+
+    protected function move_item_prepare($item_identifier){
+        global $controller;
+        if($item_identifier == 'cancel'){
+            session__unset($controller.'_item_to_move');
+        }
+        elseif($item_identifier == 'here'){
+            $item_to_move_id = session__get($controller.'_item_to_move');
+            $parent_id = 0;
+            if(isset($_GET['item_id'])){
+                $parent_id = $_GET['item_id'];
+            }
+            $this->get_item_parents_tree($parent_id,'id');
+            $parent_tree = $this->get_item_parents_tree($parent_id,'id');
+            foreach($parent_tree as $branch){
+                if($item_to_move_id == $branch['id']){
+                    SystemMessages::add_err_message("לא ניתן להעביר רכיב לצאצאיו");
+                    return $this->eject_redirect();
+                }
+            }
+            $this->update_item($item_to_move_id,array('parent'=>$parent_id));
+            SystemMessages::add_success_message("הרכיב הועבר בהצלחה");
+            session__unset($controller.'_item_to_move');
+            return $this->redirect_back_to_item(array('id'=>$parent_id));
+        }
+        else{
+            session__set($controller.'_item_to_move',$item_identifier);
+        }
+        return $this->eject_redirect();
+    }
+
+    protected function get_move_item_session(){
+        global $controller;
+        $session_param = $controller.'_item_to_move';
+        if(session__isset($session_param)){
+            $move_item_id = session__get($session_param);
+            $move_menu_item_tree = $this->get_item_parents_tree($move_item_id,'id, label');
+            $this->data['move_item'] = array(
+                'item_id'=>$move_item_id,
+                'tree'=>$move_menu_item_tree
+            );
+        }
+    }
+
+    protected function get_item_parents_tree($parent_id,$select_params){
+        //to be overriden
+        return array();
+    }
+
     protected function eject_redirect(){
         return $this->redirect_to($this->eject_url());
     }
@@ -259,6 +320,10 @@
     }
   
     public function url_back_to_item($item_info){
+        return null;
+    }
+
+    public function delete_url($item_info){
         return null;
     }
 

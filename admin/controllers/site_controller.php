@@ -53,6 +53,10 @@
       return inner_url("site/edit/");
     }
 
+    public function delete_url($item_info){
+      return inner_url("site/delete/?row_id=".$item_info['id']);
+    }
+
     protected function get_fields_collection(){
         $fields_collection = array(
 

@@ -6,7 +6,10 @@
         'phone'=>'שדה {{label}} לא תקין',
         'email'=>'שדה {{label}} לא תקין',
         'img_format'=>'שדה {{label}} חייב להיות קובץ מסוג תמונה',
+        'video_format' => 'שדה {{label}} חייב להיות קובץ מסוג וידאו',
+        'int'=>'שדה {{label}} חייב להיות מספר',
         'img_max'=>'שדה {{label}} - תמונה גדולה מידיי( מקסימום מותר - {{img_max}} ביט)',
+        'vid_max'=>'שדה {{label}} - וידאו גדול מידיי( מקסימום מותר - {{vid_max}} ביט)',
         'default'=>'שדה {{label}} לא תקין',
     );
 
@@ -92,20 +95,24 @@
         return $return_array;
     }
 
+    protected function validate_by_int($value, $validate_payload){
+        $value = trim($value);
+        $return_array =  array(
+            'success'=>true,
+            'fixed_value'=>$value
+        );
+
+        $number = filter_var($value, FILTER_VALIDATE_INT);
+        $is_valid =  ($number !== FALSE);
+
+        if(!$is_valid){
+            $return_array['success'] = false;
+            $return_array['message'] = $this->error_messages['int'];
+        }
+        return $return_array;
+    }
+
     protected function validate_by_img($value, $validate_payload){
-        /*
-        print_r_help($validate_payload);
-        if(isset($validate_payload['last_state']['pass'])){
-            return $validate_payload['last_state'];
-        }
-        elseif($validate_payload['user_file']['name'] == ''){
-            $return_array =  array(
-                'success'=>true,
-                'fixed_value'=>$value
-            );
-            return $return_array;
-        }
-        */
         $return_array =  array(
             'success'=>true,
             'fixed_value'=>$value
@@ -147,6 +154,55 @@
         $return_array['fixed_value'] = $fixed_value;
         return $return_array;
     }
+
+
+    protected function validate_by_video($value, $validate_payload){
+        $return_array =  array(
+            'success'=>true,
+            'fixed_value'=>$value
+        );
+
+        $is_valid = true;
+        $field = $validate_payload['field'];
+        $file = $validate_payload['user_file'];
+        $file_name = $file["name"];
+        $file_type = $file['type'];
+
+        $allowed_extensions = array("webm", "mp4", "ogv", "ogg");
+        $ext = strtolower(pathinfo($file_name,PATHINFO_EXTENSION));
+
+        if(!in_array($ext,$allowed_extensions)){
+            $is_valid = false;
+            $return_array['success'] = false;
+            $return_array['message'] = $this->error_messages['video_format'];
+            $return_array['fixed_value'] = $validate_payload['db_value'];
+        }
+        if(!$is_valid){
+            return $return_array;
+        }
+        if(isset($field['vid_max'])){
+            $file_size_max = $field['vid_max'];
+            $size = $file["size"];
+            if($size > $field['vid_max']){
+                $is_valid = false;
+                $return_array['success'] = false;
+                $return_array['message'] = str_replace('{{vid_max}}',$field['vid_max'],$this->error_messages['vid_max']);
+                $return_array['fixed_value'] = $validate_payload['db_value'];
+            }
+        }
+
+        if(!$is_valid){
+            return $return_array;
+        }   
+        $ext = strtolower(pathinfo($file_name,PATHINFO_EXTENSION));
+        $fixed_value = $field['name_file'];
+        if(isset($field['name_file'])){
+            $fixed_value = str_replace('{{ext}}',$ext,$field['name_file']);
+        }
+        $return_array['fixed_value'] = $fixed_value;
+        return $return_array;
+    }
+
 
   }
 ?>

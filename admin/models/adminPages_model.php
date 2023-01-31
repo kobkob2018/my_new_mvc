@@ -35,7 +35,7 @@
             'type'=>'file',
             'file_type'=>'img',
             'validation'=>'img',
-            'img_max'=>'100000',
+            'img_max'=>'1000000',
             'upload_to'=>'pages/banners',
             'name_file'=>'r_banner_{{row_id}}.{{ext}}'
         ),      
