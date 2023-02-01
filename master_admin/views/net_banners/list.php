@@ -2,7 +2,7 @@
 
 <h3>באנרים בתיקייה</h3>
 
-<div class="add-cat-button-wrap add-button">
+<div class="add-button-wrap">
     <a class="button-focus" href="<?= inner_url('net_banners/add/') ?>?dir_id=<?= $this->data['dir_info']['id'] ?>">הוספת באנר בתיקייה</a>
 </div>
 

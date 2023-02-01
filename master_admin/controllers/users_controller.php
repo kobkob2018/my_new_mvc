@@ -36,19 +36,11 @@
         User_cat::assign_cats_to_item($row_id,$selected_assigns);
     }
 
-    public function assign_to_item_for_city($row_id,$selected_assigns){
-        $this->add_model('user_city');
-        User_city::assign_cities_to_item($row_id,$selected_assigns);
-    }
+
 
     public function get_assign_item_offsprings_tree_for_cat($payload){
         $this->add_model('biz_categories');
         return Biz_categories::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
-    }
-
-    public function get_assign_item_offsprings_tree_for_city($payload){
-        $this->add_model('cities');
-        return Cities::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
     }
 
     public function get_item_assign_list_for_cat($row_id){
@@ -56,15 +48,33 @@
         return User_cat::get_item_cat_list($row_id);
     }
 
-    public function get_item_assign_list_for_city($row_id){
-        $this->add_model("user_city");
-        return User_city::get_item_cat_list($row_id);
-    }
-
     public function add_assign_success_message_for_cat(){
         SystemMessages::add_success_message("הקטגוריות שוייכו בהצלחה");
     }
 
+    public function select_cities(){
+        $this->add_model('user_city');
+        $this->setup_tree_select_info(User_city::$tree_select_info);
+        if(isset($this->data['item_info'])){
+            $this->data['user_info'] = $this->data['item_info'];
+        }
+        $this->include_view("users/select_cities.php");
+    }   
+
+    public function assign_to_item_for_city($row_id,$selected_assigns){
+        $this->add_model('user_city');
+        User_city::assign_cities_to_item($row_id,$selected_assigns);
+    }
+
+    public function get_assign_item_offsprings_tree_for_city($payload){
+        $this->add_model('cities');
+        return Cities::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
+    }
+
+    public function get_item_assign_list_for_city($row_id){
+        $this->add_model("user_city");
+        return User_city::get_item_city_list($row_id);
+    }
 
     public function add_assign_success_message_for_city(){
         SystemMessages::add_success_message("הערים שוייכו בהצלחה");

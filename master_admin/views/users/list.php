@@ -3,7 +3,7 @@
 <h3>ניהול משתמשים</h3>
 
 
-<div class="add-cat-button-wrap add-button">
+<div class="add-button-wrap">
     <a class="button-focus" href="<?= inner_url('users/add/') ?>">הוספת משתמש</a>
 </div>
 
