@@ -29,7 +29,7 @@
      | 
      <a href = "<?= inner_url('biz_categories/edit/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/edit/') ?>">עריכה</a>
      | 
-     <a href = "<?= inner_url('biz_categories/cities/') ?>?row_id=<?= $this->data['page_info']['id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/cities/') ?>">שיוך ערים</a>
+     <a href = "<?= inner_url('biz_categories/select_cities/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/select_cities/') ?>">שיוך ערים</a>
 </div>
 <hr/>
 

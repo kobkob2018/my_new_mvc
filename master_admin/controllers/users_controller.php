@@ -22,6 +22,43 @@
 
     }
 
+    public function select_cat_city(){
+      $this->add_model('user_cat_city');
+      $assign_info = User_cat_city::$tree_select_info;
+      $cat_id = $_REQUEST['cat_id'];
+
+      $assign_info['cat_id'] = $cat_id;
+      $this->add_model('biz_categories');
+      $this->data['cat_parent_tree'] = Biz_categories::get_item_parents_tree($cat_id,'id,label,parent');
+      $this->setup_tree_select_info($assign_info);
+      if(isset($this->data['item_info'])){
+          $this->data['user_info'] = $this->data['item_info'];
+      }
+      $this->include_view("users/select_cat_city.php");
+    }
+
+    public function assign_to_item_for_cat_city($row_id, $selected_assigns){
+      $cat_id = $this->data['assign_info']['cat_id'];
+      $this->add_model('user_cat_city');
+      User_cat_city::assign_cities_cats_and_item($row_id, $cat_id, $selected_assigns);
+  }
+
+  public function get_assign_item_offsprings_tree_for_cat_city($payload){
+      $this->add_model('cities');
+      return Cities::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
+  }
+
+  public function get_item_assign_list_for_cat_city($row_id){
+      $cat_id = $this->data['assign_info']['cat_id'];
+      $this->add_model("user_cat_city");
+      return User_cat_city::get_item_cat_city_list($row_id, $cat_id);
+  }
+
+  public function add_assign_success_message_for_cat_city(){
+      SystemMessages::add_success_message("הערים שוייכו בהצלחה לקטגוריה");
+  }
+
+
     public function select_cats(){
         $this->add_model('user_cat');
         $this->setup_tree_select_info(User_cat::$tree_select_info);
@@ -29,6 +66,16 @@
             $this->data['user_info'] = $this->data['item_info'];
         }
         $this->include_view("users/select_cats.php");
+    }
+
+
+    public function add_recursive_assign_select_view_for_cat($assign_tree_item){
+      $open_state_class = "closed";
+      if($assign_tree_item['open_state']){
+          $open_state_class = "open";
+      }
+      $assign_tree_item['open_class'] = $open_state_class;
+      $this->include_view("users/select_assigns_children_for_cat_with_links.php",array('item'=>$assign_tree_item));
     }
 
     public function assign_to_item_for_cat($row_id,$selected_assigns){

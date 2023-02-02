@@ -46,13 +46,8 @@
 
 
     public function select_cats(){
-
-        $this->setup_tree_select_info(array(
-            'alias'=>'cat',
-            'table'=>'net_banner_cat',
-            'assign_1'=>'cat_id',
-            'assign_2'=>'banner_id'
-        ));
+        $this->add_model('net_banner_cat');
+        $this->setup_tree_select_info(Net_banner_cat::$tree_select_info);
 
         $this->include_view("net_banners/select_cats.php");
     }

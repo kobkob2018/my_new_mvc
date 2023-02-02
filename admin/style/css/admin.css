@@ -66,6 +66,12 @@ h4{
     box-shadow: 3px 4px 7px #c1bebe;
 }
 
+.messages.warning-messages{
+    background: #fee7a3;
+    color: black;
+    box-shadow: 3px 4px 7px #c1bebe;
+}
+
 .messages li{
     list-style: inside;
 }
