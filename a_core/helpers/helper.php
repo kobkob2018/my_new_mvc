@@ -27,15 +27,17 @@
 
     public static function user_is($needed_roll,$user,$work_on_site = false){
       $user_is = 'logout';
-      $login_user_roll_hirachy = array(
-        //can go in between these numbers
-        5=>'master_admin',
-        10=>'admin',
-        15=>'author',
-        20=>'login'
+
+
+      $user_roll_list = User_rolls::get_list();
+      $login_user_roll_hirachy = self::eazy_index_arr_by('level',$user_roll_list);
+      $login_user_roll_hirachy[100] = array(
+        'level'=>'100',
+        'str_identifier'=>'login'
       );
+
       if($user){
-        $user_is = $login_user_roll_hirachy[$user['roll']];
+        $user_is = $login_user_roll_hirachy[$user['roll']]['str_identifier'];
         if($needed_roll == 'logout'){
           return false;
         }
@@ -51,7 +53,8 @@
       }
 
       $exepted_rolls = array();
-      foreach($login_user_roll_hirachy as $roll){
+      foreach($login_user_roll_hirachy as $roll_arr){
+        $roll =  $roll_arr['str_identifier'];
         $exepted_rolls[] = $roll;
         if($roll == $needed_roll ){
           break;

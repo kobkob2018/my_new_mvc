@@ -105,7 +105,7 @@
     }
 
     protected function get_fields_collection(){
-      return AdminPages::$fields_collection;
+      return AdminPages::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){

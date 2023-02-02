@@ -1,6 +1,6 @@
 <?php
   class Controller {
-	public $use_models = array("userLogin","users","systemMessages","globalSettings");
+	public $use_models = array("userLogin","users","user_rolls","systemMessages","globalSettings");
 	public $add_models = array();
 	public $data = array();
 	public $user = false;

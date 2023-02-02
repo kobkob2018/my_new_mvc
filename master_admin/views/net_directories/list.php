@@ -1,6 +1,6 @@
 <h3>תיקיות באנרים</h3>
 
-<div class="add-cat-button-wrap add-button">
+<div class="add-button-wrap">
     <a class="button-focus" href="<?= inner_url('net_directories/add/') ?>">הוספת תיקייה</a>
 </div>
 

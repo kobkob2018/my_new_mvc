@@ -98,8 +98,9 @@
         
         //check for custom validation requests. the custom validation methhod will be in the controller
         //check only if stil valid
-        if(isset($field['custom_validation']) && $field_is_valid && $user_fixed_value != '' && $user_fixed_value != null){
+        if(isset($field['custom_validation']) && $field_is_valid){
           $field_validate_result = $this->validation_handler->validate_by_custom($this->controller_interface, $field['custom_validation'], $user_fixed_value, $validate_payload);
+        
           $validate_payload['last_state'] = $field_validate_result;
           if(isset($field_validate_result['fixed_value'])){
             $user_fixed_value = $field_validate_result['fixed_value'];
@@ -214,47 +215,8 @@
       return $user_files;
     }
 
-    public function setup_fields_collection($fields){     
-      foreach($fields as $key => $field){
-        if(!isset($field['type'])){
-          $field['type'] = 'text';
-        }
-        if($field['type'] == 'select'){
-          $field = $this->setup_select_options($field);
-        }
-        $fields[$key] = $field;
-      }
+    public function update_fields_collection($fields){
       $this->fields_collection = $fields;
-    }
-
-    protected function setup_select_options($field){
-      $select_index = array();
-      $options = array();
-      $select_options = array();
-      if(isset($field['options'])){
-        $options = $field['options'];
-
-      }
-      elseif(isset($field['options_method'])){
-        $options_method = $field['options_method'];
-        $method_name = $options_method['method'];
-        $options = $options_method['model']::$method_name();
-      }
-
-
-      $i=0;
-
-      foreach($options as $option){
-        $option['selected'] = '';
-        //we index the select options manually
-        $select_index[$option['value']] = $i;
-        $select_options[$i] = $option;
-        $i++;
-      }
-      $field['options_index'] = $select_index;
-      $field['options'] = $select_options;
-      $field['selected_index'] = '-1';
-      return $field;
     }
 
 

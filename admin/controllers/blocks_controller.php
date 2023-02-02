@@ -132,7 +132,7 @@
     }
 
     protected function get_fields_collection(){
-      return AdminBlocks::$fields_collection;
+      return AdminBlocks::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){

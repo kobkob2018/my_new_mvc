@@ -8,7 +8,7 @@
         <a class='go-button' href="<?= inner_url('biz_categories/list/') ?>?item_id=<?= $this->data['current_item_id'] ?>&move_item=here">העבר לכאן</a>
     </div>
 <?php else: ?>
-    <div class="add-cat-button-wrap add-button">
+    <div class="add-button-wrap">
         <a class="button-focus" href="<?= inner_url('biz_categories/add/') ?>?item_id=<?= $this->data['current_item_id'] ?>">הוספת קטגוריה</a>
     </div>
 <?PHP endif; ?>

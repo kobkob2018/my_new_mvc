@@ -20,11 +20,22 @@
                     
                     </div>	
                 <?php endif; ?>
+
+                <?php if($build_field['type'] == 'password'): ?>
+                    <div class='form-group span3'>
+                    
+                        <input type='password' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value=''  />
+                    
+                    </div>	
+                <?php endif; ?>                
                     
                 <?php if($build_field['type'] == 'select'): ?>
                     <div class='form-group span3'>
                         
                         <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
+                            <?php if(isset($build_field['select_blank'])): ?>
+                                <option value="<?= $build_field['select_blank']['value'] ?>"><?= $build_field['select_blank']['label'] ?></option>
+                            <?php endif; ?>
                             <?php foreach($this->get_select_options($field_key) as $option): ?>
                                 <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
                             <?php endforeach; ?>
@@ -82,12 +93,22 @@
                     </div>	
                 <?php endif; ?>
 
-                <?php if($build_field['type'] = 'build_method' && isset($build_field['build_method'])): ?>
+                <?php if($build_field['type'] == 'build_method' && isset($build_field['build_method'])): ?>
                     <?php $build_method = $build_field['build_method']; ?>
                     <?php $this->$build_method($field_key, $build_field); ?>
                 <?php endif; ?>
             </div>
             
+            <?php if($build_field['type'] == 'password'): ?>
+
+                
+                <div class='form-group <?= isset($build_field['css_class'])? $build_field['css_class']: "" ?>'>
+                    <label for='row[<?= $field_key ?>_confirm]'>אימות <?= $build_field['label'] ?></label>
+                    <div class='form-group span3'>
+                        <input type='password' name='row[<?= $field_key ?>_confirm]" id="row_<?= $field_key ?>_confirm' class='form-input' data-msg-required='*' value=''  />
+                    </div>	
+                </div>
+            <?php endif; ?>   
         <?php endforeach; ?>
         <div class="form-group span3">
             <label id="submit_label"></label>

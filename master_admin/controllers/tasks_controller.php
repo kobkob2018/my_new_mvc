@@ -108,7 +108,7 @@
         }        
 
         protected function get_fields_collection(){
-          return Tasks::$fields_collection;
+          return Tasks::setup_field_collection();
         }
     
         protected function update_item($item_id,$update_values){

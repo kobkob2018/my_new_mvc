@@ -1,8 +1,8 @@
 
 
-function cat_select_toggle(aDoor){
-    const cat_id = aDoor.dataset.cat_id;
-    const parentEl = aDoor.closest(".cat-checkbox-parent-wrap");
+function assign_select_toggle(aDoor){
+    const assign_id = aDoor.dataset.assign_id;
+    const parentEl = aDoor.closest(".assign-checkbox-parent-wrap");
     console.log(parentEl);
     if(parentEl.classList.contains('closed')){
         parentEl.classList.remove('closed');

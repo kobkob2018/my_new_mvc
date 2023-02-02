@@ -18,7 +18,7 @@
             'order_by'=>'label'
         );
         $net_banners = Net_banners::get_list($filter_arr,"*", 'id, insert_date , label, active, views, clicks, convertions ');
-        $fields_collection = Net_banners::$fields_collection;
+        $fields_collection = Net_banners::setup_field_collection();
         $active_strings = array();
         foreach($fields_collection['active']['options'] as $option){
           $active_strings[$option['value']] = $option['title'];
@@ -44,111 +44,51 @@
         }
     }
 
+
     public function select_cats(){
-        $this->add_model("net_banner_cat");
-        $this->add_model("biz_categories");
-        $row_id = false;
-        if(isset($_REQUEST['row_id'])){
-            $row_id = $_REQUEST['row_id'];
-        }
-        elseif(isset($this->data['row_id'])){
-            $row_id = $this->data['row_id'];
-        }
-        if(!$row_id){
-            $this->row_error_message();
-            return $this->eject_redirect();
-        }
+        $this->add_model('net_banner_cat');
+        $this->setup_tree_select_info(Net_banner_cat::$tree_select_info);
 
-        $this->data['item_info'] = $this->get_item_info($row_id);
-
-        if(!$this->data['item_info']){
-            $this->row_error_message();
-            return $this->eject_redirect();
-        }
-
-        $banner_cat_arr = Net_banners::get_banner_cat_list($row_id);
-        $checked_cats = array();
-        foreach($banner_cat_arr as $banner_cat){
-            $checked_cats[$banner_cat['cat_id']] = true;
-        }
-
-        $add_is_checked_value = array(
-            'controller'=>$this,
-            'method'=>'add_cat_is_checked_param',
-            'more_info'=>array(
-                'banner_cat_arr'=>$checked_cats
-            ),
-        );
-
-        $payload = array('add_custom_param'=>$add_is_checked_value);
-
-        $category_tree_item = array(
-            'id'=>'0',
-            'checked'=>true,
-            'label'=>'begin',
-            'open_state'=>true,
-
-            'children'=>Biz_categories::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload));
-
-  
-
-        $category_tree_item = $this->add_has_checked_children_param($category_tree_item);
-        $this->data['category_tree'] = $category_tree_item;
         $this->include_view("net_banners/select_cats.php");
     }
 
-    public function add_recursive_cat_select_view($category_tree_item){
-
-        $open_state_class = "closed";
-        if($category_tree_item['open_state']){
-            $open_state_class = "open";
-        }
-        $category_tree_item['open_class'] = $open_state_class;
-        $this->include_view("net_banners/select_cats_children.php",array('item'=>$category_tree_item));
+    public function assign_to_item_for_cat($row_id,$selected_assigns){
+        $this->add_model('net_banner_cat');   
+        Net_banner_cat::assign_cats_to_item($row_id,$selected_assigns);
     }
 
-    protected function add_has_checked_children_param($category_tree_item, $count = 0){
-        $count++;
-        if($count>10){
-            exit("count is $count");
-        }
-        $has_checked_children = false;
-        $open_state = false;
-        if($category_tree_item['checked']){
-            $open_state = true;
-        }
-        if($category_tree_item['children']){
-            foreach($category_tree_item['children'] as $key=>$child_item){
-                $child_item = $this->add_has_checked_children_param($child_item, $count);
-                if($child_item['checked'] || $child_item['has_checked_children'] || $child_item['open_state']){
-                    $has_checked_children = true;
-                    $open_state = true;                
-                }
-                $category_tree_item['children'][$key] = $child_item;
-            }
-        }
-        $category_tree_item['has_checked_children'] = $has_checked_children;
-        $category_tree_item['open_state'] = $open_state;
-        return $category_tree_item;
+    public function assign_to_item_for_city($row_id,$selected_assigns){
+        $this->add_model('net_banner_city');
+        Net_banner_city::assign_cities_to_item($row_id,$selected_assigns);
     }
 
-
-    public function add_cat_is_checked_param($cat_info, $more_info){
-        $cat_info['checked'] = '0';
-        if(isset($more_info['banner_cat_arr']) && is_array($more_info['banner_cat_arr'])){
-            if(isset($more_info['banner_cat_arr'][$cat_info['id']])){
-                $cat_info['checked'] = '1';
-            }
-        }
-        return $cat_info;
+    public function get_assign_item_offsprings_tree_for_cat($payload){
+        $this->add_model('biz_categories');
+        return Biz_categories::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
     }
 
-    public function set_categoriesSend(){
-        $row_id = $_REQUEST['row_id'];
-        $selected_cats = $_REQUEST['cat'];
-        Net_banner_cat::assign_cats_to_banner($row_id,$selected_cats);
+    public function get_assign_item_offsprings_tree_for_city($payload){
+        $this->add_model('cities');
+        return Cities::simple_get_item_offsprings_tree('0','id, label, parent',array(), $payload);
+    }
+
+    public function get_item_assign_list_for_cat($row_id){
+        $this->add_model("net_banner_cat");
+        return Net_banner_cat::get_item_cat_list($row_id);
+    }
+
+    public function get_item_assign_list_for_city($row_id){
+        $this->add_model("net_banner_city");
+        return Net_banner_city::get_item_cat_list($row_id);
+    }
+
+    public function add_assign_success_message_for_cat(){
         SystemMessages::add_success_message("הקטגוריות שוייכו בהצלחה");
-        $this->redirect_to(inner_url("net_banners/select_cats/?dir_id=".$this->data['dir_info']['id']."&row_id=".$row_id));
+    }
+
+
+    public function add_assign_success_message_for_city(){
+        SystemMessages::add_success_message("הערים שוייכו בהצלחה");
     }
 
     protected function get_base_filter(){
@@ -182,7 +122,7 @@
     public function delete(){
         if(isset($_GET['row_id'])){
             $this->add_model("net_banner_cat");
-            Net_banner_cat::delete_banner_assignments($_GET['row_id']);
+            Net_banner_cat::delete_item_assignments($_GET['row_id']);
         }
         return parent::delete();      
     }
@@ -238,7 +178,7 @@
     }
 
     protected function get_fields_collection(){
-      return Net_banners::$fields_collection;
+      return Net_banners::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){

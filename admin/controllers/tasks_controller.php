@@ -34,10 +34,10 @@
                 return $this->redirect_to(inner_url('tasks/all/'));
             }
 
-            $fields_collection = Tasks::$fields_collection;
+            $fields_collection = Tasks::setup_field_collection();
 
             $form_handler = $this->init_form_handler();
-            $form_handler->setup_fields_collection($fields_collection);
+            $form_handler->update_fields_collection($fields_collection);
             $form_handler->setup_db_values($this->data['task_info']);
 
             if(isset($_REQUEST['remove_file'])){
@@ -49,8 +49,6 @@
             }
 
             $this->send_action_proceed();
-
-            $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
 
             $form_builder_data = array();
             $form_builder_data['enctype_str'] = 'enctype="multipart/form-data"';
@@ -89,13 +87,12 @@
         }
 
         public function add(){
-            $fields_collection = Tasks::$fields_collection;
+            
+            $fields_collection = Tasks::setup_field_collection();
             $form_handler = $this->init_form_handler();
-            $form_handler->setup_fields_collection(Tasks::$fields_collection);
+            $form_handler->update_fields_collection(Tasks::setup_field_collection());
 
             $this->send_action_proceed();
-
-            $fields_collection = TableModel::prepare_form_builder_fields($fields_collection);
 
             $form_builder_data = array();
             $form_builder_data['enctype_str'] = 'enctype="multipart/form-data"';
