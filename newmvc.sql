@@ -41,7 +41,7 @@ CREATE TABLE `biz_categories` (
   `max_lead_send` smallint DEFAULT NULL,
   `add_email_to_form` tinyint NOT NULL DEFAULT '0',
   `show_whatsapp_button` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `biz_categories`
@@ -83,12 +83,12 @@ CREATE TABLE `biz_forms` (
   `cat_id` int DEFAULT NULL,
   `active` tinyint NOT NULL DEFAULT '0',
   `thanks_pixel` mediumtext NOT NULL,
-  `thanks_redirect` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `thanks_redirect` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `input_remove` varchar(200) DEFAULT NULL,
   `add_email` tinyint NOT NULL DEFAULT '0',
   `limit_by_cities` tinyint NOT NULL DEFAULT '0',
   `bill_type` tinyint DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `biz_forms`
@@ -115,7 +115,7 @@ CREATE TABLE `cat_city` (
   `id` int NOT NULL,
   `cat_id` int NOT NULL,
   `city_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cat_city`
@@ -143,7 +143,7 @@ CREATE TABLE `cities` (
   `type` varchar(32) NOT NULL,
   `priority` smallint NOT NULL,
   `active` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cities`
@@ -179,7 +179,7 @@ CREATE TABLE `content_blocks` (
   `content` text,
   `css_class` varchar(32) DEFAULT NULL,
   `priority` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `content_blocks`
@@ -236,7 +236,7 @@ CREATE TABLE `content_pages` (
   `content` text NOT NULL,
   `meta_title` varchar(80) NOT NULL,
   `right_banner` varchar(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `content_pages`
@@ -277,7 +277,7 @@ CREATE TABLE `info_stam` (
   `info_name` varchar(32) DEFAULT NULL,
   `info_data` varchar(32) DEFAULT NULL,
   `more_info` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `info_stam`
@@ -302,7 +302,7 @@ CREATE TABLE `login_trace` (
   `login_time` datetime NOT NULL,
   `session_exp` datetime DEFAULT NULL,
   `reset_pass_token` varchar(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login_trace`
@@ -525,7 +525,7 @@ CREATE TABLE `menu_items` (
   `link_type` smallint NOT NULL DEFAULT '0',
   `css_class` varchar(32) NOT NULL,
   `active` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `menu_items`
@@ -585,7 +585,7 @@ CREATE TABLE `net_banners` (
   `convertions` mediumint NOT NULL DEFAULT '0',
   `active` tinyint NOT NULL DEFAULT '1',
   `deleted` tinyint NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `net_banners`
@@ -604,7 +604,7 @@ CREATE TABLE `net_banner_cat` (
   `id` int NOT NULL,
   `banner_id` int NOT NULL,
   `cat_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `net_banner_cat`
@@ -624,7 +624,7 @@ CREATE TABLE `net_directories` (
   `id` int NOT NULL,
   `label` varchar(80) NOT NULL,
   `active` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `net_directories`
@@ -644,7 +644,7 @@ CREATE TABLE `posts` (
   `author` int NOT NULL,
   `content` text,
   `visible` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `posts`
@@ -670,7 +670,7 @@ CREATE TABLE `sites` (
   `meta_keywords` varchar(80) DEFAULT NULL,
   `home_page` int NOT NULL DEFAULT '0',
   `logo` varchar(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sites`
@@ -690,7 +690,7 @@ INSERT INTO `sites` (`id`, `domain`, `title`, `is_secure`, `meta_title`, `meta_d
 CREATE TABLE `tasks` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `title` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text NOT NULL,
   `status` int NOT NULL DEFAULT '1',
   `phone` varchar(32) DEFAULT NULL,
@@ -700,7 +700,7 @@ CREATE TABLE `tasks` (
   `form_img` varchar(32) DEFAULT NULL,
   `site_id` int NOT NULL,
   `priority` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tasks`
@@ -741,7 +741,7 @@ CREATE TABLE `test` (
   `token` varchar(32) NOT NULL,
   `label` varchar(32) NOT NULL,
   `date_in` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `test`
@@ -759,13 +759,13 @@ INSERT INTO `test` (`id`, `user_id`, `token`, `label`, `date_in`) VALUES
 CREATE TABLE `users` (
   `id` int NOT NULL,
   `username` varchar(32) NOT NULL,
-  `full_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `full_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `active` smallint NOT NULL DEFAULT '1',
   `roll` int NOT NULL DEFAULT '0',
   `email` varchar(32) NOT NULL,
   `password` varchar(32) NOT NULL,
   `phone` varchar(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -787,7 +787,7 @@ CREATE TABLE `user_cat` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `cat_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_cat`
@@ -813,7 +813,7 @@ CREATE TABLE `user_cat_city` (
   `user_id` int NOT NULL,
   `cat_id` int NOT NULL,
   `city_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_cat_city`
@@ -841,7 +841,7 @@ CREATE TABLE `user_city` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `city_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_city`
@@ -864,7 +864,7 @@ CREATE TABLE `user_lead_settings` (
   `user_id` int NOT NULL,
   `free_send` tinyint NOT NULL DEFAULT '1',
   `lead_credit` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_lead_settings`
@@ -885,7 +885,7 @@ CREATE TABLE `user_reset_password` (
   `token` varchar(32) NOT NULL,
   `status` smallint NOT NULL DEFAULT '1',
   `user_ip` varchar(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_reset_password`
@@ -909,7 +909,7 @@ CREATE TABLE `user_rolls` (
   `level` smallint NOT NULL,
   `str_identifier` varchar(32) NOT NULL,
   `label` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_rolls`
@@ -933,7 +933,7 @@ CREATE TABLE `user_sites` (
   `site_id` int NOT NULL,
   `roll` varchar(32) NOT NULL,
   `status` tinyint NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_sites`
