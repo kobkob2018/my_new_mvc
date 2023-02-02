@@ -4,6 +4,7 @@ class TableModel extends Model{
 
     protected static $main_table = false;
 
+    protected static $auto_delete_from_attached_tables = array();
 
     public static function find($filter_arr, $select_params = "*", $payload = array()){
         return self::simple_find($filter_arr , $select_params, $payload);
@@ -35,11 +36,47 @@ class TableModel extends Model{
     }
 
     public static function delete($row_id){
+        if(!empty(static::$auto_delete_from_attached_tables)){
+            foreach(static::$auto_delete_from_attached_tables as $table_setting){
+                $table_name = $table_setting['table'];
+                $id_key = $table_setting['id_key'];
+                $execute_arr = array($id_key=>$row_id);
+                $sql = "DELETE FROM $table_name WHERE $id_key = :$id_key";
+                $db = Db::getInstance();		
+                $req = $db->prepare($sql);
+                $req->execute($execute_arr);
+            }
+        }
 		return self::simple_delete($row_id);
     }
 
     public static function delete_with_offsprings($row_id){
-        return self::simple_delete_with_offsprings($row_id);
+
+        $delete_result = self::simple_delete_with_offsprings($row_id);
+        if(!isset($delete_result['item_ids_arr'])){
+            return $delete_result;
+        }
+        if(empty($delete_result['item_ids_arr'])){
+            return $delete_result;
+        }
+        if($delete_result['item_list_in_str'] == ""){
+            return $delete_result;
+        }
+        if(!empty(static::$auto_delete_from_attached_tables)){
+            $delete_result['more_tables'] = array();
+            foreach(static::$auto_delete_from_attached_tables as $table_setting){
+                $delete_result['more_tables'][$table_setting['table']] = $table_setting;
+                $table_name = $table_setting['table'];
+                $id_key = $table_setting['id_key'];
+                $item_list_in_str = $delete_result['item_list_in_str'];
+                $sql = "DELETE FROM $table_name WHERE $id_key IN ($item_list_in_str)";
+                $db = Db::getInstance();		
+                $req = $db->prepare($sql);
+                $req->execute();
+            }
+        }
+
+        return $delete_result;
     }
 
     public static function rearange_priority($filter_arr){

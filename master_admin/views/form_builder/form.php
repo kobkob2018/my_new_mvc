@@ -114,7 +114,7 @@
             <label id="submit_label"></label>
             <input type="submit"  class="submit-btn"  value="שליחה" />
         </div>
-        <?php if(isset($this->data['form_builder']['row_id'])): ?>
+        <?php if(isset($this->data['form_builder']['row_id'])  && $this->data['form_builder']['row_id'] != 'new'): ?>
             <div class="form-group span3">
                 <hr/>
                 <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>

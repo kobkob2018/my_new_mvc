@@ -167,7 +167,7 @@
             $validate_result['fixed_values'] = $fixed_row_values;
             $files_result = $form_handler->upload_files($validate_result, $row_id);
             $this->create_success_message();
-            $this->redirect_back_to_item(array('id'=>$row_id));
+            $this->after_add_redirect($row_id);
         }
         else{
             if(!empty($validate_result['err_messages'])){
@@ -197,7 +197,7 @@
 
         $this->delete_item($this->data['item_info']['id']);
         $this->delete_success_message();
-        return $this->eject_redirect();
+        return $this->after_delete_redirect();
     }
 
     protected function delete_item_files($item_info, $fields_collection){
@@ -447,9 +447,76 @@
         $this->redirect_to(current_url());
     }
 
+
+    public function setup_item_form_handler($item_key,$item,$field_collection){
+        if(!$item || $item == null){
+            return $item;
+        }
+        
+        //setup form for specific item (like the parent item or the children items) children items
+        $form_handler = $this->init_form_handler($item_key);
+        $form_handler->update_fields_collection($field_collection);
+        $form_handler->setup_db_values($item);
+        $item['form_identifier'] = $item_key;
+        return $item;
+    }
+
+    protected function prepare_forms_for_all_list($item_list){
+        $field_collection = $this->get_fields_collection();
+          
+        $form_handler = $this->init_form_handler();
+        $form_handler->update_fields_collection($field_collection);
+    
+        foreach($item_list as $item_key=>$item){
+          $item_identifier = "item_".$item['id'];
+          //setup form for all children items
+          $item = $this->setup_item_form_handler($item_identifier,$item,$field_collection);
+          $item_list[$item_key] = $item;
+        }
+        return $item_list;
+    }
+
+    public function listUpdateSend(){
+        if(!isset($_REQUEST['row_id'])){
+          return;
+        }
+        $row_id = $_REQUEST['row_id'];
+        $item_identifier = "item_".$row_id;
+        
+        if(!isset($this->form_handlers[$item_identifier])){
+            return;
+        }
+        $form_handler = $this->form_handlers[$item_identifier];
+    
+        $validate_result = $form_handler->validate();
+        $fixed_values = $validate_result['fixed_values'];
+        if($validate_result['success']){
+            $this->update_item($row_id,$fixed_values);
+            $this->update_success_message();
+            
+        }
+        else{
+          SystemMessages::add_err_message("שגיאה בעריכת הרכיב");
+          if(!empty($validate_result['err_messages'])){
+              foreach($validate_result['err_messages'] as $message){
+                SystemMessages::add_err_message($message);
+              }
+          }
+        }
+        $this->redirect_to(current_url()); 
+      }
+
+    protected function after_add_redirect($new_row_id){
+        return $this->redirect_back_to_item(array('id'=>$row_id));
+    }
+
     protected function get_item_parents_tree($parent_id,$select_params){
         //to be overriden
         return array();
+    }
+
+    protected function after_delete_redirect(){
+        return $this->eject_redirect();
     }
 
     protected function eject_redirect(){

@@ -8,29 +8,100 @@
         <a class='go-button' href="<?= inner_url('cities/list/') ?>?item_id=<?= $this->data['current_item_id'] ?>&move_item=here">העבר לכאן</a>
     </div>
 <?php else: ?>
-    <div class="add-button-wrap">
-        <a class="button-focus" href="<?= inner_url('cities/add/') ?>?item_id=<?= $this->data['current_item_id'] ?>">הוספת עיר\אזור</a>
+    <h4>הוספת עיר</h4>
+    <div class="items-table flex-table">
+        <div class="table-th row">
+            <div class="col  col-first col-tiny">מיקום</div>
+            <div class="col">שם</div>
+            <div class="col">סטטוס</div>
+            <div class="col">סוג</div>
+            <div class="col"></div>
+        </div>
+
+        <form  class="table-tr row" action = "<?= inner_url("cities/add/") ?>?item_id=<?= $this->data['current_item_id'] ?>" method = "POST" >
+            <input type="hidden" name="sendAction" value="createSend" />
+            <input type="hidden" name="row_id" value="new" />
+            <div class="col col-first col-tiny">                   
+                <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority') ?>' />
+            </div>
+            <div class="col">
+                <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label') ?>' />
+            </div>
+
+            <div class="col">
+                <select name='row[active]' class='table-select'>
+                    <?php foreach($this->get_select_options('active') as $option): ?>
+                        <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="col">
+                <select name='row[type]' class='table-select'>
+                    <?php foreach($this->get_select_options('type') as $option): ?>
+                        <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col"><input type="submit" value="שמור" /></div>
+        </form>
+
+
     </div>
+
+    <hr/>
+
+
+
+
+
 <?PHP endif; ?>
+
+<h4>רשימת הערים באזור</h4>
 
 
 <?php if(!empty($this->data['city_list'])): ?>
     <div class="items-table flex-table">
         <div class="table-th row">
+            <div class="col  col-first col-tiny">מיקום</div>
+            <div class="col">פעיל</div>
             <div class="col">שם</div>
             <div class="col">סוג</div>
-            <div class="col">עריכה</div>
-            <div class="col">העברה</div>
-            <div class="col">מחיקה</div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
         </div>
         <?php foreach($this->data['city_list'] as $city): ?>
-            <div class="table-tr row">
-                <div class="col">
-                    <a href = "<?= inner_url('cities/list/') ?>?item_id=<?= $city['id'] ?>" title="בחירה"><?= $city['label'] ?></a>
+            <form  class="table-tr row" action = "" method = "POST" >
+                <input type="hidden" name="sendAction" value="listUpdateSend" />
+                <input type="hidden" name="row_id" value="<?= $city['id'] ?>" /> 
+                <div class="col col-first col-tiny">
+                    <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority',$city['form_identifier']) ?>' />
                 </div>
                 <div class="col">
-                    <a href = "<?= inner_url('cities/edit/') ?>?row_id=<?= $city['id'] ?>" title="עריכה">עריכה</a>
+                   <select name='row[active]' class='table-select'>
+                       <?php foreach($this->get_select_options('active',$city['form_identifier']) as $option): ?>
+                           <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
+                       <?php endforeach; ?>
+                   </select>
+               </div>
+                <div class="col">
+                    <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label',$city['form_identifier']) ?>' />
+                    <br/>
+                    <a href = "<?= inner_url('cities/list/') ?>?item_id=<?= $city['id'] ?>" title="בחירה">תתי ערים</a>
+                
                 </div>
+
+                <div class="col">
+                   
+                    <select name='row[type]' class='table-select'>
+                        <?php foreach($this->get_select_options('type',$city['form_identifier']) as $option): ?>
+                            <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+
+                </div>
+
                 <div class="col">
 
                     <?php if(isset($this->data['move_item'])): ?>
@@ -42,10 +113,13 @@
                 
                 
                 </div>
+                <div class="col"><input type="submit" value="שמור" /></div>
                 <div class="col">
-                    <a href = "<?= inner_url('cities/delete/') ?>?row_id=<?= $city['id'] ?>" title="מחק">מחק</a>
+                    <a class = 'delete-item-x' href="<?= inner_url('cities/delete/') ?>?row_id=<?= $city['id'] ?>&item_id=<?= $this->data['current_item_id'] ?>">
+                        X
+                    </a>
                 </div>
-            </div>
+            </form>
         <?php endforeach; ?>
     </div>
 <?php else: ?>

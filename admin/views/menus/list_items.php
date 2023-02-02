@@ -60,7 +60,7 @@
     </div>
 
     
-    <form  class="table-td row" action = "" method = "POST" >
+    <form  class="table-tr row" action = "" method = "POST" >
         <input type="hidden" name="sendAction" value="createSend" />
         <?php if(isset($this->data['item_id'])): ?>
             <input type="hidden" name="row[parent]" value="<?= $this->data['item_id'] ?>" />    
