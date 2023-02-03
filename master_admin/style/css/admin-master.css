@@ -118,6 +118,14 @@ h4{
     margin: 5px;
 }
 
+.form-group {
+    display: table-row;
+}
+
+.form-group .col{
+    display: table-cell;
+    padding: 10px;
+}
 .flex-table .row {
     display: table-row;
 }

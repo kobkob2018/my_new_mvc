@@ -44,6 +44,11 @@
             <li class="bar-item <?= $view->a_c_class("supplier_cubes") ?>">
                 <a href="<?= inner_url('supplier_cubes/list/') ?>" title="ניהול קוביות ספקים" class="a-link">קוביות ספקים</a>
             </li> 
+
+
+            <li class="bar-item <?= $view->a_c_class("refund_reasons") ?>">
+                <a href="<?= inner_url('refund_reasons/list/') ?>" title="סיבות זיכוי" class="a-link">סיבות זיכוי</a>
+            </li> 
         <?php endif; ?>
 
     </ul>

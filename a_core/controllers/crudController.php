@@ -68,7 +68,7 @@
             $this->update_item($row_id,$fixed_values);
             $files_result = $form_handler->upload_files($validate_result, $row_id);
             $this->update_success_message();
-            $this->redirect_back_to_item($this->data['item_info']);
+            $this->after_edit_redirect($this->data['item_info']);
         }
         else{
             if(!empty($validate_result['err_messages'])){
@@ -504,7 +504,7 @@
           }
         }
         $this->redirect_to(current_url()); 
-      }
+    }
 
     protected function after_add_redirect($new_row_id){
         return $this->redirect_back_to_item(array('id'=>$row_id));
@@ -525,6 +525,10 @@
   
     protected function redirect_back_to_item($item_info){
         return $this->redirect_to($this->url_back_to_item($item_info));
+    }
+
+    protected function after_edit_redirect($item_info){
+        return $this->redirect_back_to_item($item_info);
     }
 
     protected function row_error_message(){

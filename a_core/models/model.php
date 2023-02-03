@@ -59,7 +59,7 @@
     }
 
     public static function simple_find_by_table_name($filter_arr,$table_name , $select_params = "*", $payload = array()){
-      $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
+      $req = static::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
       $result = $req->fetch();
       if(isset($payload['add_custom_param'])){
         $add_custom_param = $payload['add_custom_param'];
@@ -76,7 +76,7 @@
     }
 
     public static function simple_get_list_by_table_name($filter_arr,$table_name, $select_params = "*", $payload = array()){
-      $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
+      $req = static::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
       $result = $req->fetchAll();
       if(isset($payload['add_custom_param'])){
         $add_custom_param = $payload['add_custom_param'];
@@ -97,8 +97,14 @@
       $fields_sql_arr = array('1');
       $execute_arr = array();
       foreach($filter_arr as $key=>$value){
-          $fields_sql_arr[] = "$key = :$key";
-          $execute_arr[$key] = $value;
+        if(is_null($value)){
+          $fields_sql_arr[] = " $key IS NULL ";
+        }
+        else{
+
+            $fields_sql_arr[] = "$key = :$key";
+            $execute_arr[$key] = $value;
+        }
       }
       
       $fields_sql = implode(" AND ",$fields_sql_arr);
