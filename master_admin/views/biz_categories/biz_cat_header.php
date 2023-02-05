@@ -13,7 +13,7 @@
             <?php if($parent_item['is_current']): ?>
                 <?= $parent_item['label'] ?>
                 <?php else: ?>
-                <a href = "<?= inner_url("biz_categories/list/") ?>?item_id=<?= $parent_item['id'] ?>">
+                <a href = "<?= inner_url("biz_categories/list/") ?>?row_id=<?= $parent_item['id'] ?>">
                 <?= $parent_item['label'] ?>
             </a>
             > 
@@ -25,11 +25,12 @@
 
         
 <div class="item-edit-menu">
-    <a href = "<?= inner_url('biz_categories/list/') ?>?item_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/list/') ?>">תתי קטגוריה</a>
+    <a href = "<?= inner_url('biz_categories/list/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/list/') ?>">תתי קטגוריה</a>
      | 
      <a href = "<?= inner_url('biz_categories/edit/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/edit/') ?>">עריכה</a>
      | 
-     <a href = "<?= inner_url('biz_categories/select_cities/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/select_cities/') ?>">שיוך ערים</a>
+     <a href = "<?= inner_url('biz_categories/select_cities/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/select_cities/') ?>">שיוך ערים</a> 
+    
 </div>
 <hr/>
 

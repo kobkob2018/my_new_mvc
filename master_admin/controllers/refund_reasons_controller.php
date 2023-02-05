@@ -1,9 +1,10 @@
 <?php
   class Refund_reasonsController extends CrudController{
-    public $add_models = array("refund_reasons","users");
+    public $add_models = array("refund_reasons","users", "biz_categories");
 
     protected function init_setup($action){
         $user_id = $this->add_user_info_data();
+        $cat_id = $this->add_cat_info_data();
         return parent::init_setup($action);
     }
 
@@ -35,21 +36,48 @@
         }
     }
 
+    protected function add_cat_info_data(){
+        if(isset($this->data['cat_info'])){
+            if($this->data['cat_info']){
+                return $this->data['cat_info']['id'];
+            }
+            return false;
+        }
+        if(!isset($_GET['cat_id'])){
+            return false;
+        }
+        $cat_id = $_GET['cat_id']; 
+        $cat_info = Biz_categories::get_by_id($cat_id, 'id, label');
+        $this->data['cat_info'] = $cat_info;
+        if($cat_info && isset($cat_info['id'])){
+            return $cat_info['id'];
+        }
+    }
+
     protected function get_base_filter(){
+        $filter_arr = array();
         $user_id = $this->add_user_info_data();
+        $cat_id = $this->add_cat_info_data();
         if(!$user_id){
-            return array("user_id"=>null);
+            $user_id = null;
+        }
+        if(!$cat_id){
+            $cat_id = null;
         }
 
-        $filter_arr = array(
-            'user_id'=>$user_id,
-        );  
+        $filter_arr['user_id'] = $user_id;
+        $filter_arr['cat_id'] = $cat_id;
         return $filter_arr;     
     }
 
     public function add_heading_url_params(){
         if(isset($this->data['user_info']) && $this->data['user_info']){
             return "&user_id=".$this->data['user_info']['id'];
+        }
+
+
+        if(isset($this->data['cat_info']) && $this->data['cat_info']){
+            return "&cat_id=".$this->data['cat_info']['id'];
         }
         return "";
     }
@@ -89,11 +117,11 @@
     }
 
     public function eject_url(){
-      return inner_url('refund_reasons/list/?user_id='.$this->data['user_info']['id']);
+      return inner_url("refund_reasons/list/?n=1".$this->add_heading_url_params());
     }
 
     public function url_back_to_item($item_info){
-      return inner_url("refund_reasons/edit/?row_id=".$item_info['id'].add_heading_url_params());
+      return inner_url("refund_reasons/edit/?row_id=".$item_info['id'].$this->add_heading_url_params());
     }
 
     public function after_add_redirect($row_id){
@@ -122,6 +150,10 @@
         if(isset($this->data['user_info']) && $this->data['user_info']){
 
             $fixed_values['user_id'] = $this->data['user_info']['id'];
+        }
+        if(isset($this->data['cat_info']) && $this->data['cat_info']){
+
+            $fixed_values['cat_id'] = $this->data['cat_info']['id'];
         }
         return Refund_reasons::create($fixed_values);
     }

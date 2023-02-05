@@ -125,10 +125,11 @@
             </div>
         </div>
         <?php if(isset($this->data['form_builder']['row_id'])  && $this->data['form_builder']['row_id'] != 'new'): ?>
-            <div class="form-group">
+            <div class="delete-box">
                 <hr/>
                 <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>
             </div>
         <?php endif; ?>
     </form>
+
 </div>
