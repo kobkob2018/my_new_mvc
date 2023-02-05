@@ -9,7 +9,7 @@
             'id_key'=>'cat_id'
         ),
         'user_cat'=>array(
-            'table'=>'user_city',
+            'table'=>'user_cat',
             'id_key'=>'cat_id'
         ),
         'user_cat_city'=>array(

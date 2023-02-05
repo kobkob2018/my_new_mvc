@@ -37,6 +37,12 @@
       return inner_url("$controller/list/");
     }
 
+    public function action_url(){
+      global $controller;
+      global $action;
+      return inner_url("$controller/$action/");
+    }
+
     public function routing_is($relative_url){
         global $controller,$action;
         $current_relative_url = "$controller/$action/";

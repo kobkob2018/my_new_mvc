@@ -5,11 +5,11 @@
 
 <?php if(isset($this->data['move_item'])): ?>
     <div class="move-item-button-wrap">
-        <a class='go-button' href="<?= inner_url('biz_categories/list/') ?>?item_id=<?= $this->data['current_item_id'] ?>&move_item=here">העבר לכאן</a>
+        <a class='go-button' href="<?= inner_url('biz_categories/list/') ?>?row_id=<?= $this->data['current_item_id'] ?>&move_item=here">העבר לכאן</a>
     </div>
 <?php else: ?>
     <div class="add-button-wrap">
-        <a class="button-focus" href="<?= inner_url('biz_categories/add/') ?>?item_id=<?= $this->data['current_item_id'] ?>">הוספת קטגוריה</a>
+        <a class="button-focus" href="<?= inner_url('biz_categories/add/') ?>?row_id=<?= $this->data['current_item_id'] ?>">הוספת קטגוריה</a>
     </div>
 <?PHP endif; ?>
 
@@ -25,7 +25,7 @@
         <?php foreach($this->data['cat_list'] as $cat): ?>
             <div class="table-tr row">
                 <div class="col">
-                    <a href = "<?= inner_url('biz_categories/list/') ?>?item_id=<?= $cat['id'] ?>" title="בחירה"><?= $cat['label'] ?></a>
+                    <a href = "<?= inner_url('biz_categories/list/') ?>?row_id=<?= $cat['id'] ?>" title="בחירה"><?= $cat['label'] ?></a>
                 </div>
                 <div class="col">
                     <a href = "<?= inner_url('biz_categories/edit/') ?>?row_id=<?= $cat['id'] ?>" title="עריכה">עריכה</a>
@@ -33,7 +33,7 @@
                 <div class="col">
 
                     <?php if(isset($this->data['move_item'])): ?>
-                        <a class='go-button' href="<?= inner_url('biz_categories/list/') ?>?item_id=<?= $cat['id'] ?>&move_item=here">העבר לכאן</a>
+                        <a class='go-button' href="<?= inner_url('biz_categories/list/') ?>?row_id=<?= $cat['id'] ?>&move_item=here">העבר לכאן</a>
                     <?php else: ?>
 
                         <a href = "<?= inner_url('biz_categories/list/') ?>?move_item=<?= $cat['id'] ?>" title="העברה">העברה</a>

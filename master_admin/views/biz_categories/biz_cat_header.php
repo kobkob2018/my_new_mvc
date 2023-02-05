@@ -30,6 +30,8 @@
      <a href = "<?= inner_url('biz_categories/edit/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/edit/') ?>">עריכה</a>
      | 
      <a href = "<?= inner_url('biz_categories/select_cities/') ?>?row_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_class('biz_categories/select_cities/') ?>">שיוך ערים</a> 
+     <br/>
+     <a href = "<?= inner_url('cat_phone_display_hours/list/') ?>?cat_id=<?= $this->data['current_item_id'] ?>" class="item-edit-a <?= $view->a_c_class('cat_phone_display_hours') ?>">תצוגת טלפון</a> 
     
 </div>
 <hr/>

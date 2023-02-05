@@ -48,11 +48,11 @@
   
     public function updateSend(){
         $row_id = false;
-        if(isset($_REQUEST['row_id'])){
-            $row_id = $_REQUEST['row_id'];
+        if(isset($_REQUEST['db_row_id'])){
+            $row_id = $_REQUEST['db_row_id'];
         }
-        elseif(isset($this->data['row_id'])){
-            $row_id = $this->data['row_id'];
+        elseif(isset($this->data['db_row_id'])){
+            $row_id = $this->data['db_row_id'];
         }
         if(!$row_id){
             return;
@@ -141,15 +141,15 @@
         }
         $form_builder_data['enctype_str'] = $enctype_str;
         $form_builder_data['sendAction'] = $sendAction;
-        $form_builder_data['row_id'] = $row_id;
+        $form_builder_data['db_row_id'] = $row_id;
         $form_builder_data['fields_collection'] = $fields_collection;
         $this->data['form_builder'] = $form_builder_data;
     }
 
     public function createSend(){
+
         $form_handler = $this->init_form_handler();
         $validate_result = $form_handler->validate();
-        
         if($validate_result['success']){
             $fixed_values = $validate_result['fixed_values'];
             $row_id = $this->create_item($fixed_values);
@@ -262,8 +262,8 @@
         elseif($item_identifier == 'here'){
             $item_to_move_id = session__get($controller.'_item_to_move');
             $parent_id = 0;
-            if(isset($_GET['item_id'])){
-                $parent_id = $_GET['item_id'];
+            if(isset($_GET['row_id'])){
+                $parent_id = $_GET['row_id'];
             }
             $this->get_item_parents_tree($parent_id,'id');
             $parent_tree = $this->get_item_parents_tree($parent_id,'id');
@@ -477,10 +477,10 @@
     }
 
     public function listUpdateSend(){
-        if(!isset($_REQUEST['row_id'])){
+        if(!isset($_REQUEST['db_row_id'])){
           return;
         }
-        $row_id = $_REQUEST['row_id'];
+        $row_id = $_REQUEST['db_row_id'];
         $item_identifier = "item_".$row_id;
         
         if(!isset($this->form_handlers[$item_identifier])){
@@ -507,7 +507,7 @@
     }
 
     protected function after_add_redirect($new_row_id){
-        return $this->redirect_back_to_item(array('id'=>$row_id));
+        return $this->redirect_back_to_item(array('id'=>$new_row_id));
     }
 
     protected function get_item_parents_tree($parent_id,$select_params){

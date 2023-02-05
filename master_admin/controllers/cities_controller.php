@@ -4,23 +4,14 @@ class CitiesController extends CrudController{
 
 
   protected function init_setup($action){
-      $current_item_id = false;
-      if(isset($_GET['item_id'])){
-          $current_item_id = $_GET['item_id'];
-      }
-      elseif(isset($_GET['row_id'])){
+      $current_item_id = '0';
+      if(isset($_GET['row_id'])){
           $current_item_id = $_GET['row_id'];
-      }
-      if($current_item_id){
           $item_parent_tree = Cities::get_item_parents_tree($current_item_id,'id, label');
           $this->data['item_parent_tree'] = $item_parent_tree;
       }
-      else{
-          $current_item_id = '0';
-      }
       $this->data['current_item_id'] = $current_item_id;
-
-
+      
       if(isset($_REQUEST['move_item'])){
           return $this->move_item_prepare($_REQUEST['move_item']);
       }
@@ -105,9 +96,6 @@ class CitiesController extends CrudController{
   }
 
   public function include_edit_view(){
-    if(isset($this->data['item_info'])){
-      $this->data['city_info'] = $this->data['item_info'];
-    }
     $this->include_view('cities/edit.php');
   }
 
@@ -142,17 +130,19 @@ class CitiesController extends CrudController{
   }
 
   protected function after_delete_redirect(){
-    if(isset($_REQUEST['item_id'])){
-      return $this->redirect_to(inner_url("cities/list/?item_id=".$_REQUEST['item_id']));
+    if($this->data['item_info']){
+      if(isset($this->data['item_info']['parent'])){
+        return $this->redirect_to(inner_url("cities/list/?row_id=".$this->data['item_info']['parent']));
+      }
     }
     return $this->eject_redirect();
   }
 
   protected function after_add_redirect($new_row_id){
-    if(isset($_REQUEST['item_id'])){
-      return $this->redirect_to(inner_url("cities/list/?item_id=".$_REQUEST['item_id']));
+    if(isset($_REQUEST['row_id'])){
+      return $this->redirect_to(inner_url("cities/list/?row_id=".$_REQUEST['row_id']));
     }
-    return $this->redirect_back_to_item(array('id'=>$row_id));
+    return $this->redirect_back_to_item(array('id'=>$new_row_id));
   }
 
   public function eject_url(){
@@ -160,7 +150,7 @@ class CitiesController extends CrudController{
   }
 
   public function url_back_to_item($item_info){
-    return inner_url("cities/list/?item_id=".$item_info['id']);
+    return inner_url("cities/list/?row_id=".$item_info['id']);
   }
 
   public function delete_url($item_info){
@@ -177,8 +167,8 @@ class CitiesController extends CrudController{
 
   protected function create_item($fixed_values){
       $parent = '0';
-      if(isset($_REQUEST['item_id'])){
-          $parent = $_REQUEST['item_id'];
+      if(isset($_REQUEST['row_id'])){
+          $parent = $_REQUEST['row_id'];
       }
       if(isset($_REQUEST['parent'])){
           $parent = $_REQUEST['parent'];

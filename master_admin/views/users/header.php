@@ -15,6 +15,8 @@
         <a href = "<?= inner_url('user_phones/list/') ?>?user_id=<?= $this->data['user_info']['id'] ?>" class="item-edit-a <?= $view->a_c_class('user_phones') ?>">מספרי טלפון</a>
         |
         <a href = "<?= inner_url('refund_reasons/list/') ?>?user_id=<?= $this->data['user_info']['id'] ?>" class="item-edit-a <?= $view->a_c_class('refund_reasons') ?>">סיבות זיכוי</a>
+        |
+        <a href = "<?= inner_url('user_lead_send_times/list/') ?>?user_id=<?= $this->data['user_info']['id'] ?>" class="item-edit-a <?= $view->a_c_class('user_lead_send_times') ?>">זמנים לשליחת ליד</a>
     </div>
     <hr/>
 

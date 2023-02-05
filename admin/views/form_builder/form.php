@@ -3,8 +3,8 @@
     <form name="send_form" class="send-form form-validate" id="send_form" method="post" action="" <?= $this->data['form_builder']['enctype_str'] ?>>
         <input type="hidden" name="sendAction" value="<?= $this->data['form_builder']['sendAction'] ?>" />
     
-        <?php if(isset($this->data['form_builder']['row_id'])): ?>
-            <input type="hidden" name="row_id" value="<?= $this->data['form_builder']['row_id'] ?>" />
+        <?php if(isset($this->data['form_builder']['db_row_id'])): ?>
+            <input type="hidden" name="db_row_id" value="<?= $this->data['form_builder']['db_row_id'] ?>" />
         <?php endif; ?>
 
             
@@ -36,7 +36,7 @@
                     
                         
                         <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
-                            <?php if(isset($build_field['select_blank'])): ?>
+                            <?php if(isset($build_field['select_blank'])  && $build_field['select_blank']): ?>
                                 <option value="<?= $build_field['select_blank']['value'] ?>"><?= $build_field['select_blank']['label'] ?></option>
                             <?php endif; ?>
                             <?php foreach($this->get_select_options($field_key) as $option): ?>
@@ -124,7 +124,7 @@
                 <input type="submit"  class="submit-btn"  value="שליחה" />
             </div>
         </div>
-        <?php if(isset($this->data['form_builder']['row_id'])  && $this->data['form_builder']['row_id'] != 'new'): ?>
+        <?php if(isset($this->data['form_builder']['db_row_id'])  && $this->data['form_builder']['db_row_id'] != 'new'): ?>
             <div class="delete-box">
                 <hr/>
                 <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>

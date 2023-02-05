@@ -48,22 +48,22 @@
         'site_id'=>array(
             'type'=>'hidden'
         ),
-
-        'menu_id'=>array(
-            'type'=>'hidden'
-        ),   
-
         'priority'=>array(
             'label'=>'מיקום',
             'type'=>'text',
             'default'=>'100',
         ),
 
-        'title'=>array(
+        'label'=>array(
             'label'=>'תווית',
             'type'=>'text',
             'validation'=>'required'
         ),
+
+
+        'menu_id'=>array(
+            'type'=>'hidden'
+        ),   
 
         'link_type'=>array(
             'label'=>'סוג הקישור',
