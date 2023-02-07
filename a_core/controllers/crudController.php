@@ -461,14 +461,16 @@
         return $item;
     }
 
-    protected function prepare_forms_for_all_list($item_list){
-        $field_collection = $this->get_fields_collection();
+    protected function prepare_forms_for_all_list($item_list, $field_collection = false, $prefix = "item_"){
+        if(!$field_collection){
+            $field_collection = $this->get_fields_collection();
+        }
           
         $form_handler = $this->init_form_handler();
         $form_handler->update_fields_collection($field_collection);
     
         foreach($item_list as $item_key=>$item){
-          $item_identifier = "item_".$item['id'];
+          $item_identifier = $prefix.$item['id'];
           //setup form for all children items
           $item = $this->setup_item_form_handler($item_identifier,$item,$field_collection);
           $item_list[$item_key] = $item;
@@ -476,12 +478,12 @@
         return $item_list;
     }
 
-    public function listUpdateSend(){
+    public function listUpdateSend($prefix = "item_"){
         if(!isset($_REQUEST['db_row_id'])){
           return;
         }
         $row_id = $_REQUEST['db_row_id'];
-        $item_identifier = "item_".$row_id;
+        $item_identifier = $prefix.$row_id;
         
         if(!isset($this->form_handlers[$item_identifier])){
             return;

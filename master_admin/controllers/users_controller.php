@@ -149,7 +149,7 @@
         }
         
         if(!isset($_REQUEST['confirm_delete'])){
-            $this->data['user'] = Users::get_by_id($_GET['row_id']);
+            $this->data['user_info'] = Users::get_by_id($_GET['row_id']);
             $this->include_view('users/confirm_delete.php');
             return;
         }

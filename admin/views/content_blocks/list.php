@@ -18,7 +18,7 @@
 <h4>תוכן מחולק לבלוקים</h4>
 <div class="content-blocks">
     <?php if(!isset($this->data['set_priority_item'])): ?>
-        <div class="add-content-block-wrap">
+        <div class="add-item-wrap">
             <a class="focus-box button-focus" href="<?= inner_url('blocks/add/') ?>?page_id=<?= $this->data['page_info']['id'] ?>">הוספת בלוק</a>
         </div>
     <?php endif; ?>

@@ -5,13 +5,18 @@
 
     protected function init_setup($action){
         $user_id = $this->add_user_info_data();
+        if(!$user_id){
+            return $this->redirect_to(inner_url("users/list/"));
+            return false;
+        }
+
         return parent::init_setup($action);
     }
 
     public function list(){
         //if(session__isset())
         $filter_arr = $this->get_base_filter();
-        $hours_info = User_lead_send_times::get_list($filter_arr,"id");      
+        $hours_info = user_lead_send_times::get_list($filter_arr,"id");      
         $this->data['hours_info'] = $hours_info;
         $user_id = $_GET['user_id'];
         if(empty($hours_info)){
@@ -54,7 +59,15 @@
     }
 
     public function updateSend(){
-        return parent::updateSend();
+        $row_id = $_REQUEST['row_id'];
+        $fixed_values = array(
+            'display'=>$_REQUEST['row']['display'],
+            'time_groups'=>json_encode($_REQUEST['row']['time_groups'])
+        );
+        
+        User_lead_send_times::update($row_id, $fixed_values);
+        $this->update_success_message();
+        return $this->redirect_to(inner_url('user_lead_send_times/edit/?user_id='.$this->data['user_info']['id']).'&row_id='.$row_id);
     }
 
     public function add(){
@@ -62,16 +75,53 @@
     }       
 
     public function createSend(){
-        return parent::createSend();
-    }
-
-    public function delete(){
-        return parent::delete();      
+        $user_id = $this->add_user_info_data();
+        $fixed_values = array(
+            'user_id'=>$user_id,
+            'display'=>$_REQUEST['row']['display'],
+            'time_groups'=>json_encode($_REQUEST['row']['time_groups'])
+        );
+        $row_id = User_lead_send_times::create($fixed_values);
+        $this->update_success_message();
+        return $this->redirect_to(inner_url('user_lead_send_times/edit/?user_id='.$this->data['user_info']['id']).'&row_id='.$row_id);
     }
 
     public function build_time_groups($field_key, $build_field){
-        echo "hours here!!!";
-        //this will be the hours field
+        $hour_groups_json = $this->get_form_input($field_key);
+        $hour_groups = json_decode($hour_groups_json, true);
+        if(!$hour_groups){
+            $hour_groups = array();
+        }
+        $options = array(
+            'hours'=>array(),
+            'minutes'=>array(),
+            'days'=>array(
+                '1'=>array('label'=>'ראשון','value'=>'1','default_checked'=>'checked'),
+                '2'=>array('label'=>'שני','value'=>'2','default_checked'=>'checked'),
+                '3'=>array('label'=>'שלישי','value'=>'3','default_checked'=>'checked'),
+                '4'=>array('label'=>'רביעי','value'=>'4','default_checked'=>'checked'),
+                '5'=>array('label'=>'חמישי','value'=>'5','default_checked'=>'checked'),
+                '6'=>array('label'=>'שישי','value'=>'6','default_checked'=>''),
+                '7'=>array('label'=>'שבת','value'=>'7','default_checked'=>'')
+            )
+        );
+        for($i=0; $i<25; $i++){
+            $value = str_pad($i,2,"0",STR_PAD_LEFT);
+           // $value = number_format((int)$i, 2);
+            $options['hours'][] = array('value'=>$value);
+        }
+        for($i=0; $i<60; $i++){
+            $value = str_pad($i,2,"0",STR_PAD_LEFT);
+            $options['minutes'][] = array('value'=>$value);
+        }  
+
+        $info_payload = array(
+            'fields'=>array(
+                $field_key=>array('hour_groups'=>$hour_groups)
+            ),
+            'options'=>$options
+        );
+        $this->include_view('form_builder/hours_select.php',$info_payload);
     } 
 
     public function include_edit_view(){
@@ -92,17 +142,9 @@
 
     }
 
-    protected function delete_success_message(){
-        SystemMessages::add_success_message("הזמנים נמחקו");
-    }
-
     protected function row_error_message(){
       SystemMessages::add_err_message("לא נבחר לקוח");
     }   
-
-    protected function delete_item($row_id){
-      return User_lead_send_times::delete($row_id);
-    }
 
     protected function get_item_info($row_id){
       return User_lead_send_times::get_by_id($row_id);
@@ -112,21 +154,8 @@
       return inner_url('user_lead_send_times/list/?user_id='.$this->data['user_info']['id']);
     }
 
-    public function url_back_to_item($item_info){
-      return inner_url("user_lead_send_times/list/?user_id=".$this->data['user_info']['id']);
-    }
-
     protected function get_fields_collection(){
       return User_lead_send_times::setup_field_collection();
-    }
-
-    protected function update_item($item_id,$update_values){
-      return User_lead_send_times::update($item_id,$update_values);
-    }
-
-    protected function create_item($fixed_values){
-        $fixed_values['user_id'] = $this->data['user_info']['id'];
-        return User_lead_send_times::create($fixed_values);
     }
     
   }

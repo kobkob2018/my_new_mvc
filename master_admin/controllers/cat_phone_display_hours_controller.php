@@ -1,6 +1,6 @@
 <?php
 
-  class Cat_phone_display_hoursController extends CrudController{
+  class cat_phone_display_hoursController extends CrudController{
     public $add_models = array("cat_phone_display_hours", "biz_categories");
 
     protected function init_setup($action){
@@ -63,7 +63,15 @@
     }
 
     public function updateSend(){
-        return parent::updateSend();
+        $row_id = $_REQUEST['row_id'];
+        $fixed_values = array(
+            'display'=>$_REQUEST['row']['display'],
+            'time_groups'=>json_encode($_REQUEST['row']['time_groups'])
+        );
+        
+        Cat_phone_display_hours::update($row_id, $fixed_values);
+        $this->update_success_message();
+        return $this->redirect_to(inner_url('cat_phone_display_hours/edit/?cat_id='.$this->data['cat_info']['id']).'&row_id='.$row_id);
     }
 
     public function add(){
@@ -71,16 +79,53 @@
     }       
 
     public function createSend(){
-        return parent::createSend();
-    }
-
-    public function delete(){
-        return parent::delete();      
+        $cat_id = $this->add_cat_info_data();
+        $fixed_values = array(
+            'cat_id'=>$cat_id,
+            'display'=>$_REQUEST['row']['display'],
+            'time_groups'=>json_encode($_REQUEST['row']['time_groups'])
+        );
+        $row_id = Cat_phone_display_hours::create($fixed_values);
+        $this->update_success_message();
+        return $this->redirect_to(inner_url('cat_phone_display_hours/edit/?cat_id='.$this->data['cat_info']['id']).'&row_id='.$row_id);
     }
 
     public function build_time_groups($field_key, $build_field){
-        echo "hours here!!!";
-        //this will be the hours field
+        $hour_groups_json = $this->get_form_input($field_key);
+        $hour_groups = json_decode($hour_groups_json, true);
+        if(!$hour_groups){
+            $hour_groups = array();
+        }
+        $options = array(
+            'hours'=>array(),
+            'minutes'=>array(),
+            'days'=>array(
+                '1'=>array('label'=>'ראשון','value'=>'1','default_checked'=>'checked'),
+                '2'=>array('label'=>'שני','value'=>'2','default_checked'=>'checked'),
+                '3'=>array('label'=>'שלישי','value'=>'3','default_checked'=>'checked'),
+                '4'=>array('label'=>'רביעי','value'=>'4','default_checked'=>'checked'),
+                '5'=>array('label'=>'חמישי','value'=>'5','default_checked'=>'checked'),
+                '6'=>array('label'=>'שישי','value'=>'6','default_checked'=>''),
+                '7'=>array('label'=>'שבת','value'=>'7','default_checked'=>'')
+            )
+        );
+        for($i=0; $i<25; $i++){
+            $value = str_pad($i,2,"0",STR_PAD_LEFT);
+           // $value = number_format((int)$i, 2);
+            $options['hours'][] = array('value'=>$value);
+        }
+        for($i=0; $i<60; $i++){
+            $value = str_pad($i,2,"0",STR_PAD_LEFT);
+            $options['minutes'][] = array('value'=>$value);
+        }  
+
+        $info_payload = array(
+            'fields'=>array(
+                $field_key=>array('hour_groups'=>$hour_groups)
+            ),
+            'options'=>$options
+        );
+        $this->include_view('form_builder/hours_select.php',$info_payload);
     } 
 
     public function include_edit_view(){
@@ -101,17 +146,9 @@
 
     }
 
-    protected function delete_success_message(){
-        SystemMessages::add_success_message("הזמנים נמחקו");
-    }
-
     protected function row_error_message(){
       SystemMessages::add_err_message("לא נבחרה קטגוריה");
     }   
-
-    protected function delete_item($row_id){
-      return Cat_phone_display_hours::delete($row_id);
-    }
 
     protected function get_item_info($row_id){
       return Cat_phone_display_hours::get_by_id($row_id);
@@ -121,21 +158,8 @@
       return inner_url('cat_phone_display_hours/list/?cat_id='.$this->data['cat_info']['id']);
     }
 
-    public function url_back_to_item($item_info){
-      return inner_url("cat_phone_display_hours/list/?cat_id=".$this->data['cat_info']['id']);
-    }
-
     protected function get_fields_collection(){
       return Cat_phone_display_hours::setup_field_collection();
-    }
-
-    protected function update_item($item_id,$update_values){
-      return Cat_phone_display_hours::update($item_id,$update_values);
-    }
-
-    protected function create_item($fixed_values){
-        $fixed_values['cat_id'] = $this->data['cat_info']['id'];
-        return Cat_phone_display_hours::create($fixed_values);
     }
     
   }

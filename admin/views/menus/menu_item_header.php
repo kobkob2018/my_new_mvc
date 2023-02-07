@@ -1,7 +1,4 @@
 <div class="sub-header">
-
-    
-    <h3>ניהול ערים ואזורים</h3>
     <?php if(isset($this->data['item_parent_tree'])): ?>
         <h3><?= $this->data['page_title'] ?> 
             <br/>

@@ -6,7 +6,7 @@
     public static $fields_collection = array(
 
         'display'=>array(
-            'label'=>'שליחה לפי לוח זמנים',
+            'label'=>'הצג לפי שעות',
             'type'=>'select',
             'default'=>'0',
             'select_blank'=>false,

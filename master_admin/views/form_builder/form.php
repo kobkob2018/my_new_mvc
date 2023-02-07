@@ -36,7 +36,7 @@
                     
                         
                         <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
-                            <?php if(isset($build_field['select_blank']) && $build_field['select_blank']): ?>
+                            <?php if(isset($build_field['select_blank'])  && $build_field['select_blank']): ?>
                                 <option value="<?= $build_field['select_blank']['value'] ?>"><?= $build_field['select_blank']['label'] ?></option>
                             <?php endif; ?>
                             <?php foreach($this->get_select_options($field_key) as $option): ?>
@@ -116,7 +116,7 @@
                 </div>
             <?php endif; ?>   
         <?php endforeach; ?>
-        <div class="form-group">
+        <div class="form-group submit-form-group">
             <div class="form-group-st">
                 <label id="submit_label"></label>
             </div>

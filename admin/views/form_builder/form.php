@@ -116,7 +116,7 @@
                 </div>
             <?php endif; ?>   
         <?php endforeach; ?>
-        <div class="form-group">
+        <div class="form-group submit-form-group">
             <div class="form-group-st">
                 <label id="submit_label"></label>
             </div>
@@ -124,7 +124,7 @@
                 <input type="submit"  class="submit-btn"  value="שליחה" />
             </div>
         </div>
-        <?php if(isset($this->data['form_builder']['db_row_id'])  && $this->data['form_builder']['db_row_id'] != 'new'): ?>
+        <?php if(isset($this->data['item_info']) && isset($this->data['form_builder']['db_row_id'])  && $this->data['form_builder']['db_row_id'] != 'new'): ?>
             <div class="delete-box">
                 <hr/>
                 <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>
