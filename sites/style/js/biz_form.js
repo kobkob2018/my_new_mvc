@@ -8,7 +8,7 @@ initBizForm = ()=>{
             bizForm = new BizForm(wrapElement);
         }
     );
-}
+} 
 
 class BizForm{
 
