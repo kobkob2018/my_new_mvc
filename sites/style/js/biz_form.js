@@ -16,6 +16,7 @@ class BizForm{
         this.wrapElement = wrapElement;
         this.placeholder = this.wrapElement.querySelector(".biz-form-placeholder");
         this.formElement = this.wrapElement.querySelector("form.biz-form");
+        this.formValidator = new formValidator(this.formElement);
         //return;
         this.fetchUrl = this.placeholder.dataset.fetch_url;
         this.form_id = this.placeholder.dataset.form_id;
@@ -115,6 +116,7 @@ class BizForm{
             childEl.classList.add(className);
             this.placeholder.insertBefore(childEl, this.appendSpot);
         }); 
+        this.formValidator.updateInputs();
         return have_new_elements;
     }
     bindCatSelectEvents(){
@@ -138,16 +140,177 @@ class BizForm{
         }
     }
     submitEventListener(event){
-        if(this.submitButton.dataset.state == "ready"){
+        if(this.submitButton.dataset.status == "ready"){
             const selected_cat = this.selected_cat;
             if(this.selected_cat == ""){
                 console.log("no category selected");
                 return;
             }
-            alert("we are going to submit!!!");
+            if(this.formValidator.validate()){
+                alert("we are going to submit!!!");
+            }
+            else{
+                //alert("not valid yet");
+            }
+            
         }
         else{
+            this.formValidator.validate();
             console.log("not ready");
         }
+    }
+}
+
+class formValidator{
+    constructor(formElement) {
+        this.formElement = formElement;
+        this.formElement.querySelector(".phoneNumber").addEventListener("keypress", function preventKeyPress(evt){
+            if (evt.which < 48 || evt.which > 57) {
+                evt.preventDefault();
+            }
+        });
+        this.inputKeypressListenerBinded = this.inputKeypressListener.bind(this);
+        this.blurListenerBinded = this.blurListener.bind(this);
+        this.selectChangeListenerBinded = this.selectChangeListener.bind(this);
+        this.updateInputs();
+
+    }
+    updateInputs(){
+        this.formElement.querySelectorAll("input[type=text].validate").forEach(input=> {
+            this.bindInputValidate(input);
+        });
+
+        this.formElement.querySelectorAll("select.validate").forEach(input=> {
+            this.bindselectValidate(input);
+        });        
+
+        this.formElement.querySelectorAll(".validate").forEach(input=> {
+            this.bindBlurListener(input);
+        });
+    }
+
+    bindInputValidate(input){
+        if(input.classList.contains('validate-binded')){
+            return;
+        }
+        input.classList.add('validate-binded');
+      
+        input.addEventListener("keypress",this.inputKeypressListenerBinded, true);
+    }
+    bindselectValidate(select){
+        if(select.classList.contains('validate-binded')){
+            return;
+        }
+        select.classList.add('validate-binded');
+      
+        select.addEventListener("change",this.selectChangeListenerBinded, true);        
+    }
+    bindBlurListener(input){
+        if(input.classList.contains('blur-binded')){
+            return;
+        }
+        input.classList.add('blur-binded');
+      
+        input.addEventListener("blur",this.blurListenerBinded, true);
+    }
+    validate(event){
+        let isValid = true;
+        isValid = this.validateErrors(isValid);
+        return isValid;
+    }
+
+    validateErrors(isValid){
+        const validateFileds = this.formElement.querySelectorAll(".validate");
+        validateFileds.forEach(field => {
+            //alert(field.name);
+            if(!this.validateField(field)){
+                console.log("val "+ field.name);
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+    showTooltip(field, message){
+        
+        const formGroup = field.closest(".form-group");
+        let tooltip = formGroup.querySelector(".tooltip");
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            formGroup.insertBefore(tooltip, field);
+        }
+        tooltip.innerHTML = message;
+        tooltip.classList.remove("hidden");
+    }
+    hideTooltip(field){
+        const formGroup = field.closest(".form-group");
+        let tooltip = formGroup.querySelector(".tooltip");
+        if(tooltip){
+            tooltip.innerHTML = "";
+            tooltip.classList.add("hidden");
+        }
+    }
+    inputKeypressListener(event){
+        if(event.target.classList.contains('key-validate')){
+            this.validateField(event.target);
+        }
+    }
+
+    selectChangeListener(event){
+        if(event.target.classList.contains('key-validate')){
+            this.validateField(event.target);
+        }
+    }
+
+    blurListener(event){
+        this.validateField(event.target);
+    }
+
+    validateField(field){
+        if(!field.classList.contains('key-validate')){
+            field.classList.add('key-validate');
+        }
+        const checkMsg = this.checkField(field);
+        if(checkMsg){
+            let message = field.dataset['msg_'+checkMsg];
+            if(typeof (message) == "undefined"){
+                message = "*";
+            }
+            console.log(message);
+            this.showTooltip(field,message);
+        }
+        else{
+            this.hideTooltip(field);
+        }
+    }
+    checkField(field){
+        // Don't validate submits, buttons, file and reset inputs, and disabled fields
+        //alert(field.name);
+
+        // Get validity
+        let validity = field.validity;
+        // If valid, return null
+        if (validity.valid) return;
+
+        // If field is required and empty
+        if (validity.valueMissing) return 'required';
+
+        // If too short
+        if (validity.tooShort) return 'invalid';
+
+        // If too long
+        if (validity.tooLong) return 'invalid';
+
+        // If pattern doesn't match
+        if (validity.patternMismatch) {
+            // Otherwise, generic error
+            return 'invalid';
+
+        }
+
+    };
+
+    showFieldErrorMessage(field,message){
+        //alert(message);
     }
 }

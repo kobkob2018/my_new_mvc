@@ -69,15 +69,18 @@
 
     public function get_cat_final_fields($return_array){
         $parent_tree = Biz_categories::get_item_parents_tree($return_array['cat_id'],'*');
-        $final_setup = array(
-            'remove_fields'=>array()
-        );
-        
+        $extra_fields = array();
+        foreach($parent_tree as $cat){
+            if($cat['extra_fields'] != ''){
+                $extra_fields[] = $cat['extra_fields'];
+            }
+        }
         $info = array(
             'parent_tree'=>$parent_tree,
-            'final_setup'=>$final_setup
+            'extra_fields'=>$extra_fields
         );
         $return_array['html'] = $this->include_ob_view('biz_form/fetch_cat_extra_fields.php',$info);
+        $return_array['state'] = 'ready';
         return $return_array;
     }
 

@@ -135,8 +135,14 @@
             }
         }
         foreach($item_ids_in_arr as $item_id=>$page_id){
-            $page_link = $page_links[$page_id];
-            $items_final_urls[$item_id] = inner_url($page_link."/");
+            if(isset($page_links[$page_id])){
+
+                $page_link = $page_links[$page_id];
+                $items_final_urls[$item_id] = inner_url($page_link."/");
+            }
+            else{
+                $items_final_urls[$item_id] = "#";
+            }
         }
         return $items_final_urls;
     }
