@@ -13,7 +13,7 @@
         'default'=>'שדה {{label}} לא תקין',
     );
 
-    public function validate_by($method_name, $value, $validate_payload){
+    public function validate_by($method_name, $value, $validate_payload = array()){
         $method_name = "validate_by_".trim($method_name);
         if(!method_exists($this,$method_name)){
             $method_name = "validate_by_success";

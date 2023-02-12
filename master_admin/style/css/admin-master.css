@@ -118,6 +118,28 @@ h4{
     margin: 5px;
 }
 
+.form-group {
+    display: table-row;
+}
+
+.form-group .form-group-en{
+    display: table-cell;
+    padding-top: 10px;
+}
+.form-group .form-group-st{
+    display: table-cell;
+    padding-left: 10px;
+}
+.submit-form-group{
+    text-align: left;
+}
+.submit-form-group .submit-btn{
+    margin: 10px;
+    padding: 5px 20px;
+    font-size: 20px;
+    box-shadow: 3px 3px 3px gray;
+}
+
 .flex-table .row {
     display: table-row;
 }
@@ -163,6 +185,7 @@ h4{
     font-family: sans-serif;
     color: red;
     font-size: 25px;
+    font-weight: bold;
     display: block;
     position: relative;
     top: 4px;
@@ -210,7 +233,6 @@ h4{
 .button-focus:hover{
     background: #fffafa;
 }
-
 
 .go-button, .button-focus{
     background: #fefdf0;
@@ -271,6 +293,42 @@ h4{
 
 .form-group.big-text textarea{
     min-height: 400px;
+}
+
+.time-selector{
+    direction: ltr;
+}
+
+.hour-groups-template{
+    padding:10px;
+    margin-bottom:20px;
+    border: 1px solid blue;
+    background: white;
+
+}
+
+.hour-groups-template .group-times{
+    display: flex;
+    flex-wrap: wrap;
+}
+.hour-groups-template .group-times .time-selector{
+    padding-left: 20px;
+}
+
+.hour-groups-template .days-label{
+    padding-top: 10px;
+}
+
+.hour-groups-template .days-checks{
+    display: flex;
+    flex-wrap: wrap;
+}
+.hour-groups-template  .day-check-wrap{
+    padding: 5px 0px 5px 5px;
+}
+
+.hour-groups-template .delete-item-x{
+    float: left;
 }
 
 .checkbox-head{

@@ -1,4 +1,7 @@
 <?php
+
+//this one is used at the categories controller
+//in the cities controller the city_cat model is used
   class Cat_city extends TableModel{
 
     protected static $main_table = 'cat_city';

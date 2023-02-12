@@ -25,5 +25,10 @@
             return $assets_dir;
         }
 
+        public function add_global_essential_ajax_info(){
+            $print_resut = $this->action_data;
+            $print_resut['system'] = 'sites';
+            return $print_resut;
+        }
 	}
 ?>

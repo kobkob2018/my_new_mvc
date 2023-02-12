@@ -84,5 +84,14 @@
                 </li>
             <?php endif; ?>          
         </ul>
+
+
+        <ul class="item-group">
+
+            <li class="bar-item <?= $view->a_class("pages/list/") ?> <?= $view->a_c_class("quotes") ?>">
+                <a href="<?= inner_url('quotes/cat_list/') ?>" title="הצעות מחיר" class="a-link">הצעות מחיר</a>
+            </li>
+      
+        </ul>
     <?php endif; ?>
 </div>

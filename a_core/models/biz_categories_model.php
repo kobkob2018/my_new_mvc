@@ -3,7 +3,20 @@
 
     protected static $main_table = 'biz_categories';
 
-    
+    protected static $auto_delete_from_attached_tables = array(
+        'cat_city'=>array(
+            'table'=>'cat_city',
+            'id_key'=>'cat_id'
+        ),
+        'user_cat'=>array(
+            'table'=>'user_cat',
+            'id_key'=>'cat_id'
+        ),
+        'user_cat_city'=>array(
+            'table'=>'user_cat_city',
+            'id_key'=>'cat_id'
+        ),
+    );    
 
     public static $fields_collection = array(
         'label'=>array(

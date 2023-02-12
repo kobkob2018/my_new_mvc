@@ -3,6 +3,21 @@
 
     protected static $main_table = 'users';
 
+    protected static $auto_delete_from_attached_tables = array(
+      'user_city'=>array(
+          'table'=>'user_city',
+          'id_key'=>'user_id'
+      ),
+      'user_cat'=>array(
+          'table'=>'user_cat',
+          'id_key'=>'user_id'
+      ),
+      'user_cat_city'=>array(
+          'table'=>'user_cat_city',
+          'id_key'=>'user_id'
+      ),
+    ); 
+
     public static function get_loged_in_user() {
       return UserLogin::get_user();
     }

@@ -59,7 +59,7 @@
     }
 
     public static function simple_find_by_table_name($filter_arr,$table_name , $select_params = "*", $payload = array()){
-      $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
+      $req = static::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
       $result = $req->fetch();
       if(isset($payload['add_custom_param'])){
         $add_custom_param = $payload['add_custom_param'];
@@ -76,7 +76,7 @@
     }
 
     public static function simple_get_list_by_table_name($filter_arr,$table_name, $select_params = "*", $payload = array()){
-      $req = self::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
+      $req = static::simple_find_with_filter_req_by_table_name($filter_arr,$table_name, $select_params, $payload);
       $result = $req->fetchAll();
       if(isset($payload['add_custom_param'])){
         $add_custom_param = $payload['add_custom_param'];
@@ -97,8 +97,14 @@
       $fields_sql_arr = array('1');
       $execute_arr = array();
       foreach($filter_arr as $key=>$value){
-          $fields_sql_arr[] = "$key = :$key";
-          $execute_arr[$key] = $value;
+        if(is_null($value)){
+          $fields_sql_arr[] = " $key IS NULL ";
+        }
+        else{
+
+            $fields_sql_arr[] = "$key = :$key";
+            $execute_arr[$key] = $value;
+        }
       }
       
       $fields_sql = implode(" AND ",$fields_sql_arr);
@@ -121,8 +127,14 @@
           }
       }
       $item_list_in_str = implode(", ",$item_ids_arr);
-      return self::simple_delete_list_by_table_name($item_list_in_str, $table_name);
-
+      $delete_result = self::simple_delete_list_by_table_name($item_list_in_str, $table_name);
+      
+      //could use for further delete at related tables
+      return array(
+        'deleted'=>$delete_result,
+        'item_ids_arr'=>$item_ids_arr,
+        'item_list_in_str'=>$item_list_in_str
+      );
     }   
 
     public static function simple_get_children_list_of_by_table_name($parent_id, $table_name, $select_params = "*", $filter_arr = array(), $payload = array()){
@@ -197,16 +209,13 @@
       if($item_data && $item_data['parent'] != '0'){
           $recursive_arr = self::simple_get_item_parents_tree_by_table_name($item_data['parent'], $table_name, $select_params, $recursive_arr, $deep);
       }
-
-      if($curren_count + 1 == $deep){
-          $item_data['is_current'] = true;
-      }
-      else{
-          $item_data['is_current'] = false;
-      }
-
-
       if(is_array($item_data)){
+        if($curren_count + 1 == $deep){
+            $item_data['is_current'] = true;
+        }
+        else{
+            $item_data['is_current'] = false;
+        }
           $item_data['op_deep'] = count($recursive_arr);
           $recursive_arr[] = $item_data;
       }

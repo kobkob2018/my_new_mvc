@@ -48,11 +48,11 @@
   
     public function updateSend(){
         $row_id = false;
-        if(isset($_REQUEST['row_id'])){
-            $row_id = $_REQUEST['row_id'];
+        if(isset($_REQUEST['db_row_id'])){
+            $row_id = $_REQUEST['db_row_id'];
         }
-        elseif(isset($this->data['row_id'])){
-            $row_id = $this->data['row_id'];
+        elseif(isset($this->data['db_row_id'])){
+            $row_id = $this->data['db_row_id'];
         }
         if(!$row_id){
             return;
@@ -68,7 +68,7 @@
             $this->update_item($row_id,$fixed_values);
             $files_result = $form_handler->upload_files($validate_result, $row_id);
             $this->update_success_message();
-            $this->redirect_back_to_item($this->data['item_info']);
+            $this->after_edit_redirect($this->data['item_info']);
         }
         else{
             if(!empty($validate_result['err_messages'])){
@@ -141,15 +141,15 @@
         }
         $form_builder_data['enctype_str'] = $enctype_str;
         $form_builder_data['sendAction'] = $sendAction;
-        $form_builder_data['row_id'] = $row_id;
+        $form_builder_data['db_row_id'] = $row_id;
         $form_builder_data['fields_collection'] = $fields_collection;
         $this->data['form_builder'] = $form_builder_data;
     }
 
     public function createSend(){
+
         $form_handler = $this->init_form_handler();
         $validate_result = $form_handler->validate();
-        
         if($validate_result['success']){
             $fixed_values = $validate_result['fixed_values'];
             $row_id = $this->create_item($fixed_values);
@@ -167,7 +167,7 @@
             $validate_result['fixed_values'] = $fixed_row_values;
             $files_result = $form_handler->upload_files($validate_result, $row_id);
             $this->create_success_message();
-            $this->redirect_back_to_item(array('id'=>$row_id));
+            $this->after_add_redirect($row_id);
         }
         else{
             if(!empty($validate_result['err_messages'])){
@@ -197,7 +197,7 @@
 
         $this->delete_item($this->data['item_info']['id']);
         $this->delete_success_message();
-        return $this->eject_redirect();
+        return $this->after_delete_redirect();
     }
 
     protected function delete_item_files($item_info, $fields_collection){
@@ -262,8 +262,8 @@
         elseif($item_identifier == 'here'){
             $item_to_move_id = session__get($controller.'_item_to_move');
             $parent_id = 0;
-            if(isset($_GET['item_id'])){
-                $parent_id = $_GET['item_id'];
+            if(isset($_GET['row_id'])){
+                $parent_id = $_GET['row_id'];
             }
             $this->get_item_parents_tree($parent_id,'id');
             $parent_tree = $this->get_item_parents_tree($parent_id,'id');
@@ -447,9 +447,102 @@
         $this->redirect_to(current_url());
     }
 
+
+    public function setup_item_form_handler($item_key,$item,$field_collection){
+        if(!$item || $item == null){
+            return $item;
+        }
+        
+        //setup form for specific item (like the parent item or the children items) children items
+        $form_handler = $this->init_form_handler($item_key);
+        $form_handler->update_fields_collection($field_collection);
+        $form_handler->setup_db_values($item);
+        $item['form_identifier'] = $item_key;
+        return $item;
+    }
+
+    protected function prepare_forms_for_all_list($item_list, $field_collection = false, $prefix = "item_"){
+        if(!$field_collection){
+            $field_collection = $this->get_fields_collection();
+        }
+          
+        $form_handler = $this->init_form_handler();
+        $form_handler->update_fields_collection($field_collection);
+    
+        foreach($item_list as $item_key=>$item){
+          $item_identifier = $prefix.$item['id'];
+          //setup form for all children items
+          $item = $this->setup_item_form_handler($item_identifier,$item,$field_collection);
+          $item_list[$item_key] = $item;
+        }
+        return $item_list;
+    }
+
+    public function listUpdateSend($prefix = "item_"){
+        if(!isset($_REQUEST['db_row_id'])){
+          return;
+        }
+        $row_id = $_REQUEST['db_row_id'];
+        $item_identifier = $prefix.$row_id;
+        
+        if(!isset($this->form_handlers[$item_identifier])){
+            return;
+        }
+        $form_handler = $this->form_handlers[$item_identifier];
+    
+        $validate_result = $form_handler->validate();
+        $fixed_values = $validate_result['fixed_values'];
+        if($validate_result['success']){
+            $this->update_item($row_id,$fixed_values);
+            $this->update_success_message();
+            
+        }
+        else{
+          SystemMessages::add_err_message("שגיאה בעריכת הרכיב");
+          if(!empty($validate_result['err_messages'])){
+              foreach($validate_result['err_messages'] as $message){
+                SystemMessages::add_err_message($message);
+              }
+          }
+        }
+        $this->redirect_to(current_url()); 
+    }
+
+
+
+    public function listCreateSend(){
+        
+        $form_handler = $this->init_form_handler();
+    
+        $validate_result = $form_handler->validate();
+        $fixed_values = $validate_result['fixed_values'];
+        if($validate_result['success']){
+            $row_id = $this->create_item($fixed_values);
+            $this->create_success_message();
+            
+        }
+        else{
+          SystemMessages::add_err_message("שגיאה בעריכת הרכיב");
+          if(!empty($validate_result['err_messages'])){
+              foreach($validate_result['err_messages'] as $message){
+                SystemMessages::add_err_message($message);
+              }
+          }
+        }
+        $this->redirect_to(current_url()); 
+    }
+
+    protected function after_add_redirect($new_row_id){
+        return $this->redirect_back_to_item(array('id'=>$new_row_id));
+    }
+
     protected function get_item_parents_tree($parent_id,$select_params){
         //to be overriden
         return array();
+    }
+
+    protected function after_delete_redirect(){
+        return $this->eject_redirect();
     }
 
     protected function eject_redirect(){
@@ -458,6 +551,10 @@
   
     protected function redirect_back_to_item($item_info){
         return $this->redirect_to($this->url_back_to_item($item_info));
+    }
+
+    protected function after_edit_redirect($item_info){
+        return $this->redirect_back_to_item($item_info);
     }
 
     protected function row_error_message(){

@@ -8,6 +8,10 @@
 
 textarea, input { outline: none; }
 
+.hidden{
+    display:none;
+}
+
 .clear{
     clear:both;
 }
@@ -209,4 +213,14 @@ textarea, input { outline: none; }
 
 .right-menu .a-current-item .a-link{
     background: #2ea3f2;
+}
+
+.form-group select option.deep-1{
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.form-group select option.deep-2{
+    font-weight: bold;
+    font-size: 1.1em;
 }

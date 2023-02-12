@@ -3,49 +3,52 @@
     <form name="send_form" class="send-form form-validate" id="send_form" method="post" action="" <?= $this->data['form_builder']['enctype_str'] ?>>
         <input type="hidden" name="sendAction" value="<?= $this->data['form_builder']['sendAction'] ?>" />
     
-        <?php if(isset($this->data['form_builder']['row_id'])): ?>
-            <input type="hidden" name="row_id" value="<?= $this->data['form_builder']['row_id'] ?>" />
+        <?php if(isset($this->data['form_builder']['db_row_id'])): ?>
+            <input type="hidden" name="db_row_id" value="<?= $this->data['form_builder']['db_row_id'] ?>" />
         <?php endif; ?>
 
             
         <?php foreach($this->data['form_builder']['fields_collection'] as $field_key=>$build_field): ?>
 
             <div class='form-group <?= isset($build_field['css_class'])? $build_field['css_class']: "" ?>'>
+                    
+                <div class='form-group-st'>                
+                    <label for='row[<?= $field_key ?>]'><?= $build_field['label'] ?></label>
+                </div>
+                <div class='form-group-en'> 
+                    <?php if($build_field['type'] == 'text'): ?>
+                        
+                    
+                        <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value="<?= $this->get_form_input($field_key); ?>"  />
+                    
+                        
+                    <?php endif; ?>
 
-                <label for='row[<?= $field_key ?>]'><?= $build_field['label'] ?></label>
-                <?php if($build_field['type'] == 'text'): ?>
-                    <div class='form-group span3'>
+                    <?php if($build_field['type'] == 'password'): ?>
+                        
                     
-                        <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value='<?= $this->get_form_input($field_key); ?>'  />
+                        <input type='password' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value=""  />
                     
-                    </div>	
-                <?php endif; ?>
-
-                <?php if($build_field['type'] == 'password'): ?>
-                    <div class='form-group span3'>
+                        
+                    <?php endif; ?>                
+                        
+                    <?php if($build_field['type'] == 'select'): ?>
                     
-                        <input type='password' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value=''  />
-                    
-                    </div>	
-                <?php endif; ?>                
-                    
-                <?php if($build_field['type'] == 'select'): ?>
-                    <div class='form-group span3'>
                         
                         <select  id='row_<?= $field_key ?>' name='row[<?= $field_key ?>]' class='form-select <?= $build_field['validate_frontend'] ?>' data-msg='יש לבחור <?= $build_field['label'] ?>'>
-                            <?php if(isset($build_field['select_blank'])): ?>
+                            <?php if(isset($build_field['select_blank'])  && $build_field['select_blank']): ?>
                                 <option value="<?= $build_field['select_blank']['value'] ?>"><?= $build_field['select_blank']['label'] ?></option>
                             <?php endif; ?>
                             <?php foreach($this->get_select_options($field_key) as $option): ?>
                                 <option value="<?= $option['value'] ?>" <?= $option['selected'] ?>><?= $option['title'] ?></option>
                             <?php endforeach; ?>
                         </select>
-                    </div>	
-                <?php endif; ?>
                         
-                <?php if($build_field['type'] == 'textbox'): ?>
-                    <div class="form-group span3">
+                    <?php endif; ?>
                         
+                    <?php if($build_field['type'] == 'textbox'): ?>
+                        
+                            
                         <textarea name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>_textarea" class="form-input form-textarea" data-msg-required="*"><?= $this->get_form_input($field_key); ?></textarea>
                         <?php if(isset($build_field['reachtext']) && $build_field['reachtext']): ?>
                             <?php $this->register_script('js','tinymce',global_url('vendor/tinymce/tinymce/tinymce.min.js')); ?>
@@ -59,11 +62,11 @@
                                 );
                             </script>
                         <?php endif; ?>
-                    </div>	
-                <?php endif; ?>
+                    
+                    <?php endif; ?>
 
-                <?php if($build_field['type'] == 'file'): ?>
-                    <div class="form-group span3">
+                    <?php if($build_field['type'] == 'file'): ?>
+                        
                         <?php if($build_field['file_type'] == 'img'): ?>
                             <input type="file" name="row[<?= $field_key ?>]" id="row_<?= $field_key ?>" accept="image/png, image/gif, image/jpeg" class="form-input" value="" />
                         <?php elseif($build_field['file_type'] == 'video'): ?>
@@ -87,38 +90,46 @@
                                 <?php endif; ?>
                             </a>
                             <br/>
-                            <a href="<?= current_url() ?>&remove_file=<?= $field_key ?>">הסר <?= $build_field['label'] ?></a>
+                            <a href="<?= current_url(array('remove_file'=>$field_key)) ?>">הסר <?= $build_field['label'] ?></a>
                         </div>
                         <?php endif; ?>
-                    </div>	
-                <?php endif; ?>
+                        
+                    <?php endif; ?>
 
-                <?php if($build_field['type'] == 'build_method' && isset($build_field['build_method'])): ?>
-                    <?php $build_method = $build_field['build_method']; ?>
-                    <?php $this->$build_method($field_key, $build_field); ?>
-                <?php endif; ?>
+                    <?php if($build_field['type'] == 'build_method' && isset($build_field['build_method'])): ?>
+                        <?php $build_method = $build_field['build_method']; ?>
+                        <?php $this->$build_method($field_key, $build_field); ?>
+                    <?php endif; ?>
+                </div>
             </div>
             
             <?php if($build_field['type'] == 'password'): ?>
 
                 
                 <div class='form-group <?= isset($build_field['css_class'])? $build_field['css_class']: "" ?>'>
-                    <label for='row[<?= $field_key ?>_confirm]'>אימות <?= $build_field['label'] ?></label>
-                    <div class='form-group span3'>
-                        <input type='password' name='row[<?= $field_key ?>_confirm]" id="row_<?= $field_key ?>_confirm' class='form-input' data-msg-required='*' value=''  />
+                    <div class="form-group-st">
+                        <label for='row[<?= $field_key ?>_confirm]'>אימות <?= $build_field['label'] ?></label>
+                    </div>
+                    <div class='form-group-en'>
+                        <input type='password' name='row[<?= $field_key ?>_confirm]" id="row_<?= $field_key ?>_confirm' class='form-input' data-msg-required='*' value=""  />
                     </div>	
                 </div>
             <?php endif; ?>   
         <?php endforeach; ?>
-        <div class="form-group span3">
-            <label id="submit_label"></label>
-            <input type="submit"  class="submit-btn"  value="שליחה" />
+        <div class="form-group submit-form-group">
+            <div class="form-group-st">
+                <label id="submit_label"></label>
+            </div>
+            <div class="form-group-en">
+                <input type="submit"  class="submit-btn"  value="שליחה" />
+            </div>
         </div>
-        <?php if(isset($this->data['form_builder']['row_id'])): ?>
-            <div class="form-group span3">
+        <?php if(isset($this->data['item_info']) && isset($this->data['form_builder']['db_row_id'])  && $this->data['form_builder']['db_row_id'] != 'new'): ?>
+            <div class="delete-box">
                 <hr/>
                 <a href="<?= $this->delete_url($this->data['item_info']) ?>"  class="delete-link" >מחיקה</a>
             </div>
         <?php endif; ?>
     </form>
+
 </div>

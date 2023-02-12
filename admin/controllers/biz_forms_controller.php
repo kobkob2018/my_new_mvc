@@ -92,9 +92,15 @@
     public function build_biz_cat_selector($field_key, $build_field){
         
         $selected_cat_id = $this->get_form_input($field_key);
+        
         $cat_select_options = false;
         if($selected_cat_id != '0'){
             $cat_tree = Biz_categories::get_item_parents_tree($selected_cat_id,'id, label, parent');
+            //if the selected category was deleted... 
+            if(empty($cat_tree)){
+                $selected_cat_id = '0';
+                $cat_tree = Biz_categories::get_item_parents_tree($selected_cat_id,'id, label, parent');
+            }
         }
         else{
             $cat_tree = false;
@@ -102,12 +108,14 @@
         $selected_box_parent = '-1';
         $active_parent = $selected_cat_id;
         $cat_select_options = Biz_categories::get_children_list_of($selected_cat_id,'id, label');
+        
         if(!$cat_select_options && $cat_tree && !empty($cat_tree)){
             //array_pop($cat_tree);
             $selected_cat = $cat_tree[count($cat_tree)-1];
             $selected_box_parent = $selected_cat['id'];
             $active_parent = $selected_cat['parent'];
             $cat_select_options = Biz_categories::get_children_list_of($selected_cat['parent'],'id, label');
+            
         }
         foreach($cat_select_options as $key=>$cat){
             $selected_str = '';

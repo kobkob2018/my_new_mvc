@@ -15,8 +15,8 @@
 					<?php if($show_row): ?>
 						<input id="filter_auto_show_row" type="hidden" name="show_row" value="<?php echo $show_row; ?>" />
 					<?php endif; ?>
-					<input type="hidden" id="leads_in_page_input" name="leads_filter[leads_in_page]" value='<?php echo $filter['leads_in_page']; ?>'/>
-					<input type="hidden" id="page_input" name="page" ng-model="filter.page_num" value='1'/>
+					<input type="hidden" id="leads_in_page_input" name="leads_filter[leads_in_page]" value="<?php echo $filter['leads_in_page']; ?>"/>
+					<input type="hidden" id="page_input" name="page" ng-model="filter.page_num" value="1"/>
 					<div class="filter-form-view">		
 						<div class="form-group" data-title="תאריכים">
 							
@@ -340,7 +340,7 @@
 											<label for="data_arr[status]">סטטוס</label>
 											<select ng-model="lead_data['status']" name='data_arr[status]' class="form-select status-select input_style">
 												<?php foreach($filter['status_options'] as $key=>$val): if($key!='6'): ?>
-													<option value='<?php echo $key; ?>'><?php echo $val['str']; ?></option>		
+													<option value="<?php echo $key; ?>"><?php echo $val['str']; ?></option>		
 												<?php endif; endforeach; ?>
 											</select>
 										</div>
@@ -348,7 +348,7 @@
 											<label for="data_arr[tag]">תיוג</label>
 											<select ng-model="lead_data['tag']" name='data_arr[tag]' class="form-select tag-select input_style">
 												<?php foreach($filter['tag_options'] as $key=>$val): ?>
-													<option value='<?php echo $key; ?>'><?php echo $val['str']; ?></option>		
+													<option value="<?php echo $key; ?>"><?php echo $val['str']; ?></option>		
 												<?php endforeach; ?>
 											</select>
 										</div>										
@@ -443,7 +443,7 @@
 										<select name='request_reason' class="form-select reason-select input_style">
 										
 											
-											<option ng-repeat="reason in lead_data['cat_refund_reasons']" value='{{reason.id}}'>{{reason.title}}</option>		
+											<option ng-repeat="reason in lead_data['cat_refund_reasons']" value="{{reason.id}}">{{reason.title}}</option>		
 											
 										</select>
 									</div>	

@@ -116,6 +116,12 @@
 		include(system_path($views_dir_path.$view_path));
 	}
 
+	public function include_ob_view($view_path, $info_payload = array()){
+        ob_start();
+		$this->include_view($view_path, $info_payload);
+		return ob_get_clean();
+	}
+
 	public function redirect_to($url){
 		$this->set_layout('blank');
 		header('Location: '.$url);

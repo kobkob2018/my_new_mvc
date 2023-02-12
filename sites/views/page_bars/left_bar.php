@@ -1,1 +1,3 @@
-Hi this is the left bar on the page view
+<div class="biz-form-wrap">
+    <?php $this->call_module('biz_form','fetch_form',$this->data); ?>
+</div>

@@ -25,6 +25,10 @@
         <?php endif; ?>
                 
         <?php if($view->user_is('master_admin')): ?>
+            <li class="bar-item <?= $view->a_c_class("cities") ?>">
+                <a href="<?= inner_url('cities/list/') ?>" title="ניהול ערים ואזורים" class="a-link">ניהול ערים ואזורים</a>
+            </li> 
+
             <li class="bar-item <?= $view->a_c_class("biz_categories") ?>">
                 <a href="<?= inner_url('biz_categories/list/') ?>" title="ניהול קטגוריות בפורטל" class="a-link">ניהול קטגוריות</a>
             </li> 
@@ -35,6 +39,15 @@
 
             <li class="bar-item <?= $view->a_c_class("net_directories, net_banners") ?>">
                 <a href="<?= inner_url('net_directories/list/') ?>" title="ניהול באנרים" class="a-link">ניהול באנרים</a>
+            </li> 
+
+            <li class="bar-item <?= $view->a_c_class("supplier_cubes") ?>">
+                <a href="<?= inner_url('supplier_cubes/list/') ?>" title="ניהול קוביות ספקים" class="a-link">קוביות ספקים</a>
+            </li> 
+
+
+            <li class="bar-item <?= $view->a_c_class("refund_reasons") ?>">
+                <a href="<?= inner_url('refund_reasons/list/') ?>" title="סיבות זיכוי" class="a-link">סיבות זיכוי</a>
             </li> 
         <?php endif; ?>
 

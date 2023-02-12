@@ -3,7 +3,20 @@
 
     protected static $main_table = 'cities';
 
-    
+    protected static $auto_delete_from_attached_tables = array(
+        'cat_city'=>array(
+            'table'=>'cat_city',
+            'id_key'=>'city_id'
+        ),
+        'user_city'=>array(
+            'table'=>'user_city',
+            'id_key'=>'city_id'
+        ),
+        'user_cat_city'=>array(
+            'table'=>'user_cat_city',
+            'id_key'=>'city_id'
+        ),
+    );
 
     public static $fields_collection = array(
 
@@ -40,5 +53,22 @@
             'validation'=>'required'
         )
     );
+
+    public static function get_flat_select_city_options($return_arr = array(), $parent_id = 0, $deep = 0){
+        $deep++;
+        $filter_arr = array('parent'=>$parent_id);
+        $payload = array(
+            'order_by'=>'label'
+        );
+        $children = self::get_list($filter_arr, 'id, parent, label',$payload);
+        if($children){
+            foreach($children as $city_child){
+                $city_child['deep'] = $deep;
+                $return_arr[] = $city_child;
+                $return_arr = self::get_flat_select_city_options($return_arr, $city_child['id'], $deep);
+            }
+        }
+        return $return_arr;
+    }
 }
 ?>
