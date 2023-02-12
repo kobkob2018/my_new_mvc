@@ -159,7 +159,6 @@ textarea, input { outline: none; }
     font-size:14px;
     width: 100px;
     padding:3px;
-    -webkit-appearance: none;
 }
 
 .top-menu-carret{
