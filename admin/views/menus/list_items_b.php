@@ -68,10 +68,10 @@
         <input type="hidden" name="row[site_id]" value="<?= $this->data['site']['id'] ?>" />
         <input type="hidden" name="row[menu_id]" value="<?= $this->data['menu_id'] ?>" />
         <div class="col col-first col-tiny">                   
-            <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority') ?>' />
+            <input type="text" class = 'table-input' name = 'row[priority]' value = "<?= $this->get_form_input('priority') ?>" />
         </div>
         <div class="col">
-            <input type="text" class = 'table-input' name = 'row[title]' value = '<?= $this->get_form_input('title') ?>' />
+            <input type="text" class = 'table-input' name = 'row[title]' value = "<?= $this->get_form_input('title') ?>" />
         </div>
         <div class="col">
             <select name='row[link_type]' class='table-select'>
@@ -81,7 +81,7 @@
             </select>
         </div>
         <div class="col">
-            <input type="text" class = 'table-input' name = 'row[url]' value = '<?= $this->get_form_input('url') ?>' />
+            <input type="text" class = 'table-input' name = 'row[url]' value = "<?= $this->get_form_input('url') ?>" />
         </div>
         <div class="col">
             <select name='row[page_id]' class='table-select'>
@@ -99,7 +99,7 @@
             </select>
         </div>
         <div class="col col-small">
-            <input type="text" class = 'table-input' name = 'row[css_class]' value = '<?= $this->get_form_input('css_class') ?>' />
+            <input type="text" class = 'table-input' name = 'row[css_class]' value = "<?= $this->get_form_input('css_class') ?>" />
         </div>
         <div class="col"><input type="submit" value="שמור" /></div>
 
@@ -129,10 +129,10 @@
             <input type="hidden" name="sendAction" value="updateSend" />
             <input type="hidden" name="row_id" value="<?= $menu_item['id'] ?>" />    
             <div class="col col-first col-tiny">                   
-                <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority',$menu_item['form_identifier']) ?>' />
+                <input type="text" class = 'table-input' name = 'row[priority]' value = "<?= $this->get_form_input('priority',$menu_item['form_identifier']) ?>" />
             </div>
             <div class="col">
-                <input type="text" class = 'table-input' name = 'row[title]' value = '<?= $this->get_form_input('title',$menu_item['form_identifier']) ?>' />
+                <input type="text" class = 'table-input' name = 'row[title]' value = "<?= $this->get_form_input('title',$menu_item['form_identifier']) ?>" />
                 <br/>
                 <a href="<?= $this->data['action_url'] ?>?item_id=<?= $menu_item['id'] ?>" title="מעבר לתתי קישורים">עריכה ותתי קישורים</a>
             </div>
@@ -144,7 +144,7 @@
                 </select>
             </div>
             <div class="col">
-                <input type="text" class = 'table-input' name = 'row[url]' value = '<?= $this->get_form_input('url',$menu_item['form_identifier']) ?>' />
+                <input type="text" class = 'table-input' name = 'row[url]' value = "<?= $this->get_form_input('url',$menu_item['form_identifier']) ?>" />
             </div>
             <div class="col">
                 <select name='row[page_id]' class='table-select'>
@@ -168,7 +168,7 @@
                 <?php endif; ?>
             </div>
             <div class="col col-small">
-                <input type="text" class = 'table-input' name = 'row[css_class]' value = '<?= $this->get_form_input('css_class',$menu_item['form_identifier']) ?>' />
+                <input type="text" class = 'table-input' name = 'row[css_class]' value = "<?= $this->get_form_input('css_class',$menu_item['form_identifier']) ?>" />
             </div>
             <div class="col"><input type="submit" value="שמור" /></div>
             <div class="col">

@@ -12,7 +12,7 @@
         <input type="hidden" name="db_row_id" value="new" />
 
         <div class="col">
-            <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label') ?>' />
+            <input type="text" class = 'table-input' name = 'row[label]' value = "<?= $this->get_form_input('label') ?>" />
         </div>
 
         <div class="col"><input type="submit" value="שמור" /></div>
@@ -39,7 +39,7 @@
                 <input type="hidden" name="sendAction" value="update_catSend" />
                 <input type="hidden" name="db_row_id" value="<?= $item['id'] ?>" /> 
                 <div class="col">
-                    <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label',$item['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[label]' value = "<?= $this->get_form_input('label',$item['form_identifier']) ?>" />
                     <br/>
                     <a href = "<?= inner_url('quotes/list/') ?>?cat_id=<?= $item['id'] ?>" title="בחירה">רשימת הצעות מחיר בתיקייה</a>
                 </div>

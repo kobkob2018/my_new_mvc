@@ -70,6 +70,11 @@ class MenusController extends CrudController{
     $item_list = AdminMenuItems::get_list($filter_arr,"*", $payload);
     $this->data['item_list'] = $this->prepare_forms_for_all_list($item_list);
 
+    //for the add item form
+    $form_handler = $this->init_form_handler();
+    $form_handler->update_fields_collection($this->get_fields_collection());
+    
+    
     $this->include_view('menus/list_items.php');
   }
 
@@ -132,19 +137,26 @@ class MenusController extends CrudController{
   }
 
   protected function after_delete_redirect(){
+
+    $parent = '0';
+    $row_url = '';
     if($this->data['item_info']){
       if(isset($this->data['item_info']['parent'])){
-        return $this->redirect_to(inner_url("menus/".$this->data['action_name']."/?row_id=".$this->data['item_info']['parent']));
+        $parent = $this->data['item_info']['parent'];
       }
     }
-    return $this->eject_redirect();
+    if($parent != '0'){
+      $row_url = "?row_id=".$parent;
+    }
+    return $this->redirect_to(inner_url("menus/".$this->data['action_name'].$row_url));
   }
 
   protected function after_add_redirect($new_row_id){
-    if(isset($_REQUEST['row_id'])){
-      return $this->redirect_to(inner_url("menus/".$this->data['action_name']."/?row_id=".$_REQUEST['row_id']));
+    $row_url = "";
+    if(isset($_REQUEST['row_id']) && $_REQUEST['row_id'] != '0'){
+      $row_url = "?row_id=".$_REQUEST['row_id'];
     }
-    return $this->redirect_back_to_item(array('id'=>$new_row_id));
+    return $this->redirect_to(inner_url("menus/".$this->data['action_name'].$row_url));
   }
 
   public function eject_url(){

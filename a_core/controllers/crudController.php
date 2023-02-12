@@ -508,6 +508,30 @@
         $this->redirect_to(current_url()); 
     }
 
+
+
+    public function listCreateSend(){
+        
+        $form_handler = $this->init_form_handler();
+    
+        $validate_result = $form_handler->validate();
+        $fixed_values = $validate_result['fixed_values'];
+        if($validate_result['success']){
+            $row_id = $this->create_item($fixed_values);
+            $this->create_success_message();
+            
+        }
+        else{
+          SystemMessages::add_err_message("שגיאה בעריכת הרכיב");
+          if(!empty($validate_result['err_messages'])){
+              foreach($validate_result['err_messages'] as $message){
+                SystemMessages::add_err_message($message);
+              }
+          }
+        }
+        $this->redirect_to(current_url()); 
+    }
+
     protected function after_add_redirect($new_row_id){
         return $this->redirect_back_to_item(array('id'=>$new_row_id));
     }

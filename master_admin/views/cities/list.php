@@ -22,10 +22,10 @@
             <input type="hidden" name="sendAction" value="createSend" />
             <input type="hidden" name="db_row_id" value="new" />
             <div class="col col-first col-tiny">                   
-                <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority') ?>' />
+                <input type="text" class = 'table-input' name = 'row[priority]' value = "<?= $this->get_form_input('priority') ?>" />
             </div>
             <div class="col">
-                <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label') ?>' />
+                <input type="text" class = 'table-input' name = 'row[label]' value = "<?= $this->get_form_input('label') ?>" />
             </div>
 
             <div class="col">
@@ -76,7 +76,7 @@
                 <input type="hidden" name="sendAction" value="listUpdateSend" />
                 <input type="hidden" name="db_row_id" value="<?= $city['id'] ?>" /> 
                 <div class="col col-first col-tiny">
-                    <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority',$city['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[priority]' value = "<?= $this->get_form_input('priority',$city['form_identifier']) ?>" />
                 </div>
                 <div class="col">
                    <select name='row[active]' class='table-select'>
@@ -86,7 +86,7 @@
                    </select>
                </div>
                 <div class="col">
-                    <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label',$city['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[label]' value = "<?= $this->get_form_input('label',$city['form_identifier']) ?>" />
                     <br/>
                     <a href = "<?= inner_url('cities/list/') ?>?row_id=<?= $city['id'] ?>" title="בחירה">תתי ערים</a>
                 

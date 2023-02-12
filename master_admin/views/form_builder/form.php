@@ -19,7 +19,7 @@
                     <?php if($build_field['type'] == 'text'): ?>
                         
                     
-                        <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value='<?= $this->get_form_input($field_key); ?>'  />
+                        <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value="<?= $this->get_form_input($field_key); ?>"  />
                     
                         
                     <?php endif; ?>
@@ -27,7 +27,7 @@
                     <?php if($build_field['type'] == 'password'): ?>
                         
                     
-                        <input type='password' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value=''  />
+                        <input type='password' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value=""  />
                     
                         
                     <?php endif; ?>                
@@ -111,7 +111,7 @@
                         <label for='row[<?= $field_key ?>_confirm]'>אימות <?= $build_field['label'] ?></label>
                     </div>
                     <div class='form-group-en'>
-                        <input type='password' name='row[<?= $field_key ?>_confirm]" id="row_<?= $field_key ?>_confirm' class='form-input' data-msg-required='*' value=''  />
+                        <input type='password' name='row[<?= $field_key ?>_confirm]" id="row_<?= $field_key ?>_confirm' class='form-input' data-msg-required='*' value=""  />
                     </div>	
                 </div>
             <?php endif; ?>   

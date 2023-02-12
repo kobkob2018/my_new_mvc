@@ -1,4 +1,4 @@
-<?php $this->include_view("quotes/header.php"); ?>
+<?php $this->include_view("quotes/cat_header.php"); ?>
 <div class="focus-box warning-box">
     <div class="eject-box">
         <a href="<?= $this->eject_url() ?>">חזרה לרשימת התיקיות</a>

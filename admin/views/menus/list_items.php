@@ -21,15 +21,15 @@
             <div class="col"></div>
         </div>
 
-        <form  class="table-tr row" action = "<?= inner_url("menus/add/") ?>?row_id=<?= $this->data['current_item_id'] ?>" method = "POST" >
-            <input type="hidden" name="sendAction" value="createSend" />
+        <form  class="table-tr row" action = "" method = "POST" >
+            <input type="hidden" name="sendAction" value="listCreateSend" />
             <input type="hidden" name="menu_identifier" value="<?= $this->data['menu_identifier'] ?>" />
             <input type="hidden" name="db_row_id" value="new" />
             <div class="col col-first col-tiny">                   
-                <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority') ?>' />
+                <input type="text" class = 'table-input' name = 'row[priority]' value = "<?= $this->get_form_input('priority') ?>" />
             </div>
             <div class="col">
-                <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label') ?>' />
+                <input type="text" class = 'table-input' name = 'row[label]' value = "<?= $this->get_form_input('label') ?>" />
             </div>
 
             <div class="col">
@@ -41,7 +41,7 @@
             </div>
 
             <div class="col">
-                <input type="text" class = 'table-input' name = 'row[url]' value = '<?= $this->get_form_input('url') ?>' />
+                <input type="text" class = 'table-input' name = 'row[url]' value = "<?= $this->get_form_input('url') ?>" />
             </div>
 
 
@@ -62,7 +62,7 @@
             </div>
 
             <div class="col">
-                <input type="text" class = 'table-input' name = 'row[css_class]' value = '<?= $this->get_form_input('css_class') ?>' />
+                <input type="text" class = 'table-input' name = 'row[css_class]' value = "<?= $this->get_form_input('css_class') ?>" />
             </div>
 
             <div class="col"><input type="submit" value="שמור" /></div>
@@ -100,11 +100,11 @@
                 <input type="hidden" name="sendAction" value="listUpdateSend" />
                 <input type="hidden" name="db_row_id" value="<?= $item['id'] ?>" /> 
                 <div class="col col-first col-tiny">
-                    <input type="text" class = 'table-input' name = 'row[priority]' value = '<?= $this->get_form_input('priority',$item['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[priority]' value = "<?= $this->get_form_input('priority',$item['form_identifier']) ?>" />
                 </div>
 
                 <div class="col">
-                    <input type="text" class = 'table-input' name = 'row[label]' value = '<?= $this->get_form_input('label',$item['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[label]' value = "<?= $this->get_form_input('label',$item['form_identifier']) ?>" />
                     <br/>
                     <a href = "<?= inner_url('menus/'.$this->data['action_name'].'/') ?>?row_id=<?= $item['id'] ?>" title="בחירה">תתי תפריט</a>
                 </div>
@@ -120,7 +120,7 @@
 
 
                 <div class="col">
-                    <input type="text" class = 'table-input' name = 'row[url]' value = '<?= $this->get_form_input('url',$item['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[url]' value = "<?= $this->get_form_input('url',$item['form_identifier']) ?>" />
                         <br/>
                     <?php if(isset($this->data['move_item'])): ?>
                         <a class='go-button' href="<?= inner_url('menus/'.$this->data['action_name'].'/') ?>?row_id=<?= $item['id'] ?>&move_item=here">העבר לכאן</a>
@@ -148,7 +148,7 @@
                </div>
 
                 <div class="col">
-                    <input type="text" class = 'table-input' name = 'row[css_class]' value = '<?= $this->get_form_input('css_class',$item['form_identifier']) ?>' />
+                    <input type="text" class = 'table-input' name = 'row[css_class]' value = "<?= $this->get_form_input('css_class',$item['form_identifier']) ?>" />
                 </div>
                 <div class="col"><input type="submit" value="שמור" /></div>
                 <div class="col">

@@ -86,6 +86,45 @@
         return $this->eject_redirect();
     }    
 
+
+    public function assign_cats(){
+        $this->add_model("quote_cat_assign");
+        if(!isset($_GET['row_id'])){
+            return $this->eject_redirect();
+        }
+        $this->data['item_info'] = $this->get_item_info($_GET['row_id']);
+        if(isset($_REQUEST['submit_assign'])){
+            
+            $assign_cats = array();
+            
+            foreach($_REQUEST['assign'] as $cat){
+                if($cat != '-1'){
+                    $assign_cats[] = $cat;
+                }
+            }
+            Quote_cat_assign::assign_cats_to_item($this->data['item_info']['id'],  $assign_cats);      
+            SystemMessages::add_success_message("התיקיות שוויכו בהצלחה");
+            return $this->redirect_to(inner_url("quotes/assign_cats/?row_id=".$this->data['item_info']['id']."&cat_id=".$this->data['cat_info']['id']."")); 
+        }
+
+        $cat_list = Quote_cat::get_list(array(),"id, label");
+        $cats_assigned = Quote_cat_assign::get_assigned_cats_to_item($this->data['item_info']['id']);
+        $cats_checked_list = array();
+        foreach($cats_assigned as $cat){
+            $cats_checked_list[$cat['cat_id']] = '1';
+        }
+        $check_options = array();
+        foreach($cat_list as $cat){
+            $checked = "";
+            if(isset($cats_checked_list[$cat['id']])){
+                $checked = "checked";
+            }
+            $check_options[] = array('value'=>$cat['id'],'title'=>$cat['label'],'checked'=>$checked);
+        }
+        $info = array('options'=>$check_options);
+        $this->include_view('quotes/cat_assign_form.php',$info);
+    }
+
     public function list(){
         //if(session__isset())
         

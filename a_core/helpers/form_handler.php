@@ -241,6 +241,18 @@
     }
 
     public function get_form_input($key){
+      
+      $return_value = $this->get_form_input_before_render($key);
+      
+      if(isset($this->fields_collection[$key])){
+        if($this->fields_collection[$key]['type'] == 'text'){
+          $return_value = str_replace('"',"&quot;",$return_value);
+        }
+      }
+      return $return_value;
+    }
+
+    protected function get_form_input_before_render($key){
       if(isset($this->user_values[$key])){
         return $this->user_values[$key];
       }
