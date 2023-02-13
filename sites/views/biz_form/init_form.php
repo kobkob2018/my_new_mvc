@@ -6,6 +6,8 @@
         </h3>
     </div>
     <form class="biz-form" action = "javascript://" method = "POST">
+        <input type="hidden" name="submit_form" value="1" />
+        
         <div class="biz-form-placeholder"  data-form_id='<?= $info['biz_form']['id'] ?>' data-cat_id='<?= $info['biz_form']['cat_id'] ?>' data-fetch_url='<?= inner_url("biz_forms/fetch/") ?>'>
             <span class = "append-spot"></span>
             <?php if(!isset($info['input_remove']['full_name'])): ?>
@@ -61,7 +63,11 @@
             <?php else: ?>
                 <input type="hidden" name="biz[city]" value="0" />
             <?php endif; ?>                        
-            <div class="loading-message hidden">loading....</div>
+            <div class="loading-message hidden">
+                <div class="loader-icon">
+                
+                </div>              
+            </div>
         </div>
     </form>
     <div class="submit-wrap pending-state form-group">

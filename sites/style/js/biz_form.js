@@ -41,7 +41,7 @@ class BizForm{
     fetchForCat(cat_id){
         this.enterLoadingState();
         fetch(this.fetchUrl+"?cat_id="+cat_id+"&form_id="+this.form_id).then((res) => res.json()).then(info => {
-            console.log(info);
+            
             if(info.success){
                 this.appendChildren(info.html,cat_id);
                 this.bindCatSelectEvents(cat_id);
@@ -98,7 +98,7 @@ class BizForm{
         }
         const childEl_cat_id = childEl.dataset.cat_id;
         const className = this.catChildClassName(childEl_cat_id);
-        console.log("remving"+className);
+        
         this.placeholder.querySelectorAll("."+className).forEach(child => {
             // if(child.classList.contains("binded-cat-select")){
                 this.removeChildrenOf(child);
@@ -142,33 +142,59 @@ class BizForm{
     submitEventListener(event){
         if(this.submitButton.dataset.status == "ready"){
             const selected_cat = this.selected_cat;
-            if(this.selected_cat == ""){
-                console.log("no category selected");
+            if(this.selected_cat == ""){    
                 return;
             }
             if(this.formValidator.validate()){
-                alert("we are going to submit!!!");
-            }
-            else{
-                //alert("not valid yet");
+                this.submitForm();
             }
             
         }
         else{
             this.formValidator.validate();
-            console.log("not ready");
+            
         }
+    }
+    submitForm(){
+        this.showLoading();
+        // const formData = this.formElement;
+        const formData = new FormData(this.formElement);
+        
+
+        fetch(this.fetchUrl+"?form_id="+this.form_id,{
+            method: 'POST',
+            body: formData,
+        }).then((res) => res.json()).then(info => {
+            if(info.success){
+                this.appendChildren(info.html,cat_id);
+                this.bindCatSelectEvents(cat_id);
+                this.outLoadingState(info);
+            }
+            else{
+                const msg = info.error.msg;
+                alert(msg);
+                this.hideLoading();
+            }
+        }).catch(function(err) {
+            
+            console.log(err);
+            console.log("Something went wrong. please reload the page");
+            //alert("Something went wrong. please reload the page");
+        });
+        console.log(formData);
     }
 }
 
 class formValidator{
     constructor(formElement) {
         this.formElement = formElement;
+        
         this.formElement.querySelector(".phoneNumber").addEventListener("keypress", function preventKeyPress(evt){
             if (evt.which < 48 || evt.which > 57) {
                 evt.preventDefault();
             }
         });
+        
         this.inputKeypressListenerBinded = this.inputKeypressListener.bind(this);
         this.blurListenerBinded = this.blurListener.bind(this);
         this.selectChangeListenerBinded = this.selectChangeListener.bind(this);
@@ -220,11 +246,12 @@ class formValidator{
     }
 
     validateErrors(isValid){
+        
         const validateFileds = this.formElement.querySelectorAll(".validate");
         validateFileds.forEach(field => {
             //alert(field.name);
             if(!this.validateField(field)){
-                console.log("val "+ field.name);
+                
                 isValid = false;
             }
         });
@@ -271,16 +298,20 @@ class formValidator{
             field.classList.add('key-validate');
         }
         const checkMsg = this.checkField(field);
+
         if(checkMsg){
+            
             let message = field.dataset['msg_'+checkMsg];
             if(typeof (message) == "undefined"){
                 message = "*";
             }
-            console.log(message);
+            
             this.showTooltip(field,message);
+            return false;
         }
         else{
             this.hideTooltip(field);
+            return true;
         }
     }
     checkField(field){
@@ -291,7 +322,7 @@ class formValidator{
         let validity = field.validity;
         // If valid, return null
         if (validity.valid) return;
-
+        
         // If field is required and empty
         if (validity.valueMissing) return 'required';
 
@@ -309,8 +340,4 @@ class formValidator{
         }
 
     };
-
-    showFieldErrorMessage(field,message){
-        //alert(message);
-    }
 }

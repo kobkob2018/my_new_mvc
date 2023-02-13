@@ -62,8 +62,10 @@
         return true;
     }
 
-    public function submit_form(){
-
+    public function submit_form($return_array){
+        $return_array['success'] = false;
+        $return_array['error'] = array('msg'=>'לא נבחרה קטגוריה');
+        return $this->print_json_page($return_array);
     }
 
 
