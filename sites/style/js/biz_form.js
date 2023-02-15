@@ -16,6 +16,7 @@ class BizForm{
         this.wrapElement = wrapElement;
         this.placeholder = this.wrapElement.querySelector(".biz-form-placeholder");
         this.formElement = this.wrapElement.querySelector("form.biz-form");
+        this.catHolder = this.formElement.querySelector(".cat-id-holder");
         this.formValidator = new formValidator(this.formElement);
         //return;
         this.fetchUrl = this.placeholder.dataset.fetch_url;
@@ -25,7 +26,7 @@ class BizForm{
         this.loadingMsg = this.placeholder.querySelector(".loading-message");
         this.submitButton = wrapElement.querySelector(".submit-button");
         this.submitWrap = wrapElement.querySelector(".submit-wrap");
-        
+        this.submitUrl = "";
         this.selectEventListenerBinded = this.selectEventListener.bind(this);
         this.submitEventListenerBinded = this.submitEventListener.bind(this);
         this.submitButton.addEventListener("click", this.submitEventListenerBinded, true);
@@ -62,6 +63,7 @@ class BizForm{
     outLoadingState(info){
         this.hideLoading();
         if(info.state == "ready"){
+            this.submitUrl = info.submit_url;
             this.enterReadyState();
         }
     }
@@ -158,17 +160,20 @@ class BizForm{
     submitForm(){
         this.showLoading();
         // const formData = this.formElement;
+        this.catHolder.value = this.selected_cat;
         const formData = new FormData(this.formElement);
         
 
-        fetch(this.fetchUrl+"?form_id="+this.form_id,{
+        fetch(this.submitUrl,{
             method: 'POST',
             body: formData,
         }).then((res) => res.json()).then(info => {
             if(info.success){
-                this.appendChildren(info.html,cat_id);
-                this.bindCatSelectEvents(cat_id);
-                this.outLoadingState(info);
+                alert("todo: after biz_form_submit success");
+                //check for redirects
+                //check for pixels
+                //check for html
+
             }
             else{
                 const msg = info.error.msg;
@@ -189,10 +194,12 @@ class formValidator{
     constructor(formElement) {
         this.formElement = formElement;
         
-        this.formElement.querySelector(".phoneNumber").addEventListener("keypress", function preventKeyPress(evt){
-            if (evt.which < 48 || evt.which > 57) {
-                evt.preventDefault();
-            }
+        this.formElement.querySelectorAll(".phoneNumber").forEach(phoneInput=>{
+            phoneInput.addEventListener("keypress", function preventKeyPress(evt){
+                if (evt.which < 48 || evt.which > 57) {
+                    evt.preventDefault();
+                }
+            });
         });
         
         this.inputKeypressListenerBinded = this.inputKeypressListener.bind(this);

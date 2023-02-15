@@ -3,6 +3,7 @@
     public $add_models = array("refund_reasons","users", "biz_categories");
 
     protected function init_setup($action){
+        $this->data['add_leads_menu'] = true;
         $user_id = $this->add_user_info_data();
         $cat_id = $this->add_cat_info_data();
         return parent::init_setup($action);

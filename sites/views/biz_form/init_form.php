@@ -5,12 +5,13 @@
             <?= $info['biz_form']['title'] ?>
         </h3>
     </div>
+    
     <form class="biz-form" action = "javascript://" method = "POST">
         <input type="hidden" name="submit_form" value="1" />
-        
-        <div class="biz-form-placeholder"  data-form_id='<?= $info['biz_form']['id'] ?>' data-cat_id='<?= $info['biz_form']['cat_id'] ?>' data-fetch_url='<?= inner_url("biz_forms/fetch/") ?>'>
+        <input class="cat-id-holder" type="hidden" name="biz[cat_id]" value="" />
+        <div class="biz-form-placeholder"  data-form_id='<?= $info['biz_form']['id'] ?>' data-cat_id='<?= $info['biz_form']['cat_id'] ?>' data-fetch_url='<?= inner_url("biz_form/fetch/") ?>'>
             <span class = "append-spot"></span>
-            <?php if(!isset($info['input_remove']['full_name'])): ?>
+            <?php if(!isset($info['input_remove']['name'])): ?>
                 <div class="form-group">
                     <input 
                     type="text" 

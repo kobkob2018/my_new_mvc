@@ -11,7 +11,23 @@
                 'options'=>Cities::get_flat_select_city_options()
             );
             $this->add_data('city_select',$city_select);
-            $this->include_view('biz_form/init_form.php',array('biz_form'=>$biz_form_data));
+
+
+
+            $input_remove = array();
+            if($biz_form_data['input_remove'] != ''){
+                $input_remove_arr = explode(',',$biz_form_data['input_remove']);
+                foreach($input_remove_arr as $input_name){
+                    $input_name = trim($input_name);
+                    $input_remove[$input_name] = '1';
+                }
+            }
+            $info = array(
+                'biz_form'=>$biz_form_data,
+                'input_remove'=>$input_remove
+            );
+
+            $this->include_view('biz_form/init_form.php',$info);
         }
 
 	}

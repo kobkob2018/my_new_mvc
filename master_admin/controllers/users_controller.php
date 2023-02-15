@@ -23,6 +23,7 @@
     }
 
     public function select_cat_city(){
+      $this->data['add_leads_menu'] = true;
       $this->add_model('user_cat_city');
       $assign_info = User_cat_city::$tree_select_info;
       $cat_id = $_REQUEST['cat_id'];
@@ -60,6 +61,7 @@
 
 
     public function select_cats(){
+        $this->data['add_leads_menu'] = true;
         $this->add_model('user_cat');
         $this->setup_tree_select_info(User_cat::$tree_select_info);
         if(isset($this->data['item_info'])){
@@ -100,6 +102,7 @@
     }
 
     public function select_cities(){
+        $this->data['add_leads_menu'] = true;
         $this->add_model('user_city');
         $this->setup_tree_select_info(User_city::$tree_select_info);
         if(isset($this->data['item_info'])){

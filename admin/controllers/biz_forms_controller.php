@@ -178,10 +178,6 @@
       return inner_url("biz_forms/list/?page_id=".$this->data['page_info']['id']);
     }
 
-    public function delete_url($item_info){
-        return inner_url("biz_forms/delete/?page_id=".$this->data['page_info']['id']."&row_id=".$item_info['id']);
-    }
-
     protected function get_fields_collection(){
       return Biz_forms::setup_field_collection();
     }

@@ -24,11 +24,16 @@
 
 
 
+
         if(!$this->data['item_info']){
             $this->row_error_message();
             return $this->eject_redirect();
         }
-
+        $item_delete_url = $this->delete_url($this->data['item_info']);
+        if($item_delete_url && $item_delete_url != ""){
+            $this->data['item_delete_url'] = $item_delete_url;
+        }
+        
         $fields_collection = $this->get_fields_collection();
 
         $form_handler = $this->init_form_handler();

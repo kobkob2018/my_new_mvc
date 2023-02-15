@@ -3,6 +3,7 @@
     public $add_models = array("user_phones","users");
 
     protected function init_setup($action){
+        $this->data['add_leads_menu'] = true;
         $user_id = $this->add_user_info_data();
         if(!$user_id){
             return $this->redirect_to(inner_url("users/list/"));
