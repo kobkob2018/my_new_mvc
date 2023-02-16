@@ -47,6 +47,11 @@
         'validation'=>'required'
       ),
 
+      'biz_name'=>array(
+        'label'=>'שם עסק',
+        'type'=>'text'
+      ),
+
       'email'=>array(
         'label'=>'אימייל',
         'type'=>'text',
@@ -75,6 +80,25 @@
         'type'=>'select',
         'select_blank'=>array('value'=>'0','label'=>'---'),
         'options_method'=>array('model'=>'User_rolls','method'=>'get_select_options')
+      ),
+
+      'address'=>array(
+        'label'=>'כתובת',
+        'type'=>'text'
+      ),
+      'sex'=>array(
+        'label'=>'מין',
+        'type'=>'select',
+        'options'=>array(
+            array('value'=>'1', 'title'=>'זכר'),
+            array('value'=>'2', 'title'=>'נקבה')
+        )
+      ),
+
+      'birth_date'=>array(
+        'label'=>'תאריך לידה',
+        'type'=>'date',
+        'validation'=>'date'
       ),
 
     );  

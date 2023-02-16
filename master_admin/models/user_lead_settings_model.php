@@ -21,6 +21,13 @@
             'validation'=>'date_time'
         ),
 
+        'lead_price'=>array(
+            'label'=>'מחיר ליד',
+            'type'=>'text',
+            'default'=>'0',
+            'validation'=>'float'
+        ),        
+
         'free_send'=>array(
             'label'=>'שליחה חופשית',
             'type'=>'select',
@@ -32,6 +39,30 @@
             'validation'=>'required'
         ),
 
+        'open_mode'=>array(
+            'label'=>'מצב פתוח',
+            'type'=>'select',
+            'default'=>'0',
+            'options'=>array(
+                array('value'=>'0', 'title'=>'לא'),
+                array('value'=>'1', 'title'=>'כן')
+            ),
+            'validation'=>'required'
+        ),
+
+        'auto_send'=>array(
+            'label'=>'שליחה אוטומטית',
+            'type'=>'select',
+            'default'=>'0',
+            'options'=>array(
+                array('value'=>'0', 'title'=>'לא'),
+                array('value'=>'1', 'title'=>'כן')
+            ),
+            'validation'=>'required'
+        ),
+
+
+
         'lead_credit'=>array(
             'label'=>'קרדיט לידים',
             'type'=>'text',
@@ -39,17 +70,29 @@
             'validation'=>'int'
         ),
 
-        'rotation_state'=>array(
-            'label'=>'מצב רוטציה',
+        'rotation_priority'=>array(
+            'label'=>'עדיפות ברוטציה חודשית',
             'type'=>'text',
             'default'=>'0',
             'validation'=>'int'
         ),
-        'rotation_priority'=>array(
-            'label'=>'עדיפות ברוטציה',
+
+        'month_max'=>array(
+            'label'=>'מקסימום לידים ברוטציה',
             'type'=>'text',
-            'default'=>'0',
+            'default'=>'10',
             'validation'=>'int'
+        ),
+
+        'flex_max'=>array(
+            'label'=>'מקסימום גמיש על בסיס מקום פנוי',
+            'type'=>'select',
+            'default'=>'0',
+            'options'=>array(
+                array('value'=>'0', 'title'=>'לא'),
+                array('value'=>'1', 'title'=>'כן')
+            ),
+            'validation'=>'required'
         ),
     );
 }

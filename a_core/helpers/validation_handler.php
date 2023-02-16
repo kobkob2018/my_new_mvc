@@ -8,6 +8,7 @@
         'img_format'=>'שדה {{label}} חייב להיות קובץ מסוג תמונה',
         'video_format' => 'שדה {{label}} חייב להיות קובץ מסוג וידאו',
         'int'=>'שדה {{label}} חייב להיות מספר',
+        'date'=>'שדה {{label}} חייב להיות תאריך תקין',
         'img_max'=>'שדה {{label}} - תמונה גדולה מידיי( מקסימום מותר - {{img_max}} ביט)',
         'vid_max'=>'שדה {{label}} - וידאו גדול מידיי( מקסימום מותר - {{vid_max}} ביט)',
         'default'=>'שדה {{label}} לא תקין',
@@ -112,6 +113,52 @@
         if(!$is_valid){
             $return_array['success'] = false;
             $return_array['message'] = $this->error_messages['int'];
+        }
+        return $return_array;
+    }
+
+    protected function validate_by_float($value, $validate_payload){
+        $value = trim($value);
+        $return_array =  array(
+            'success'=>true,
+            'fixed_value'=>$value
+        );
+
+        $number = filter_var($value, FILTER_VALIDATE_FLOAT);
+        $is_valid =  ($number !== FALSE);
+
+        if(!$is_valid){
+            $return_array['success'] = false;
+            $return_array['message'] = $this->error_messages['int'];
+        }
+        return $return_array;
+    }
+
+
+    protected function validate_by_date($value){
+        $value = trim($value);
+        $return_array =  array(
+            'success'=>true,
+            'fixed_value'=>$value
+        );
+        $formats = array('d-m-Y','d/m/Y');
+        $is_valid = true;
+        if($value != ""){
+            $is_valid = false;
+            foreach($formats as $format){
+                if(!$is_valid){
+                    $d = DateTime::createFromFormat($format, $value);
+                    $is_valid = $d && $d->format($format) === $value;
+                    if($is_valid){
+                        $return_array['fixed_value_for_db'] = $d->format('Y-m-d');
+                    }
+                }
+            }
+        }
+        if(!$is_valid){
+            $return_array['success'] = false;
+            $return_array['message'] = $this->error_messages['date'];
+            $return_array['fixed_value'] = "";
         }
         return $return_array;
     }

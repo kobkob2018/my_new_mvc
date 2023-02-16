@@ -1,4 +1,6 @@
 <?php
+  //http://love.com/biz_form/submit_form/?form_id=4&submit_form=1&biz[cat_id]=52&biz[full_name]=demo_post2&biz[phone]=098765432&biz[email]=no-mail&biz[city]=6&cat_tree[0]=47&cat_tree[1]=52
+  
   class Leads_complex extends TableModel{
 
     /*
@@ -27,15 +29,10 @@
 
         
         $optional_user_ids = self::get_cat_user_ids($lead_info);
-
-        print_r_help($optional_user_ids,"get_cat_user_ids");
-
         $optional_user_ids = self::filter_inactive_users($optional_user_ids);
-
-        print_r_help($optional_user_ids,"filter_inactive_users");
         $optional_user_ids = self::filter_city_users($optional_user_ids, $lead_info);
-        print_r_help($optional_user_ids,"filter_city_users");
-        print_r_help($lead_info['city_tree']);
+        print_r_help($lead_info,"lead_info");
+        
         return array('stam'=>'po');
     }
 

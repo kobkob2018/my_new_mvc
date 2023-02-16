@@ -6,6 +6,7 @@
     protected $fields_collection = array();
     protected $validation_handler;
     protected $files_to_upload;
+    protected $fixed_values_for_db = array();
     private $controller_interface;
 
     public function __construct($controller_interface){
@@ -87,6 +88,9 @@
             if(isset($field_validate_result['fixed_value'])){
               $user_fixed_value = $field_validate_result['fixed_value'];
             }
+            if(isset($field_validate_result['fixed_value_for_db'])){
+              $this->fixed_values_for_db[$field_key] = $field_validate_result['fixed_value_for_db'];
+            }
             //the method returns an array with a success boolean and an error message
             if(!$field_validate_result['success']){
               //need to continue checking only if still valid
@@ -104,7 +108,10 @@
           $validate_payload['last_state'] = $field_validate_result;
           if(isset($field_validate_result['fixed_value'])){
             $user_fixed_value = $field_validate_result['fixed_value'];
-          }        
+          }  
+          if(isset($field_validate_result['fixed_value_for_db'])){
+            $this->fixed_values_for_db[$field_key] = $field_validate_result['fixed_value_for_db'];
+          }      
         }
 
         if($field['type'] == 'file'){
@@ -248,24 +255,48 @@
         if($this->fields_collection[$key]['type'] == 'text'){
           $return_value = str_replace('"',"&quot;",$return_value);
         }
+        if($this->fields_collection[$key]['type'] == 'date'){
+          $return_value = $this->get_form_input_before_render($key, array('user'));
+         
+          //print_help($return_value,'form this');
+          if($return_value == '0000-00-00'){
+            $return_value = "";
+          }
+          else{
+            $d =  DateTime::createFromFormat('Y-m-d', $return_value);
+            if(!$d && isset($this->db_values[$key])){
+              $d = DateTime::createFromFormat('Y-m-d', $this->db_values[$key]);
+            }
+            if(!$d){
+              $return_value = "";
+            }
+            else{
+              $return_value = $d->format('d-m-Y');
+            }
+          }
+          //print_help($return_value);
+        }
       }
       return $return_value;
     }
 
-    protected function get_form_input_before_render($key){
-      if(isset($this->user_values[$key])){
+    protected function get_form_input_before_render($key, $option_remove = array()){
+
+      if(isset($this->user_values[$key]) && !in_array('user',$option_remove)){
         return $this->user_values[$key];
       }
-      if(isset($this->db_values[$key])){
+      if(isset($this->db_values[$key]) && !in_array('db',$option_remove)){
         return $this->db_values[$key];
       }
-      if(isset($this->fields_collection[$key])){
+      if(isset($this->fields_collection[$key]) && !in_array('default',$option_remove)){
         if(isset($this->fields_collection[$key]['default'])){
           return $this->fields_collection[$key]['default'];
         }
       }
       return "";
     }
+
+
 
     public function get_form_file_url($key){
 
@@ -305,7 +336,14 @@
       return; 
     }
 
-
+    public function fix_values_for_update($fixed_values){
+      foreach($this->fields_collection as $field_key=>$field){
+        if(isset($this->fixed_values_for_db[$field_key]) && isset($fixed_values[$field_key])){
+          $fixed_values[$field_key] = $this->fixed_values_for_db[$field_key];
+        }
+      }
+      return $fixed_values;
+    }
   }
 
 

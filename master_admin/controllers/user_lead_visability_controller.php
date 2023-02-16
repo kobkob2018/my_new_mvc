@@ -1,7 +1,7 @@
 <?php
 
-  class User_lead_settingsController extends CrudController{
-    public $add_models = array("user_lead_settings", "users");
+  class User_lead_visabilityController extends CrudController{
+    public $add_models = array("user_lead_visability", "users");
 
     protected function init_setup($action){
         $user_id = $this->add_user_info_data();
@@ -16,14 +16,14 @@
     public function list(){
         //if(session__isset())
         $filter_arr = $this->get_base_filter();
-        $settings_info = User_lead_settings::get_list($filter_arr,"id");      
+        $settings_info = User_lead_visability::get_list($filter_arr,"id");      
         $user_id = $_GET['user_id'];
         if(empty($settings_info)){
-            return $this->redirect_to(inner_url("user_lead_settings/add/?user_id=$user_id"));
+            return $this->redirect_to(inner_url("user_lead_visability/add/?user_id=$user_id"));
         }
         else{
             $row_id = $settings_info[0]['id'];
-            return $this->redirect_to(inner_url("user_lead_settings/edit/?user_id=$user_id&row_id=$row_id"));
+            return $this->redirect_to(inner_url("user_lead_visability/edit/?user_id=$user_id&row_id=$row_id"));
         }
     }
 
@@ -75,11 +75,11 @@
     }
 
     public function include_edit_view(){
-        $this->include_view('user_lead_settings/edit.php');
+        $this->include_view('user_lead_visability/edit.php');
     }
 
     public function include_add_view(){
-        $this->include_view('user_lead_settings/add.php');
+        $this->include_view('user_lead_visability/add.php');
     }   
 
     protected function update_success_message(){
@@ -101,46 +101,33 @@
     }   
 
     protected function delete_item($row_id){
-      return User_lead_settings::delete($row_id);
+      return User_lead_visability::delete($row_id);
     }
 
     protected function get_item_info($row_id){
-      return User_lead_settings::get_by_id($row_id);
+      return User_lead_visability::get_by_id($row_id);
     }
 
     public function eject_url(){
-      return inner_url('user_lead_settings/list/?user_id='.$this->data['user_info']['id']);
+      return inner_url('user_lead_visability/list/?user_id='.$this->data['user_info']['id']);
     }
 
     public function url_back_to_item($item_info){
-      return inner_url("user_lead_settings/edit/?user_id=".$this->data['user_info']['id']."&row_id=".$item_info['id']);
+      return inner_url("user_lead_visability/edit/?user_id=".$this->data['user_info']['id']."&row_id=".$item_info['id']);
     }
 
     protected function get_fields_collection(){
-      return User_lead_settings::setup_field_collection();
+      return User_lead_visability::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){
-        $this->add_model("user_lead_rotation");
-        $this->add_model("user_lead_visability");
-        
-        $user_id = $this->data['user_info']['id'];
-        User_lead_rotation::create_for_user($user_id);
-        User_lead_visability::create_for_user($user_id);    
-        return User_lead_settings::update($item_id,$update_values);
+        return User_lead_visability::update($item_id,$update_values);
     }
 
     protected function create_item($fixed_values){
-        $this->add_model("user_lead_rotation");
-        $this->add_model("user_lead_visability");
-
-        $user_id = $this->data['user_info']['id'];
-        User_lead_rotation::create_for_user($user_id);
-        User_lead_visability::create_for_user($user_id); 
-        
+        $user_id = $this->data['user_info']['id'];  
         $fixed_values['user_id'] = $user_id;
-        return User_lead_settings::create($fixed_values);
-        
+        return User_lead_visability::create($fixed_values);        
     }
     
   }

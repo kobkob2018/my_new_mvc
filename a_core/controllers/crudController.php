@@ -70,7 +70,7 @@
         }
         $validate_result['fixed_values'] = $fixed_values;
         if($validate_result['success']){
-            $this->update_item($row_id,$fixed_values);
+            $this->update_item($row_id,$form_handler->fix_values_for_update($fixed_values));
             $files_result = $form_handler->upload_files($validate_result, $row_id);
             $this->update_success_message();
             $this->after_edit_redirect($this->data['item_info']);
@@ -157,7 +157,7 @@
         $validate_result = $form_handler->validate();
         if($validate_result['success']){
             $fixed_values = $validate_result['fixed_values'];
-            $row_id = $this->create_item($fixed_values);
+            $row_id = $this->create_item($form_handler->fix_values_for_update($fixed_values));
   
             $fixed_row_values = array();
             foreach($fixed_values as $key=>$value){
@@ -498,7 +498,7 @@
         $validate_result = $form_handler->validate();
         $fixed_values = $validate_result['fixed_values'];
         if($validate_result['success']){
-            $this->update_item($row_id,$fixed_values);
+            $this->update_item($row_id,$form_handler->fix_values_for_update($fixed_values));
             $this->update_success_message();
             
         }
@@ -512,8 +512,6 @@
         }
         $this->redirect_to(current_url()); 
     }
-
-
 
     public function listCreateSend(){
         

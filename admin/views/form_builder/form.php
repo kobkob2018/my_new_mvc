@@ -16,7 +16,7 @@
                     <label for='row[<?= $field_key ?>]'><?= $build_field['label'] ?></label>
                 </div>
                 <div class='form-group-en'> 
-                    <?php if($build_field['type'] == 'text'): ?>
+                    <?php if($build_field['type'] == 'text' || $build_field['type'] == 'date'): ?>
                         
                     
                         <input type='text' name='row[<?= $field_key ?>]" id="row_<?= $field_key ?>' class='form-input <?= $build_field['validate_frontend'] ?>' data-msg-required='*' value="<?= $this->get_form_input($field_key); ?>"  />
