@@ -7,8 +7,19 @@
     </div>
     
     <form class="biz-form" action = "javascript://" method = "POST">
-        <input type="hidden" name="submit_form" value="1" />
+        <input type="hidden" name="submit_request" value="1" />
         <input class="cat-id-holder" type="hidden" name="biz[cat_id]" value="" />
+        <input type="hidden" name="biz[site_id]" value="<?= $this->data['site']['id'] ?>" />
+        <input type="hidden" name="biz[page_id]" value="<?= $this->data['page']['id'] ?>" />
+        <input type="hidden" name="biz[form_id]" value="<?= $this->data['biz_form']['id'] ?>" />
+        <input type="hidden" name="biz[referrer]" value="<?= current_url() ?>" />
+        <?php if(isset($_GET['banner_id'])): ?>
+            <input type="hidden" name="biz[banner_id]" value="<?= $_GET['banner_id'] ?>" />
+        <?php endif; ?>
+        <?php if(isset($_GET['aff_id'])): ?>
+            <input type="hidden" name="biz[aff_id]" value="<?= $_GET['aff_id'] ?>" />
+        <?php endif; ?>
+        <input type="hidden" name="biz[is_moblie]" value="<?= is_mobile()? '1': '0' ?>" />
         <div class="biz-form-placeholder"  data-form_id='<?= $info['biz_form']['id'] ?>' data-cat_id='<?= $info['biz_form']['cat_id'] ?>' data-fetch_url='<?= inner_url("biz_form/fetch/") ?>'>
             <span class = "append-spot"></span>
             <?php if(!isset($info['input_remove']['name'])): ?>

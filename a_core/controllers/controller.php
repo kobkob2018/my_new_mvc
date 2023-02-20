@@ -162,7 +162,7 @@
 		$this->add_data($dataName,$dataVal);
 	}
 
-	protected function send_email($email_to, $email_title,$email_content){
+	public function send_email($email_to, $email_title,$email_content){ 
 		$email_sender = get_config('email_sender'); 
 		$email_sender_name = get_config('email_sender_name');
 		// Set content-type header for sending HTML email 
@@ -174,7 +174,7 @@
 		mail($email_to,$email_title,$email_content,$headers);
 	}
 
-	protected function init_form_handler($form_id = 'main'){		
+	public function init_form_handler($form_id = 'main'){		
 		if(isset($this->form_handlers[$form_id])){
 			return $this->form_handlers[$form_id];
 		}

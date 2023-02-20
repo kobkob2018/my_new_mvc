@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded",()=>{
     initBizForm();
 });
-
+let form_debug_helper;
 initBizForm = ()=>{
     document.querySelectorAll('.biz-form-generator').forEach(
         wrapElement=>{
             bizForm = new BizForm(wrapElement);
+            form_debug_helper = bizForm;
         }
     );
 } 
@@ -347,4 +348,29 @@ class formValidator{
         }
 
     };
+}
+
+
+function help_debug_forms(){
+    document.querySelectorAll('.biz-form-generator').forEach(
+        wrapElement=>{
+            const placeholder = wrapElement.querySelector(".biz-form-placeholder");
+            
+            const fetchUrl = placeholder.dataset.fetch_url;
+            const formElement = wrapElement.querySelector("form.biz-form");
+            const submitUrl = form_debug_helper.submitUrl;
+            form_debug_helper.catHolder.value = form_debug_helper.selected_cat;
+            if(submitUrl == ""){
+                alert("please fill al form");
+                return;
+            }
+            formElement.action = submitUrl;
+            formElement.target = "_BLANK";
+            const new_elements = document.createElement('div');
+            new_elements.innerHTML = "<input type='submit' name='go' value='go' />";
+            formElement.append(new_elements);
+            //return;
+            
+        }
+    );
 }

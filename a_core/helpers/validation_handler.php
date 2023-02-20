@@ -79,6 +79,22 @@
         return $return_array;
     }   
 
+    protected function validate_by_full_name($value, $validate_payload){
+        $value = trim($value);
+        $return_array =  array(
+            'success'=>true,
+            'fixed_value'=>$value
+        );
+
+
+        $is_valid = strlen($value) > 3;
+
+        if(!$is_valid){
+            $return_array['success'] = false;
+            $return_array['message'] = $this->error_messages['default'];
+        }
+        return $return_array;
+    } 
 
     protected function validate_by_phone($value, $validate_payload){
         $value = trim($value);
@@ -87,7 +103,9 @@
             'fixed_value'=>$value
         );
 
-        $is_valid = preg_match('/^[0-9]{10}+$/', $value);
+        $pattern="/^(?=\d)(?=.{6,})(?!.*(\d)\1{4})((0[23489]{1}[5-9]{1})|(0[5]{1}[01234578]{1}[2-9]{1})|0[7]{1}[2-9]{1}[2-9]{1})?(\d{2}?\d{4})$/" ;
+
+        $is_valid = preg_match($pattern, $value);
 
         if(!$is_valid){
             $is_valid = ($value == "123123123");

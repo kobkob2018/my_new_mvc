@@ -1,5 +1,5 @@
 <?php
-//http://love.com/biz_form/submit_form/?form_id=4&submit_form=1&biz[cat_id]=52&biz[full_name]=demo_post2&biz[phone]=098765432&biz[email]=no-mail&biz[city]=6&cat_tree[0]=47&cat_tree[1]=52
+//http://love.com/biz_form/submit_request/?form_id=4&submit_request=1&biz[cat_id]=52&biz[full_name]=demo_post2&biz[phone]=098765432&biz[email]=no-mail&biz[city]=6&cat_tree[0]=47&cat_tree[1]=52
   class Biz_formController extends CrudController{
     public $add_models = array("sitePages","biz_categories","siteBiz_forms","cities");
 
@@ -38,7 +38,17 @@
             return $return_array;
         }
         $form_info = siteBiz_forms::get_by_id($_REQUEST['form_id']);
-        $this->data['form_info'] = $form_info;        
+
+
+        $input_remove = $form_info['input_remove'];
+        $input_remove_arr = explode(",",$input_remove);
+        
+        foreach($input_remove_arr as $remove_input){
+            $input_remove_arr[] = trim($remove_input);
+        }
+        $form_info['input_remove_arr'] = $input_remove_arr;
+        $this->data['form_info'] = $form_info;
+
         return $return_array;
     }
 
@@ -49,7 +59,7 @@
         return true;
     }
 
-    public function submit_form(){
+    public function submit_request(){
         
         $return_array = $this->init_form_data();
         
@@ -59,8 +69,8 @@
         if($_REQUEST['biz']['full_name'] == 'demo_post'){
             return $this->init_post_demo_url($return_array);
         } 
-        $return_array = $this->call_module("leads","send_lead",array('return_array'=>$return_array));
-
+        $return_array = $this->call_module("biz_request","enter_lead",array('return_array'=>$return_array));
+print_r_help($return_array);
         return $this->print_json_page($return_array);
     }
 
@@ -76,7 +86,7 @@
                 $str .= "&$key=$val";
             }
         }
-        $str = outer_url("biz_form/submit_form/?v=1$str");
+        $str = outer_url("biz_form/submit_request/?v=1$str");
         $return_array['success'] = false;
         $return_array['error'] = array('msg'=>"take this:  $str");
         return $this->print_json_page($return_array);
@@ -96,7 +106,7 @@
         );
         $return_array['html'] = $this->include_ob_view('biz_form/fetch_cat_extra_fields.php',$info);
         $return_array['state'] = 'ready';
-        $return_array['submit_url'] = inner_url('biz_form/submit_form/?form_id='.$this->data['form_info']['id']);
+        $return_array['submit_url'] = inner_url('biz_form/submit_request/?form_id='.$this->data['form_info']['id']);
         return $return_array;
     }
 
