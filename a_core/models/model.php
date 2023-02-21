@@ -40,6 +40,7 @@
     }
 
     public static function simple_create_by_table_name($field_values, $table_name){
+      
       $fields_keys_sql_arr = array();
       $fields_values_sql_arr = array();
       $execute_arr = array();

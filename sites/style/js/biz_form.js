@@ -360,17 +360,24 @@ function help_debug_forms(){
             const formElement = wrapElement.querySelector("form.biz-form");
             const submitUrl = form_debug_helper.submitUrl;
             form_debug_helper.catHolder.value = form_debug_helper.selected_cat;
-            if(submitUrl == ""){
-                alert("please fill al form");
+            if(submitUrl == ""){     
+                alert("please select category");
                 return;
+            }
+            if(!form_debug_helper.formValidator.validate()){
+                alert("please note there are missing parameters. better to fill all form");
             }
             formElement.action = submitUrl;
             formElement.target = "_BLANK";
             const new_elements = document.createElement('div');
-            new_elements.innerHTML = "<input type='submit' name='go' value='go' />";
+            new_elements.innerHTML = "<input type='submit' onClick='return updateCatIdHelper()' name='go' value='go' />";
             formElement.append(new_elements);
             //return;
             
         }
     );
+}
+
+function updateCatIdHelper(){
+    form_debug_helper.catHolder.value = form_debug_helper.selected_cat;
 }

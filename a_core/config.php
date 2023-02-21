@@ -28,7 +28,16 @@ $config = array(
     'email_sender_name'=>'מנהל הרשת',
     'is_mobile'=>false,
 
-    'a_core_models'=>array('userLogin','users','user_rolls','systemMessages','globalSettings','sites','biz_categories','cities','test'),
+    'a_core_models'=>array('userLogin'
+        ,'users'
+        ,'user_rolls'
+        ,'systemMessages'
+        ,'globalSettings'
+        ,'sites'
+        ,'biz_categories'
+        ,'cities'
+        ,'user_pending_emails'
+        ,'test'),
     'override_models'=>array(),
     'access_module'=>'main',
     /*

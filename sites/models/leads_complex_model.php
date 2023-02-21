@@ -1,5 +1,5 @@
 <?php
-  //http://love.com/biz_form/submit_request/?form_id=4&submit_request=1&biz[cat_id]=52&biz[full_name]=demo_post2&biz[phone]=098765432&biz[email]=no-mail&biz[city]=6&cat_tree[0]=47&cat_tree[1]=52
+  // to debug here, put in js console: help_debug_forms();
   
   class Leads_complex extends TableModel{
 
@@ -32,7 +32,9 @@
 
         
         $optional_user_ids = self::get_cat_user_ids($lead_info);
+        
         $optional_user_ids = self::filter_inactive_users($optional_user_ids);
+
         $optional_user_ids = self::filter_city_users($optional_user_ids, $lead_info);
 
         $duplicated_user_leads = self::get_duplicated_user_leads($optional_user_ids, $lead_info);
@@ -204,9 +206,10 @@
             return $optional_user_ids;
         }
         $user_id_in = implode(",",$optional_user_ids);
-        $sql = "SELECT * FROM user_lead_settings WHERE id IN($user_id_in)  
+        $sql = "SELECT * FROM user_lead_settings WHERE user_id IN($user_id_in)  
         AND active = '1' 
         AND (end_date > now() OR end_date = '0000-00-00')";
+       
         $db = Db::getInstance();		
         $req = $db->prepare($sql);
         $req->execute();
@@ -214,13 +217,27 @@
         $user_ids = array();
         $users_arr = array();
         foreach($result as $user_lead_settings){
-            $user_ids[] = $user_lead_settings['id'];
-            $users_arr[$user_lead_settings['id']] = array(
+            $user_ids[] = $user_lead_settings['user_id'];
+            $users_arr[$user_lead_settings['user_id']] = array(
                 'lead_settings'=>$user_lead_settings
             );
         }
         self::$users_arr = $users_arr;
         return $user_ids;
+    }
+
+    public static function get_user_send_times($user_id){
+        $execute_arr = array('user_id'=>$user_id);
+        $sql = "SELECT * FROM user_lead_send_times WHERE user_id = :user_id  
+        AND display = '1' ";
+        $db = Db::getInstance();		
+        $req = $db->prepare($sql);
+        $req->execute($execute_arr);
+        $result = $req->fetch();
+        if(!$result){
+            return "";
+        }
+        return $result['time_groups'];
     }
 
     public static function filter_city_users($optional_user_ids, $lead_info){
@@ -300,12 +317,13 @@
         foreach($leads as $lead){
             if(in_array($lead['user_id'],$optional_user_ids)){
                 $duplicate_lead_id = $lead['id'];
-                if($duplicate_lead_id['duplicate_id'] != ''){
+                if($lead['duplicate_id'] != ''){
                     $duplicate_lead_id = $lead['duplicate_id'];
                 }
                 $users_duplicate_leads[$lead['user_id']] = $duplicate_lead_id;
             }
-        }      
+        }  
+        return $users_duplicate_leads;    
     }
 
     public static function reset_last_month_users($optional_user_ids){

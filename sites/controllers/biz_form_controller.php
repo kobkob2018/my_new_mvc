@@ -66,11 +66,17 @@
         if(!$this->check_continue($return_array)){  
             return $this->print_json_page($return_array);
         }
+
+        if(!isset($_REQUEST['biz'])){
+            $return_array['success'] = false;
+            $return_array['error'] = array('msg'=>'empty form');
+            return $this->print_json_page($return_array);
+        }
+
         if($_REQUEST['biz']['full_name'] == 'demo_post'){
             return $this->init_post_demo_url($return_array);
         } 
         $return_array = $this->call_module("biz_request","enter_lead",array('return_array'=>$return_array));
-print_r_help($return_array);
         return $this->print_json_page($return_array);
     }
 

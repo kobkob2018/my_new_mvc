@@ -66,7 +66,8 @@ function create_session_id(){
 
 
 function styles_url($url){
-    if(isset($_REQUEST['system'])){
+    global $init_request;
+    if(isset($init_request['system'])){
         return $url;
     }
     else{
@@ -81,7 +82,7 @@ function global_url($url = ''){
 }
 
 function inner_url($url = '', $remove_from_url = array()){
-    
+    global $init_request;
     $url_arr = array();
 
     $base_url_dir = get_config('base_url_dir');
@@ -90,8 +91,8 @@ function inner_url($url = '', $remove_from_url = array()){
         $url_arr['dir'] = $base_url_dir;
     }
 
-    if(isset($_REQUEST['system'])){
-        $url_arr['system'] = $_REQUEST['system'];
+    if(isset($init_request['system'])){
+        $url_arr['system'] = $init_request['system'];
     }
 
     if($url != ''){
@@ -157,8 +158,10 @@ function hebdt($datetime_str){
 }
 
 function system_path($file_path){
-    if(isset($_REQUEST['system'])){
-        return $_REQUEST['system']."/".$file_path;
+    global $init_request;
+    
+    if(isset($init_request['system'])){
+        return $init_request['system']."/".$file_path;
     }
     else{
         return get_config("default_system")."/".$file_path;

@@ -45,13 +45,13 @@
 		
 		//ask main module of the system to colect vital global data 
 		$this->call_module(get_config('main_module'),'init_layout',$action);
-
+		
 		//call the override setup function of the specific controller
 		$init_setup_result = $this->init_setup($action);
 		if(!$init_setup_result){
 			return;
 		}
-
+		
 		ob_start();
 		$this->action_result = $this->$action();
 		$this->action_output = ob_get_clean();
@@ -128,7 +128,7 @@
 	}
 	
 	public function call_module($module_name,$action_name, $action_data = null){
-
+		
 		if(system_file_exists('modules/' . $module_name . '_module.php')){
 			system_require_once('modules/' . $module_name . '_module.php');
 			$module_class = ucfirst($module_name)."Module";
@@ -144,7 +144,7 @@
 			}			
 		}
 		else{
-			echo $module_name;
+			
 			//this param not exist so it will invoke notice here
 			echo $modulenotfound_worning;
 			//do nothing

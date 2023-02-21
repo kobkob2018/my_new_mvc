@@ -67,7 +67,7 @@
 			$this->data['forgot_password_user'] =  $log_in_user;
 			$this->data['forgot_password_token'] =  $token_array;
 			ob_start();
-				$this->include_view('emailsSend/forgotPasswordEmail.php');
+				$this->include_view('emails_send/forgotPasswordEmail.php');
 
 			$email_content = ob_get_clean();
 			$email_to = trim($log_in_user['email']);

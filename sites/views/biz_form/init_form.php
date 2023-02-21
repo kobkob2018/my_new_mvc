@@ -74,7 +74,20 @@
                 </div>      
             <?php else: ?>
                 <input type="hidden" name="biz[city]" value="0" />
-            <?php endif; ?>                        
+            <?php endif; ?>  
+            
+            <?php if(!isset($info['input_remove']['note'])): ?>
+                <div class="form-group">
+                    <textarea 
+                    name="biz[note]" 
+                    id="biz_note" 
+                    class="form-input validate" 
+                    placeholder="הערות\בקשות" 
+                    ></textarea>
+                </div>
+            <?php else: ?>
+                <input type="hidden" name="biz[note]" value="" />
+            <?php endif; ?>
             <div class="loading-message hidden">
                 <div class="loader-icon">
                 

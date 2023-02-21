@@ -42,7 +42,7 @@ class TableModel extends Model{
                 $id_key = $table_setting['id_key'];
                 $execute_arr = array($id_key=>$row_id);
                 $sql = "DELETE FROM $table_name WHERE $id_key = :$id_key";
-                print_help($sql);
+                
                 $db = Db::getInstance();		
                 $req = $db->prepare($sql);
                 $req->execute($execute_arr);
