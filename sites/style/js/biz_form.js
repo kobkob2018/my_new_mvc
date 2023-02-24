@@ -30,14 +30,18 @@ class BizForm{
         this.submitUrl = "";
         this.selectEventListenerBinded = this.selectEventListener.bind(this);
         this.submitEventListenerBinded = this.submitEventListener.bind(this);
+        this.testFunctionBinded = this.testFunction.bind(this);
+        
         this.submitButton.addEventListener("click", this.submitEventListenerBinded, true);
         this.max_stock = 0;
         this.initFetch();
+        this.initTestButton();
     }
 
     initFetch(){
         const cat_id = this.placeholder.dataset.cat_id;
         this.fetchForCat(cat_id);
+
 
     }
     fetchForCat(cat_id){
@@ -52,7 +56,8 @@ class BizForm{
         }).catch(function(err) {
             
             console.log(err);
-            console.log("Something went wrong. please reload the page");
+            alert("Something went wrong. please reload the page");
+            this.hideLoading();
             //alert("Something went wrong. please reload the page");
         });
     }
@@ -170,10 +175,20 @@ class BizForm{
             body: formData,
         }).then((res) => res.json()).then(info => {
             if(info.success){
-                alert("todo: after biz_form_submit success");
-                //check for redirects
-                //check for pixels
-                //check for html
+
+                if(info.have_redirect){
+                    console.log("redirecting to"+ info.redirect_to);
+                    setTimeout(function(){
+                        
+                        window.location.href =  info.redirect_to;
+                    },5000);
+                }
+                const successEl = document.createElement('div');
+                successEl.innerHTML = info.html;
+                this.wrapElement.insertBefore(successEl,this.formElement);
+                this.formElement.remove();
+                this.submitButton.remove();
+
 
             }
             else{
@@ -184,10 +199,31 @@ class BizForm{
         }).catch(function(err) {
             
             console.log(err);
-            console.log("Something went wrong. please reload the page");
-            //alert("Something went wrong. please reload the page");
+            alert("Something went wrong. please reload the page");
+            this.hideLoading();
         });
         console.log(formData);
+    }
+    initTestButton(){
+        
+        this.formElement.querySelectorAll(".tester-button").forEach(testButton=>{
+            testButton.addEventListener("click", this.testFunctionBinded, true);
+        });
+    }
+    testFunction(){
+        
+        fetch(this.fetchUrl+"?test_form=1&cat_id=0&form_id="+this.form_id).then((res) => res.json()).then(info => {
+            console.log("adding pixels for testing");
+
+            const successEl = document.createElement('div');
+            successEl.innerHTML = info.html;
+            this.wrapElement.insertBefore(successEl,this.formElement);
+        }).catch(function(err) {
+            
+            console.log(err);
+            console.log("The test failed... ");
+            //alert("Something went wrong. please reload the page");
+        });
     }
 }
 

@@ -128,18 +128,23 @@ function current_url($add_params = array()){
     $base_url = get_config('base_url');
     $current_url = $base_url . $_SERVER["REQUEST_URI"];
     if(!empty($add_params)){
-        $current_url_arr = explode("?",$current_url);
-        $add_params_str_arr = array();
-        if(isset($current_url_arr[1])){
-            $add_params_str_arr[] = $current_url_arr[1];
-        }
-        foreach($add_params as $key=>$value){
-            $add_params_str_arr[] = "$key=$value";
-        }
-        $add_params_str = implode("&",$add_params_str_arr);
-        $current_url = $current_url_arr[0]."?".$add_params_str;
+        $current_url = add_url_params($current_url, $add_params);
     }
     return $current_url;
+}
+
+function add_url_params($url_before, $add_params){
+    $url_after_arr = explode("?",$url_before);
+    $add_params_str_arr = array();
+    if(isset($url_after_arr[1])){
+        $add_params_str_arr[] = $url_after_arr[1];
+    }
+    foreach($add_params as $key=>$value){
+        $add_params_str_arr[] = "$key=$value";
+    }
+    $add_params_str = implode("&",$add_params_str_arr);
+    $url_after = $url_after_arr[0]."?".$add_params_str;
+    return $url_after;
 }
 
 $current_url = get_config('base_url') . $_SERVER["REQUEST_URI"];

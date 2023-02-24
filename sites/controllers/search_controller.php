@@ -1,5 +1,5 @@
 <?php
-  class SearchController extends Controller{
+  class SearchController extends CrudController{
     //public $add_models = array("sites");
 
     protected function init_setup($action){

@@ -28,11 +28,10 @@
                 return $return_array;
             }
 
-            $validate_phone_duplications = $this->validate_phone_duplications($return_array);
-
+            $have_meny_phone_duplications = $this->validate_phone_duplications($return_array);
 
             //create duplication mockup for spammers, with a success true result
-            if(!$validate_phone_duplications){
+            if($have_meny_phone_duplications){
                 $return_array['html'] = $this->controller->include_ob_view('biz_form/request_success_mokup.php');
                 return $return_array;
             }
@@ -42,6 +41,9 @@
 
             $this->add_cat_info_to_lead_info();
             $this->add_city_info_to_lead_info();
+
+            $this->lead_info['thanks_pixel'] = $form_info['thanks_pixel'];
+            
 
             if(isset($_REQUEST['extra'])){
                 $this->lead_info['extra'] = $_REQUEST['extra'];
@@ -82,10 +84,20 @@
 
             $request_id = SiteBiz_requests::create($fixed_db_values);
 
+            if(isset($fixed_db_values['banner_id']) && $fixed_db_values['banner_id'] != ''){
+                $this->controller->add_model('siteNet_banners');
+                SiteNet_banners::add_count_to_banner($fixed_db_values['banner_id'], 'convertions');
+            }
+
             $this->send_leads_to_users($request_id,$fixed_db_values,$lead_sends_arr);
 
             $return_array['html'] = $this->controller->include_ob_view('biz_form/request_success.php',$this->lead_info);
-
+            $have_redirect = false;
+            if($form_info['thanks_redirect'] != ""){
+                $have_redirect = true;
+                $return_array['redirect_to'] = $form_info['thanks_redirect'];
+            }
+            $return_array['have_redirect'] = $have_redirect;
             return $return_array;
         }
 
@@ -154,9 +166,12 @@
                 return true;
             }
             $weekly_phone_duplications = SiteBiz_requests::count_weekly_phone_duplications($phone);
+            
             if($weekly_phone_duplications < 3){
+                
                 return false;
             }
+            
             return true;
         }
 
@@ -260,7 +275,7 @@
                 $db_lead_info['resource'] = 'form';
                 
                 
-                SiteUser_leads::add_user_lead($db_lead_info,$user);
+                $user_lead_id = SiteUser_leads::add_user_lead($db_lead_info,$user);
 
                 $auth_link = get_config('main_website_url')."/myleads/leads/auth/?token=".$token;
                 
@@ -269,7 +284,8 @@
                     'lead'=>$email_lead_info,
                     'user'=>$user,
                     'site'=>$this->controller->data['site'],
-                    'auth_link'=>$auth_link
+                    'auth_link'=>$auth_link,
+                    'lead_id'=>$user_lead_id
                 );
 
                 $email_content = $this->controller->include_ob_view('emails_send/user_lead_alert.php',$email_info);

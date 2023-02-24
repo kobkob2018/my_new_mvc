@@ -3,6 +3,32 @@
 
     protected static $main_table = 'biz_categories';
 
+    protected static $tree_singletons = array(); 
+    public static function get_item_parents_tree($item_id, $select_params = "*"){
+        $singleton_i_1 = $item_id;
+        $singleton_i_2 = self::create_params_index_str($select_params);
+        if(isset($tree_singletons[$singleton_i_1])){
+            if(isset($tree_singletons[$singleton_i_1][$singleton_i_2])){
+                return $tree_singletons[$singleton_i_1][$singleton_i_2];
+            }
+        }
+        else{
+            $tree_singletons[$singleton_i_1] = array();
+        }
+        $return_result = parent::get_item_parents_tree($item_id, $select_params);
+        $tree_singletons[$singleton_i_1][$singleton_i_2] = $return_result;
+        return $tree_singletons[$singleton_i_1][$singleton_i_2];
+    }
+
+    protected static function create_params_index_str($select_params){
+        $params_str_arr = array();
+        $params_arr = explode(",",$select_params);
+        foreach($params_arr as $param){
+            $params_str_arr[] = trim($param);
+        }
+        return implode("_",$params_str_arr);
+    }
+
     protected static $auto_delete_from_attached_tables = array(
         'cat_city'=>array(
             'table'=>'cat_city',

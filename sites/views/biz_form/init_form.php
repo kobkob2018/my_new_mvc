@@ -13,6 +13,11 @@
         <input type="hidden" name="biz[page_id]" value="<?= $this->data['page']['id'] ?>" />
         <input type="hidden" name="biz[form_id]" value="<?= $this->data['biz_form']['id'] ?>" />
         <input type="hidden" name="biz[referrer]" value="<?= current_url() ?>" />
+        <?php if(isset($_REQUEST['test_form'])): ?>
+            <div class="test-group form-group">
+                <input type="button" class="tester-button form-input" data-status="pending" value="שליחת בדיקה" />
+            </div>
+        <?php endif; ?>
         <?php if(isset($_GET['banner_id'])): ?>
             <input type="hidden" name="biz[banner_id]" value="<?= $_GET['banner_id'] ?>" />
         <?php endif; ?>

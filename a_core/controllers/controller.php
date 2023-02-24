@@ -199,8 +199,11 @@
 		return $this->init_form_handler($form_id)->get_file_input($param);
 	}	
 	
-	public function get_assets_dir(){
-		return $this->call_module(get_config('main_module'),'get_assets_dir');
+	public function get_assets_dir($relative_site = 'self'){
+		$info = array(
+			'relative_site'=>$relative_site
+		);
+		return $this->call_module(get_config('main_module'),'get_assets_dir',$info);
 	}
 
 	public function register_script($type,$label, $ref,$place = 'head',$order = array()){

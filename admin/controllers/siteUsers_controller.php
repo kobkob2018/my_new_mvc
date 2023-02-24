@@ -1,6 +1,6 @@
 <?php
 
-  class SiteUsersController extends Controller{
+  class SiteUsersController extends CrudController{
     public $add_models = array("siteUsers");
 
     protected function handle_access($action){

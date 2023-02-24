@@ -1,5 +1,5 @@
 <?php
-	class TagsController extends Controller{
+	class TagsController extends CrudController{
 		public $add_models = array("tags");
 		public function settings(){
 			if(isset($_REQUEST['add_tag'])){

@@ -20,7 +20,21 @@
                 array('value'=>'1', 'title'=>'פעיל')
             )
         ),
-       
+
+        'goto_href'=>array(
+            'label'=>'לינק',
+            'type'=>'text',
+            'css_class'=>'left-text',
+            'validation'=>''
+        ),
+
+        'free_html'=>array(
+            'label'=>'HTML חופשי',
+            'type'=>'textbox',
+            'css_class'=>'small-text left-text',
+            'validation'=>''
+        ),
+
         'image'=>array(
             'label'=>'תמונה',
             'type'=>'file',
@@ -47,7 +61,6 @@
             'default'=>'0',
             'validation'=>'required, int'
         ),
-
 
         'clicks'=>array(
             'label'=>'מספר הקלקות',

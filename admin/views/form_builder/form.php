@@ -9,7 +9,6 @@
 
             
         <?php foreach($this->data['form_builder']['fields_collection'] as $field_key=>$build_field): ?>
-
             <div class='form-group <?= isset($build_field['css_class'])? $build_field['css_class']: "" ?>'>
                     
                 <div class='form-group-st'>                

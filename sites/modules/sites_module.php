@@ -21,8 +21,16 @@
         }
 
         public function get_assets_dir(){
-            $assets_dir = Sites::get_current_site_asset_dir();
-            return $assets_dir;
+            $info = $this->action_data;
+            if(isset($info['relative_site']) && $info['relative_site'] == 'master'){
+                $master_site = Sites::get_by_domain(get_config('master_domain'));
+                $assets_dir = Sites::get_site_asset_dir($master_site);
+                return $assets_dir;
+            }
+            else{
+                $assets_dir = Sites::get_current_site_asset_dir();
+                return $assets_dir;
+            }
         }
 
         public function add_global_essential_ajax_info(){

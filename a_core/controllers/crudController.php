@@ -1,7 +1,7 @@
 <?php
   class CrudController extends Controller{
 
-    protected $assets_map = array();
+    protected $assets_map = array('static'=>'');
     protected function init_setup($action){
         $this->set_priority_from_session();
         return parent::init_setup($action);
@@ -107,11 +107,16 @@
         $this->include_add_view();           
     }       
   
-    public function file_url_of($field_name, $file_name){
+    public function file_master_url_of($field_name, $file_name){
+        return $this->file_url_of($field_name, $file_name, 'master');
+
+    }   
+
+    public function file_url_of($field_name, $file_name, $relative_site = 'self'){
         $fileds_arr = $this->get_assets_mapping();
         if($fileds_arr && isset($fileds_arr[$field_name])){
             $file_dir = $fileds_arr[$field_name];
-            $assets_dir = $this->get_assets_dir();
+            $assets_dir = $this->get_assets_dir($relative_site);
             return $assets_dir['url'].$file_dir."/".$file_name;
 
         }
@@ -120,6 +125,7 @@
     }
 
     public function add_asset_mapping($mapping_arr){
+        
         foreach($mapping_arr as $mapping_key=>$mapping){
             $this->assets_map[$mapping_key] = $mapping;
         }

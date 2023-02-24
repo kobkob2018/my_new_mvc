@@ -1,6 +1,6 @@
 <?php
 //only for loged out user
-   class UserController extends Controller{
+   class UserController extends CrudController{
 	
 	protected function handle_access($action){
 		return $this->call_module(get_config('main_module'),'handle_access_login_only',$action);

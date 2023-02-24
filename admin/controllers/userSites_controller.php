@@ -1,5 +1,5 @@
 <?php
-  class UserSitesController extends Controller{
+  class UserSitesController extends CrudController{
     public $add_models = array("sites");
 
     protected function handle_access($action){

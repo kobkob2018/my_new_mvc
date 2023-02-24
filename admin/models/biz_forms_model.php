@@ -32,8 +32,14 @@
         'thanks_pixel'=>array(
             'label'=>'פיקסל לאחר שליחה',
             'type'=>'textbox',
-            'css_class'=>'small-text'
+            'css_class'=>'small-text left-text'
         ),   
+
+        'thanks_redirect'=>array(
+            'label'=>'הפנייה 5 שניות לאחר שליחה',
+            'type'=>'text',
+            'css_class'=>'left-text'
+        ), 
 
         'input_remove'=>array(
             'label'=>'הסרת שדות',

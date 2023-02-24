@@ -44,3 +44,25 @@ function openDrawer(drawerId) {
     document.getElementById(drawerId + "_wrap").style.width = "0";
     document.getElementById(drawerId + "_drawer_overlay").style.display = "none";
   }
+
+
+document.addEventListener("DOMContentLoaded",()=>{
+    initBannerClickers();
+});
+
+initBannerClickers = ()=>{
+    document.querySelectorAll('.banner-clicker').forEach(
+        clicker=>{
+            clicker.addEventListener("click",(event)=>{
+                const pixel = document.createElement('span');
+                const count_url = clicker.dataset.count_url;
+                const link_url = clicker.dataset.link;
+                pixel.innerHTML = "<img width='1' height='1' style='display:none' src='"+ count_url +"' />";
+                clicker.appendChild(pixel);
+                setTimeout(function(){    
+                    window.location.href =  link_url;
+                },2000);
+            });
+        }
+    );
+} 

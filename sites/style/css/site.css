@@ -162,7 +162,7 @@ textarea, input { outline: none; }
     padding-left: 10px;
 }
 
-#right_bar_wrap img{
+#right_bar_wrap img, #left_bar_wrap img {
     max-width:100%;
 }
 
@@ -299,4 +299,51 @@ textarea, input { outline: none; }
     box-shadow: -3px 3px 7px red;
     border: 2px solid red;
     font-weight: bold;
+}
+
+.roundish-cube{
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 3px 6px #00000030;
+    border: 1px solid gray;
+    margin-top: 20px;
+    
+    clear: both;
+}
+
+.roundish-cube .flex-section{
+    display: flex;
+}
+
+.roundish-cube .section{
+    margin: 8px;
+}
+
+.roundish-title{
+    clear: both;
+    text-align: center;
+    padding: 12px;
+    background: #60c7a7;
+    border-radius: 6px;
+}
+
+.roundish-title .title-a{
+    font-weight: bold;
+    color:white;
+    font-size: 21px;
+    line-height: 27px;
+}
+
+.amin-logo{
+    max-width: 100px;
+    padding-left: 10px;
+}
+
+.roundish-cube .whatsapp-phone a{
+    display: flex;
+    align-items: center;
+}
+
+.roundish-cube .whatsapp-phone a img{
+    padding-left: 10px;
 }

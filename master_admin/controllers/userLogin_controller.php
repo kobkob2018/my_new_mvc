@@ -1,6 +1,6 @@
 <?php
 //only for loged out user
-   class UserLoginController extends Controller{  
+   class UserLoginController extends CrudController{  
    
 	function __construct() {
         parent::__construct();

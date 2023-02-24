@@ -6,7 +6,7 @@
     protected $user;
     public $add_models = array();
 
-    public function __construct(Controller $controllerInterface,$action_data = null) {
+    public function __construct(crudController $controllerInterface,$action_data = null) {
 		  $this->controller = $controllerInterface;
       $this->action_data = $action_data;
       $this->user = $controllerInterface->user;

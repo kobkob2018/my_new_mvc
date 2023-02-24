@@ -1,5 +1,5 @@
 <?php
-	class TasksController extends Controller{
+	class TasksController extends CrudController{
 		public $add_models = array("tasks");
         protected function handle_access($action){
             switch ($action){

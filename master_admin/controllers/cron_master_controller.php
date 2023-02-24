@@ -29,7 +29,12 @@ class Cron_masterController extends CrudController{
       'Fri'=>array(),
       'Sat'=>array(),
     ),
-    'monthly'=>array(),
+    'monthly'=>array(
+      array('label'=>'pending_emails_monthly_cleanup', 
+      'module'=>'cron_emails',
+      'action'=>'monthly_cleanup'
+),
+    ),
   );
 
   protected function map_cron_actions(){

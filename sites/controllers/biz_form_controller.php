@@ -9,13 +9,17 @@
     }
 
     public function fetch(){
-        
+
         $return_array = $this->init_form_data();
         if(!$this->check_continue($return_array)){
             
             return $this->print_json_page($return_array);
         }
-          
+
+        if(isset($_REQUEST['test_form'])){
+            return $this->test_form_mokup($return_array);
+        } 
+
         $return_array = $this->get_cat_children_select($return_array);
         if(!$this->check_continue($return_array)){
             return $this->print_json_page($return_array);
@@ -142,6 +146,12 @@
         $return_array['have_children'] = true;
         $return_array['html'] = $this->include_ob_view('biz_form/fetch_cat_select.php',$info);
         return $return_array;
+    }
+
+
+    public function test_form_mokup(){
+        $return_array['html'] = $this->include_ob_view('biz_form/request_testing_html.php');
+        return $this->print_json_page($return_array);
     }
 
   }

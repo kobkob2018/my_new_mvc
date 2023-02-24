@@ -138,6 +138,7 @@ h4{
     padding: 5px 20px;
     font-size: 20px;
     box-shadow: 3px 3px 3px gray;
+    width: auto;
 }
 
 .flex-table .row {
@@ -286,9 +287,25 @@ h4{
     justify-content: space-between;
 }
 
-.form-group textarea{
+.form-group select, .form-group input, .form-group textarea{
     width:100%;
+    padding: 8px;
+    border-radius: 3px;
+    border: 1px solid #b6b6ec;
+    min-width: 200px;
+}
+
+.form-group select.tree-select{
+    width: auto;
+    min-width: auto;
+}
+
+.form-group textarea{
     min-height: 200px;
+}
+
+.form-group.small-text textarea{
+    min-height: 100px;
 }
 
 .form-group.big-text textarea{
@@ -307,12 +324,14 @@ h4{
 
 }
 
+.form-group.left-text input, .form-group.left-text textarea{
+    text-align: left;
+    direction: ltr;
+} 
+
 .hour-groups-template .group-times{
     display: flex;
     flex-wrap: wrap;
-}
-.hour-groups-template .group-times .time-selector{
-    padding-left: 20px;
 }
 
 .hour-groups-template .days-label{
@@ -323,6 +342,7 @@ h4{
     display: flex;
     flex-wrap: wrap;
 }
+
 .hour-groups-template  .day-check-wrap{
     padding: 5px 0px 5px 5px;
 }
@@ -367,10 +387,6 @@ h4{
 
 .assign-checkbox-parent-wrap.closed .children-wrap{
     display: none;
-}
-
-.replacable-plus-sign, .replacable-minus-sign{
-   // display:none;
 }
 
 .a-closed .replacable-minus-sign{

@@ -107,8 +107,13 @@
             'type'=>'text'
         ), 
 
+        'whatsapp_text'=>array(
+            'label'=>'טקסט לווטסאפ',
+            'type'=>'text'
+        ), 
+
         'activity_hours'=>array(
-            'label'=>'טלפון לווטסאפ',
+            'label'=>'שעות פעילות',
             'type'=>'textbox',
             'css_class'=>'small-text'
         ), 
@@ -129,7 +134,7 @@
             'css_class'=>'small-text'
         ),  
         'cube_image'=>array(
-            'label'=>'תמונה',
+            'label'=>'תמונת לוגו',
             'type'=>'file',
             'file_type'=>'img',
             'validation'=>'img',
