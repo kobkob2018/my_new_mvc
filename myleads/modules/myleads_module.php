@@ -1,5 +1,5 @@
 <?php
-	class myleadsModule extends Module{
+	class MyleadsModule extends Module{
 
         //good place to colect global data of the workon site, the user, etc...
         public function init_layout(){

@@ -2,7 +2,7 @@
 
   class PagesController extends CrudController{
     public $add_models = array();
-    public function error2() {
+    public function error() {
       SystemMessages::add_err_message("Oops! seems like you are in the wrong place");
       $this->include_view('pages/error.php');
     }
