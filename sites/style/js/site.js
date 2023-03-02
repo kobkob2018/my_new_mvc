@@ -61,7 +61,7 @@ initBannerClickers = ()=>{
                 clicker.appendChild(pixel);
                 setTimeout(function(){    
                     window.location.href =  link_url;
-                },2000);
+                },500);
             });
         }
     );

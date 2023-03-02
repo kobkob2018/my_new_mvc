@@ -1,18 +1,10 @@
 <?php
   class SiteController extends CrudController{
-    public $add_models = array("sites","adminPages");
-    public function error() {
-      SystemMessages::add_err_message("Oops! seems like you are in the wrong place");
-      $this->include_view('pages/error.php');
-    }
-
-    protected function init_setup($action){
-      return parent::init_setup($action);
-    }
+    public $add_models = array("adminSites","adminPages");
 
     protected function handle_access($action){
         
-        return $this->call_module('admin','handle_access_user_is','admin');
+      return $this->call_module('admin','handle_access_user_is','master_admin');
     }
 
     public function edit(){
@@ -58,39 +50,7 @@
     }
 
     protected function get_fields_collection(){
-        $fields_collection = array(
-
-            'title'=>array(
-                'label'=>'שם האתר',
-                'type'=>'text',
-                'validation'=>'required'
-            ),
-
-            'meta_title'=>array(
-                'label'=>'כותרת מטא',
-                'type'=>'text'
-            ),        
-            'logo'=>array(
-                'label'=>'לוגו',
-                'type'=>'file',
-                'file_type'=>'img',
-                'validation'=>'required, img',
-                'img_max'=>'100000',
-                'upload_to'=>'site',
-                'name_file'=>'logo.{{ext}}'
-            ), 
-            'meta_description'=>array(
-                'label'=>'תיאור מטא',
-                'type'=>'textbox'
-            ),  
-
-            'meta_keywords'=>array(
-                'label'=>'מילות מפתח',
-                'type'=>'textbox'
-            ) 
-    
-        );
-      return $fields_collection;
+      return AdminSites::setup_field_collection();
     }
 
     protected function update_item($item_id,$update_values){

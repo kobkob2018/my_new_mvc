@@ -16,6 +16,9 @@ RewriteRule ^admin/(.+)/(.+)/$ index.php?system=admin&controller=$1&action=$2 [Q
 RewriteRule ^admin/(.+)/$ index.php?system=admin&controller=$1 [QSA,L]
 RewriteRule ^admin/$ index.php?system=admin [QSA,L]
 
+RewriteRule ^myleads/(.+)/(.+)/$ index.php?system=myleads&controller=$1&action=$2 [QSA,L]
+RewriteRule ^myleads/(.+)/$ index.php?system=myleads&controller=$1 [QSA,L]
+RewriteRule ^myleads/$ index.php?system=myleads [QSA,L]
 
 RewriteRule ^(.+)/(.+)/$ index.php?controller=$1&action=$2 [QSA,L]
 RewriteRule ^(.+)/$ index.php?controller=pages&action=page_view&page=$1 [QSA,L]

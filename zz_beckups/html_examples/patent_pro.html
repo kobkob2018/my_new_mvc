@@ -1,0 +1,47 @@
+<div id="popup_wrap" style="display:none;">
+	<div class="popup-content">
+		<div class="popup-close">
+			<a href="javascript://" onclick="close_popup()">X</a>
+		</div>
+		<b class="popup-title">רישום פטנטים וסימני מסחר</b>
+		<div class="popup-text">
+			לפניות בנושא שירות לקוחות התקשרו כעת
+			<br/>
+			 072-2556591
+		</div>
+	</div>
+</div>
+<script>
+	jQuery(function($){
+		/*
+		setTimeout(function(){
+			$("#popup_wrap").show();
+		},2000);
+		*/
+	});
+	function close_popup(){
+		jQuery(function($){
+			$("#popup_wrap").hide();
+		});		
+	}
+</script>
+	<div class="page_wrap">
+	
+	<div class="header phone-hours"><a href="tel:{{cat_phone}}"> {{cat_phone}}</a></div>
+
+		<div class="page_middle">
+			<div class="logo_wrap">{{logo}}</div>
+			<h1 class="main_title">{{text_1}}</h1>
+			<h2>{{text_2}}</h2>
+			<h3 class="subtitle">{{text_3}}</h3>
+			
+			
+		</div>
+		<div class="page_bottom">
+			<div class="estimate-form-wrap">{{estimate_form}}<div style="clear:bloth;"></div></div>
+		</div>
+		<div id="ld_content_wrap">
+			{{ld_content}}
+		</div>
+		<footer>{{bottom_copyright}}</footer>
+	</div>

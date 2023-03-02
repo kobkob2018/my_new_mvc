@@ -154,7 +154,8 @@
     }
 
     public static $asset_mapping = array(
-        'logo'=>'site'
+        'logo'=>'site',
+        'colors_css'=>'style'
     );
   }
 ?>

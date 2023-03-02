@@ -30,5 +30,15 @@
       $this->controller->add_asset_mapping($mapping_arr);
     }
 
+    protected function call_module($module_name,$action_name, $action_data = null){
+      return $this->controller->call_module($module_name,$action_name, $action_data);
+    }
+
+    //to be overrriten by main_module..
+    public function proccess_body_modules(){
+      $body_output = $this->action_data;
+      return $body_output;
+    }
+
   }
 ?>

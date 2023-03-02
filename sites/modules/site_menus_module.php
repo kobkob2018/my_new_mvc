@@ -28,5 +28,12 @@
             $this->include_view('site_menus/top_menu.php');
         }
 
+        public function bottom_menu(){
+            $data = $this->controller->data;
+            $bottom_menu_items = SiteMenuItems::get_menu_items_tree($data['site']['id'], SiteMenuItems::$menu_type_list['bottom']);
+            $this->add_data('bottom_menu_items',$bottom_menu_items);
+            $this->include_view('site_menus/bottom_menu.php');
+        }
+
 	}
 ?>

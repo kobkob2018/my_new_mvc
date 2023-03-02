@@ -2,7 +2,7 @@
   class AdminPages extends TableModel{
 
     protected static $main_table = 'content_pages';
-
+    protected static $select_opriotns_arr = array();
 
     public static $fields_collection = array(
         'title'=>array(
@@ -41,5 +41,22 @@
         ),      
 
     );
+
+
+    public static function get_select_options(){
+        if(isset(self::$select_opriotns_arr['pages'])){
+            return self::$select_opriotns_arr['pages'];
+        }
+
+        $site = Sites::get_user_workon_site();
+        $filter_arr = array('site_id'=>$site['id']);
+        $page_list = self::get_list($filter_arr);
+        $return_options = array();
+        foreach($page_list as $page){
+            $return_options[] = array('value'=>$page['id'],'title'=>$page['title']);
+        }
+        self::$select_opriotns_arr['pages'] = $return_options;
+        return $return_options;
+    }
 }
 ?>

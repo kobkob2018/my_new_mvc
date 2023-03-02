@@ -1,6 +1,6 @@
 <?php foreach($info['supplier_cubes'] as $cube): ?>
     <div class="supplier_cubes roundish-cube">
-        <div class="suplier-title roundish-title section">
+        <div class="suplier-title roundish-title section big-title">
             <a rel="nofollow" href="<?= $cube['link'] ?>" title="<?= $cube['label'] ?>" target="_blank" class="title-a">
                 <?= $cube['label'] ?>
             </a>

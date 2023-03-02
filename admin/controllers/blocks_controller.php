@@ -1,13 +1,23 @@
 <?php
   class BlocksController extends CrudController{
-    public $add_models = array("sites","adminPages", "adminBlocks");
+    public $add_models = array("sites","adminPages", "adminBlocks","page_style");
 
     protected function init_setup($action){
         $page_id = $this->add_page_info_data();
+
+        
         if(!$page_id){
             return $this->redirect_to(inner_url("pages/list/"));
             return false;
         }
+
+        $page_style_arr = Page_style::get_list(array('page_id'=>$page_id));
+        $page_style = false;
+        if($page_style_arr && isset($page_style_arr[0])){
+            $page_style = $page_style_arr[0];
+        }
+
+        $this->data['page_style'] = $page_style;
         return parent::init_setup($action);
     }
 
@@ -29,7 +39,7 @@
             return false;
         }
         $page_id = $_GET['page_id'];
-        $page_info = AdminPages::get_by_id($page_id, 'id, title');
+        $page_info = AdminPages::get_by_id($page_id, 'id, title, link');
         $this->data['page_info'] = $page_info;
         if($page_info && isset($page_info['id'])){
             return $page_info['id'];

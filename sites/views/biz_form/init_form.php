@@ -1,4 +1,3 @@
-
 <div class="biz-form-generator">
     <div class="form-header">
         <h3 class='form-title'>
@@ -10,7 +9,11 @@
         <input type="hidden" name="submit_request" value="1" />
         <input class="cat-id-holder" type="hidden" name="biz[cat_id]" value="" />
         <input type="hidden" name="biz[site_id]" value="<?= $this->data['site']['id'] ?>" />
-        <input type="hidden" name="biz[page_id]" value="<?= $this->data['page']['id'] ?>" />
+        <?php if(isset($this->data['page'])): ?>
+            <input type="hidden" name="biz[page_id]" value="<?= $this->data['page']['id'] ?>" />
+        <?php else: ?>
+            <input type="hidden" name="biz[page_id]" value="-1" />
+        <?php endif; ?>
         <input type="hidden" name="biz[form_id]" value="<?= $this->data['biz_form']['id'] ?>" />
         <input type="hidden" name="biz[referrer]" value="<?= current_url() ?>" />
         <?php if(isset($_REQUEST['test_form'])): ?>
@@ -101,7 +104,7 @@
         </div>
     </form>
     <div class="submit-wrap pending-state form-group">
-        <input type="submit" class="submit-button form-input" data-status="pending" value="שליחה" />
+        <input type="submit" class="submit-button form-input color-button" data-status="pending" value="שליחה" />
     </div>
 </div>
 

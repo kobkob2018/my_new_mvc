@@ -101,8 +101,11 @@
 	}
 
 	public function print_body(){
+		ob_start();
 		$this->include_view($this->action_params['body_layout_file']);
-
+		$body_output = ob_get_clean();
+		$body_output = $this->call_module(get_config('main_module'),'proccess_body_modules',$body_output);
+		print($body_output);
 		/*
 			on blank layout this is not called
 		*/ 

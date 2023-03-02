@@ -59,3 +59,6 @@
         </div>
     <?php endif; ?>
 </div>
+<?php if($this->data['page_style']): ?>
+    <?= $this->data['page_style']['styling_tags'] ?>
+<?php endif; ?>

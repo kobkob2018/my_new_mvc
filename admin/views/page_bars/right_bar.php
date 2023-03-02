@@ -47,6 +47,19 @@
     </ul>
 
     <?php if($view->site_user_is('admin')): ?>
+        <h4>עיצוב האתר</h4>
+        <ul class="item-group">
+            <li class="bar-item <?= $view->a_class("site/edit/") ?>">
+                <a href="<?= inner_url('site/edit/') ?>" title="ניהול" class="a-link">ניהול</a>
+            </li>  
+            <li class="bar-item <?= $view->a_c_class("site_styling/list/") ?>">
+                <a href="<?= inner_url('site_styling/list/') ?>" title="מבנה הדף" class="a-link">מבנה הדף</a>
+            </li>  
+            <li class="bar-item <?= $view->a_c_class("site_colors/edit/") ?>">
+                <a href="<?= inner_url('site_colors/edit/') ?>" title="צבעים" class="a-link">צבעים</a>
+            </li>         
+        </ul>
+
         <h4>ניהול תפריטים</h4>
         <ul class="item-group">
 

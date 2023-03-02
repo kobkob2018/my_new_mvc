@@ -25,13 +25,13 @@ textarea, input { outline: none; }
     width: 100%;
     top: 0px;
     right: 0px;
-    background: #62C9A9;
     max-height: 90px;
     overflow: hidden;
     display: flex;
     align-items: center;
     padding: 10px;
     justify-content: space-between;
+    z-index: 2;
 }
 
 .fix-top-center{
@@ -46,7 +46,51 @@ textarea, input { outline: none; }
 .accessibility-door{
     font-size: 28px;
     font-weight: normal;
-    color: white;
+}
+
+.footer{
+    margin-top: 100px;
+    padding: 20px;
+    font-size: 20px;
+}
+
+.footer-item{
+    margin: 5px 0px 40px;
+}
+.bottom-menu{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    font-size: 22px;
+}
+
+.bottom-menu .bar-item {
+    margin: 0px 40px;
+}
+
+.bottom-menu .main-a{
+    font-size: 38px;
+}
+
+.bottom-menu .sub-item{
+    margin-top:5px ;
+}
+
+
+.footer-bottom-wrap{
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+.bottom-menu .main-menu-ietm-wrap{
+    font-size: 1.3em;
+}
+
+.footer-bottom-wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #page_middle{
@@ -91,7 +135,6 @@ textarea, input { outline: none; }
 
 .top-menu .bar-item .main-spn{
     display:block;
-    color: white;
     border-right: 1px solid white;
     font-size: 18px;
     padding: 3px 8px;
@@ -106,13 +149,10 @@ textarea, input { outline: none; }
     right: 9%;
     top: 72px;
     padding: 10px;
-    box-shadow: 5px 9px 5px #695d5d;
-    border-radius: 6px;
 }
 
 .top-menu .fa-chevron-down{
     font-size: 1.3em;
-    color: black;
 }
 
 .top-menu li.active-sub ul.sub-menu{
@@ -123,16 +163,12 @@ textarea, input { outline: none; }
 
 .top-menu ul.sub-menu .sub-item a{
     margin: 0px;
-    border: 1px solid black;
     padding: 10px;
     width: 130px;
     text-align: center;
-    border-radius: 5px;
-    box-shadow: 3px 3px 3px #8a8989;
     display: block;
     font-weight: bold;
     color: black;
-    background: #d8d8d8;
     min-height: 70px;
 }
 
@@ -142,13 +178,8 @@ textarea, input { outline: none; }
     cursor: pointer;
     font-size: 17px;
     margin-right: 6px;
-    color: white;
-    border: 1px solid white;
+    border: 2px solid;
     border-radius: 50%;
-  }
-  
-.top-search button:hover {
-    color: blue;
   }
 
 .top-search input{
@@ -184,7 +215,6 @@ textarea, input { outline: none; }
     border: 1px solid #D9D9D9;
     margin-bottom: 31px;
     padding: 15px;
-
 }
 
 .right-bar-banner{
@@ -196,19 +226,8 @@ textarea, input { outline: none; }
 .right-menu .bar-item .a-link{
     display: block;
     margin: 5px 0px;
-    background: #60C7A7;
-    color: white;
     padding: 4px 5px;
     font-size: 18px;
-}
-
-.right-menu .bar-item .a-link:hover{
-    background: white;
-    color: #2ea3f2;
-}
-
-.right-menu .a-current-item .a-link{
-    background: #2ea3f2;
 }
 
 .biz-form-wrap{
@@ -281,10 +300,10 @@ textarea, input { outline: none; }
 }
 
 .form-group .submit-button{
-    background: #2ea3f2;
     color: white;
     font-weight: bold;
     cursor: pointer;
+    padding: 10px 0px;
 }
 
 .form-group .tooltip{
@@ -302,7 +321,6 @@ textarea, input { outline: none; }
 }
 
 .roundish-cube{
-    background: white;
     border-radius: 8px;
     box-shadow: 0px 3px 6px #00000030;
     border: 1px solid gray;
@@ -323,13 +341,11 @@ textarea, input { outline: none; }
     clear: both;
     text-align: center;
     padding: 12px;
-    background: #60c7a7;
     border-radius: 6px;
 }
 
 .roundish-title .title-a{
     font-weight: bold;
-    color:white;
     font-size: 21px;
     line-height: 27px;
 }

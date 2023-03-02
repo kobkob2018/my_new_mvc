@@ -9,3 +9,6 @@
         <?php $this->include_view('form_builder/form.php'); ?>
     </div>
 </div>
+<?php if($this->data['page_style']): ?>
+    <?= $this->data['page_style']['styling_tags'] ?>
+<?php endif; ?>

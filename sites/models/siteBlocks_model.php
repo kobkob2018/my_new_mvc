@@ -18,8 +18,8 @@
             'page_id'=>$current_page['id'],
             'site_id'=>$site['id']
         );
-
-        $current_page_blocks = self::get_list($filter_arr);
+        $payload = array("order_by"=>'priority');
+        $current_page_blocks = self::get_list($filter_arr,"*",$payload);
         self::$current_page_blocks = $current_page_blocks;
         return self::$current_page_blocks;
     }
