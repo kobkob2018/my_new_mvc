@@ -21,8 +21,15 @@
             'validation'=>'date_time'
         ),
 
+        'lead_price_no_tax'=>array(
+            'label'=>'מחיר ליד לפני מס',
+            'type'=>'text',
+            'default'=>'0',
+            'validation'=>'float'
+        ),  
+
         'lead_price'=>array(
-            'label'=>'מחיר ליד',
+            'label'=>'מחיר ליד אחרי מס',
             'type'=>'text',
             'default'=>'0',
             'validation'=>'float'

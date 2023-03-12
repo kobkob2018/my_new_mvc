@@ -63,6 +63,34 @@
         return true;
     }
 
+
+    public function demo_request(){
+        $form_id = '1';
+        $full_name = "קובי בודק";
+        $email = "stam_mail@f.com";
+        $phone = "054232323";
+        $city_arr = array('1','2','3','4','5','6','7','8','9','10','32','46','47','48','49');
+        $note = "סתם פתק";
+        $cat_id_arr = array('53','57','58','52','54','55','56');
+
+        $city_id = $city_arr[rand(0,(count($city_arr) - 1))];
+        $cat_id = $cat_id_arr[rand(0,(count($cat_id_arr) - 1 ))];
+        $phone_ext = rand(100,999);
+        $phone = $phone.$phone_ext;
+        $full_name = $full_name.$phone_ext;
+        $_REQUEST['form_id'] = $form_id;
+        $_REQUEST['biz'] = array(
+            'full_name'=>$full_name,
+            'email'=>$email,
+            'phone'=>$phone,
+            'note'=>$note,
+            'city'=>$city_id,
+            'cat_id'=>$cat_id,
+        );
+        $this->data['let_phone_go'] = true;
+        $this->submit_request();
+    }
+
     public function submit_request(){
         
         $return_array = $this->init_form_data();
@@ -81,6 +109,7 @@
             return $this->init_post_demo_url($return_array);
         } 
         $return_array = $this->call_module("biz_request","enter_lead",array('return_array'=>$return_array));
+        
         return $this->print_json_page($return_array);
     }
 

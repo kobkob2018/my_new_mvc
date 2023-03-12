@@ -21,6 +21,7 @@ if(!isset($init_request)){
 
 
 require_once('a_core/config.php');
+require_once('a_core/secret.php');
 require_once('a_core/connection.php');
 require_once('a_core/models/model.php');
 require_once('a_core/models/tableModel.php');

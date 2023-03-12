@@ -2,13 +2,13 @@
 class Cron_masterController extends CrudController{
 
   protected $scedualed_module_tasks = array(
-    'each_minute'=>array(),
-    'hourly'=>array(
+    'each_minute'=>array(
       array('label'=>'send_pending_emails', 
             'module'=>'cron_emails',
             'action'=>'send_pending_emails'
       ),
     ),
+    'hourly'=>array(),
     'daily_mornings'=>array(),
     'daily_midnight'=>array(),
     'weekly_night_time'=>array(

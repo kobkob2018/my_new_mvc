@@ -21,26 +21,26 @@
 			'row_id'=>$lead_data['id'],
 			'date_in'=>$lead_data['date_in'],
 			'last_update'=>$lead_data['date_in'],
-			'name'=>utgt(trim($lead_data['name'])),
-			'phone'=>utgt(($lead_data['phone'])),
-			'email'=>utgt(($lead_data['email'])),
-			'content'=>utgt(trim(substr($lead_data['content'],0,60)))."...",
-			'content_full'=>utgt(trim($lead_data['content'])),
-			'status'=>$lead_data['status'],
+			'full_name'=>trim($lead_data['full_name']),
+			'phone'=>($lead_data['phone']),
+			'email'=>($lead_data['email']),
+			'note'=>trim(substr($lead_data['note'],0,60))."...",
+			'note_full'=>trim($lead_data['note']),
+			'status'=>trim($lead_data['status']),
 			'status_str'=>$status[$lead_data['status']],
-			'tag'=>$lead_data['tag'],
+			'tag'=>trim($lead_data['tag']),
 			'tag_str'=>$tag[$lead_data['tag']],			
-			'opened'=>$lead_data['opened'],
+			'view_state'=>$lead_data['view_state'],
 			'deleted'=>$lead_data['deleted'],
-			'payByPassword'=>$lead_data['payByPassword'],
-			'lead_recource'=>$lead_data['lead_recource'],
-			'estimateFormID'=>$lead_data['estimateFormID'],
-			'phone_lead_id'=>$lead_data['phone_lead_id'],
+			'open_state'=>$lead_data['open_state'],
+			'resource'=>$lead_data['resource'],
+			'request_id'=>$lead_data['request_id'],
+			'phone_id'=>$lead_data['phone_id'],
 			'refund_ok'=>'ok',
 			'no_refund_reason'=>'',
 			'bill_state_str'=>'חוייב',
-			'lead_billed'=>$lead_data['lead_billed'],
-			'lead_billed_id'=>$lead_data['lead_billed_id'],
+			'billed'=>$lead_data['billed'],
+			'duplicate_id'=>$lead_data['duplicate_id'],
 			'offer_amount'=>$lead_data['offer_amount'],			
 			'refund_request_sent_str'=>'',
 			'refund_request_sent'=>'0',
@@ -48,56 +48,42 @@
 		);
 
 		$lead['date_in_str'] = date('d/m/Y H:i',  strtotime($lead['date_in']));
-		if($lead_data['show_time'] != ""){
-			$lead['date_in_str'] = date('d/m/Y H:i',  strtotime($lead_data['show_time']));
+		if($lead_data['view_time'] != ""){
+			$lead['date_in_str'] = date('d/m/Y H:i',  strtotime($lead_data['view_time']));
 		}
-		if($lead_data['lead_recource'] == 'phone'){
-			$lead['lead_recource_str']="התקבל טלפונית";
+		if($lead_data['resource'] == 'phone'){
+			$lead['resource_str']="התקבל טלפונית";
 		}
 		else{
-			$lead['lead_recource_str']="";
+			$lead['resource_str']="";
 		}
 		if($lead_data['last_update'] != "" && $lead_data['last_update'] != "0000-00-00 00:00:00"){
 			$lead['last_update'] = $lead_data['last_update'];
 		}	
 		$lead['last_update_str'] = date('d/m/Y H:i',  strtotime($lead['last_update']));
-		if($lead['payByPassword'] == '0'){
+		if($lead['open_state'] == '0'){
 			$lead['phone'] = substr_replace( $lead['phone'] , "****" , 4 , 4 );
 			$lead['email'] = '****@****';
 		}
 		$lead['final_cat']	= '0';	
-		if($lead_data['estimateFormID'] != "" && $lead_data['lead_recource'] == "form"){
+		if($lead_data['request_id'] != "" && $lead_data['resource'] == "form"){
 			//echo $lead_data['id'];
-			if( $lead_data['estimateFormID'] != "0" ){
+			if( $lead_data['request_id'] != "0" ){
 				$cats_list = $this->get_cat_list();
-				$sql = "SELECT * FROM estimate_form WHERE id = :estimateFormID";
+				$sql = "SELECT * FROM biz_requests WHERE id = :request_id";
 				$req = $db->prepare($sql);
-				$req->execute(array('estimateFormID'=>$lead_data['estimateFormID']));
-				$estimate_form_data = $req->fetch();
-				$cat_hirarchy = array("cat_f","cat_s","cat_spec");
+				$req->execute(array('request_id'=>$lead_data['request_id']));
+				$biz_request_data = $req->fetch();
+				$lead['final_cat']	= $biz_request_data['cat_id'];
+				$cat_tree = Biz_categories::get_item_parents_tree($lead['final_cat'],'id, parent, label');
 				$cat_name = "";
-				$full_cat_name = "";
-				foreach($cat_hirarchy as $cat_h){
-					$lead[$cat_h] = $estimate_form_data[$cat_h];
-					if($lead[$cat_h] != '0' && $lead[$cat_h]!=''){
-						$lead['final_cat']	= $lead[$cat_h];	
-						if($full_cat_name!=""){
-							$full_cat_name.=" -> ";
-						}
-						$full_cat_name .= utgt($cats_list[$lead[$cat_h]]['cat_name']);
-						$cat_name = utgt($cats_list[$lead[$cat_h]]['cat_name']);
-					}				
+				$full_cat_name_arr = array();
+
+				foreach($cat_tree as $cat){
+					$full_cat_name_arr[] = $cat['label'];
+					$cat_name = $cat['label'];
 				}
-				
-				if($estimate_form_data['form_resource'] == 'fb_leads'){
-					$db->query("SET NAMES 'utf8'");
-					$fb_sql = "SELECT * FROM fb_leads WHERE id = :fb_id";
-					$fb_req = $db->prepare($fb_sql);
-					$fb_req->execute(array('fb_id'=>$estimate_form_data['fb_lead_id']));
-					$fb_lead_data = $fb_req->fetch();
-					$lead['fb_moredata'] = "עיר - ".$fb_lead_data['city'];      
-					$db->query("SET NAMES 'hebrew'");
-				}
+				$full_cat_name = implode(" > ",$full_cat_name_arr);
 			}
 			else{
 				$cat_name = "טופס צור קשר";
@@ -107,8 +93,9 @@
 			$lead['cat_name'] = $cat_name;		
 		}
 		$lead['recording_link'] = "0";
-		$user = User::getLogedInUser();
-		if($lead_data['lead_recource'] == "phone"){
+		$user = Users::get_loged_in_user();
+		$user = Leads_user::get_leads_user_data($user);
+		if($lead_data['resource'] == "phone"){
 			
 			$sql = "SELECT * FROM sites_leads_stat WHERE id = :phone_lead_id";
 			$req = $db->prepare($sql);
@@ -129,8 +116,8 @@
 				$lead['cat_name'] .= "(".$phone_lead_data['billsec']."שנ')";
 				$lead['full_cat_name'] .= "(".$phone_lead_data['billsec']."שנ')";
 				if(isset($phone_lead_data['recordingfile']) && $phone_lead_data['recordingfile']!=""){
-					if($user['enableRecordingsView'] == '1'){
-						if($user['enableRecordingsPass'] != ""){
+					if($user['access_records'] == '1'){
+						if($user['records_password'] != ""){
 							$lead['recording_link'] = "pass";
 							if(isset($_SESSION[$this->base_url_dir.'_recordings_pass'])){
 								$lead['recording_link'] = 'https://ilbiz.co.il/site-admin/recording_handlers/download.php?filename='.$phone_lead_data['recordingfile'];
@@ -144,19 +131,19 @@
 				
 			}
 		}
-		$sql = "SELECT * FROM leads_refun_requests WHERE row_id = :row_id ORDER BY id DESC LIMIT 1";
+		$sql = "SELECT * FROM lead_refund_requests WHERE row_id = :row_id ORDER BY id DESC LIMIT 1";
 		$req = $db->prepare($sql);
 		$req->execute(array('row_id'=>$lead['row_id']));
 		$refund_request = $req->fetch();
 		$lead['refund_reason_str'] = "";
 		if(isset($refund_request['reason'])){
-			if($lead_data['lead_recource'] == 'phone'){
+			if($lead_data['resource'] == 'phone'){
 				$reason = self::get_user_refund_reason_by_id($refund_request['reason']);
 			}
 			else{
 				$reason = self::get_refund_reason_by_id($refund_request['reason']);
 			}
-			$lead['refund_reason_str'] = utgt($reason['title']);
+			$lead['refund_reason_str'] = $reason['label'];
 			$lead['refund_request_sent'] = "1";
 			if($refund_request['denied'] == '1'){
 				$lead['refund_request_sent_str'] = "בקשה לזיכוי נדחתה";				
@@ -165,7 +152,7 @@
 				$lead['refund_request_sent_str'] = "נשלחה בקשה לזיכוי";
 			}
 			if($add_refund_history){
-				$sql = "SELECT * FROM leads_refun_requests WHERE row_id = :row_id ORDER BY id";
+				$sql = "SELECT * FROM lead_refund_requests WHERE row_id = :row_id ORDER BY id";
 				$req = $db->prepare($sql);
 				$req->execute(array('row_id'=>$lead['row_id']));
 				$refund_request_history_data = $req->fetchAll();
@@ -173,25 +160,25 @@
 				$lead['has_refund_history'] = '0';
 				foreach($refund_request_history_data as $refund_request){
 					$lead['has_refund_history'] = '1';
-					if($lead_data['lead_recource'] == 'phone'){
+					if($lead_data['resource'] == 'phone'){
 						$reason_data = self::get_user_refund_reason_by_id($refund_request['reason']);
 					}
 					else{
 						$reason_data = $this->get_refund_reason_by_id($refund_request['reason']);
 					}
-					$reason_str = utgt($reason_data['title']);
+					$reason_str = $reason_data['label'];
 					$admin_comment_str = "---ממתין לתשובה---";
 					if($refund_request['denied'] == '1'){
 						$admin_comment_str = "הבקשה נדחתה";
 						if($refund_request['admin_comment'] != ''){
-							$admin_comment_str .= " - ".utgt($refund_request['admin_comment']);
+							$admin_comment_str .= " - ".$refund_request['admin_comment'];
 						}
 					}
 
 					$refund_request_history[$refund_request['id']] = array(
 						"reason"=>$refund_request['reason'],
 						"reason_str"=>$reason_str,
-						"comment"=>utgt($refund_request['comment']),
+						"comment"=>$refund_request['comment'],
 						"denied"=>$refund_request['denied'],
 						"admin_comment"=>$admin_comment_str,
 					);
@@ -199,19 +186,19 @@
 				$lead['refund_history'] = $refund_request_history;
 			}
 		}
-		if($lead['payByPassword'] != '1'){
+		if($lead['open_state'] != '1'){
 			$lead['refund_ok'] = 'no';
 			$lead['no_refund_reason'] = 'closed';
 			$lead['bill_state_str'] = 'לא חוייב(ליד סגור)';
 		}
-		elseif($lead['lead_billed'] != '1'){
+		elseif($lead['billed'] != '1'){
 			$lead['refund_ok'] = 'no';
 			$lead['no_refund_reason'] = 'not_billed';
 			$lead['bill_state_str'] = 'לא חוייב';
-			if($lead['lead_billed_id'] == '-1'){
+			if($lead['duplicate_id'] == '-1'){
 				$lead['bill_state_str'] = 'לא חוייב(טופס צור קשר)';
 			}
-			if($lead['lead_billed_id'] != '' && $lead['lead_billed_id'] != '-1'){
+			if($lead['duplicate_id'] != '' && $lead['duplicate_id'] != '-1'){
 				$lead['no_refund_reason'] = 'doubled';
 				$lead['bill_state_str'] = 'לא חוייב(ליד כפול)';
 				
@@ -224,9 +211,9 @@
 		}
 		else{
 			$start = new DateTime($lead_data['date_in']);
-			if($lead_data['send_type'] == 'pending'){
-				if($lead_data['show_time'] != ""){
-					$start = new DateTime($lead_data['show_time']); 
+			if($lead_data['send_state'] == '0'){
+				if($lead_data['view_time'] != ""){
+					$start = new DateTime($lead_data['view_time']); 
 				}
 			}
 			$end = new DateTime();
@@ -245,58 +232,67 @@
 		if(!$user){
 			return false;
 		}
-		$unk = $user['unk'];
+		$user_id = $user['id'];
 		$prepare_arr = array();
-		$filter_sql = " unk = :unk ";
-		$profit_filter_sql =  " unk = :unk ";
-		$prepare_arr['unk'] = $unk;
+		$filter_sql = " user_id = :user_id ";
+		$profit_filter_sql =  " user_id = :user_id ";
+		$prepare_arr['user_id'] = $user_id;
 		
 		if($filter['date_from'] != ""){
 			$filter_date_from_obj =  new DateTime($filter['date_from']);
 			$filter_date_from = $filter_date_from_obj->format('Y-m-d');
-			$filter_sql .= " AND ucf.date_in >= :date_from ";
-			$profit_filter_sql .= " AND ucf.date_in >= :date_from ";
+			$filter_sql .= " AND ul.date_in >= :date_from ";
+			$profit_filter_sql .= " AND ul.date_in >= :date_from ";
 			$prepare_arr['date_from'] = $filter_date_from;
 		}
 		if($filter['date_to'] != ""){
 
 			$filter_date_to_obj =  new DateTime($filter['date_to']." +1 day");
 			$filter_date_to = $filter_date_to_obj->format('Y-m-d');
-			$filter_sql .= " AND ucf.date_in <= :date_to ";
-			$profit_filter_sql .= " AND ucf.date_in <= :date_to ";
+			$filter_sql .= " AND ul.date_in <= :date_to ";
+			$profit_filter_sql .= " AND ul.date_in <= :date_to ";
 			$prepare_arr['date_to'] = $filter_date_to;
 		}
 		if($filter['free'] != ""){
-			$filter_sql .= " AND( ucf.phone LIKE (:free) OR ucf.name LIKE (:free) OR ucf.email LIKE (:free) OR ucf.content LIKE (:free))";
-			$profit_filter_sql .= " AND( ucf.phone LIKE (:free) OR ucf.name LIKE (:free) OR ucf.email LIKE (:free) OR ucf.content LIKE (:free))";
-			$filter_free = wigt($filter['free']);
+			$filter_sql .= " AND( ul.phone LIKE (:free) OR ul.full_name LIKE (:free) OR ul.email LIKE (:free) OR ul.note LIKE (:free))";
+			$profit_filter_sql .= " AND( ul.phone LIKE (:free) OR ul.full_name LIKE (:free) OR ul.email LIKE (:free) OR ul.note LIKE (:free))";
+			$filter_free = $filter['free'];
 			$prepare_arr['free'] = '%'.$filter_free.'%';
 		}
 		if(!empty($filter['status'])){
 			$status_in = implode(",",$filter['status']);
-			$filter_sql .= " AND ucf.status IN($status_in) ";
-			$profit_filter_sql .= " AND ucf.status = 2 ";
+			$filter_sql .= " AND ul.status IN($status_in) ";
+			$profit_filter_sql .= " AND ul.status = 2 ";
 		}
 		if(!empty($filter['tag'])){
 			$tag_in = implode(",",$filter['tag']);
-			$filter_sql .= " AND ucf.tag IN($tag_in) ";
+			$filter_sql .= " AND ul.tag IN($tag_in) ";
 		}		
-		$deleted_filter_sql = " AND ucf.deleted = '0' ";
+		$deleted_filter_sql = " AND ul.deleted = '0' ";
 		if($filter['deleted'] != ''){
 			$deleted_filter_sql = "";
 		}
 		if($filter['cat'] != '' && $filter['cat'] != '0'){
-			$filter_sql .= " AND (ef.cat_f = :cat_id OR ef.cat_s = :cat_id OR ef.cat_spec = :cat_id)  ";
-			$prepare_arr['cat_id'] = $filter['cat'];
+			$cat_offsprings = Biz_categories::simple_get_item_offsprings($filter['cat'],'id, parent, label');
+			$cat_in_arr = array($filter['cat']);
+			foreach($cat_offsprings as $cat_in){
+				$cat_in_arr[] = $cat_in['id'];
+			}
+			if(empty($cat_in_arr)){
+				$cat_in_arr[] = $filter['cat'];
+			}
+			$cat_in_sql = implode(",",$cat_in_arr);
+
+			$filter_sql .= " AND brq.cat_id IN ($cat_in_sql)  ";
 		}
 		
 		$filter_sql .= $deleted_filter_sql;
-		$pending_qry = " AND ((ucf.send_type != 'pending' OR ucf.send_type IS NULL) OR (ucf.show_time != '' AND ucf.show_time IS NOT NULL)) ";		
+		$pending_qry = " AND ((ul.send_state != '0' OR ul.send_state IS NULL) OR (ul.view_time != '' AND ul.view_time IS NOT NULL)) ";		
 		$list = array();
 		$db = Db::getInstance();
 
-		$sql = "SELECT count(ucf.id) as lead_count FROM user_contact_forms ucf LEFT JOIN estimate_form ef ON ef.id = ucf.estimateFormID WHERE $filter_sql $pending_qry";
-		
+		$sql = "SELECT count(ul.id) as lead_count FROM user_leads ul LEFT JOIN biz_requests brq ON brq.id = ul.request_id WHERE $filter_sql $pending_qry";
+
 		$req = $db->prepare($sql);
 		$req->execute($prepare_arr);
 		$lead_count_data = $req->fetch();
@@ -322,7 +318,7 @@
 			$limit_to = $lead_count;
 		}
 		
-		$sql = "SELECT ucf.* FROM user_contact_forms ucf LEFT JOIN estimate_form ef ON ef.id = ucf.estimateFormID WHERE $filter_sql $pending_qry ORDER BY id desc $limit_sql";
+		$sql = "SELECT ul.* FROM user_leads ul LEFT JOIN biz_requests brq ON brq.id = ul.request_id WHERE $filter_sql $pending_qry ORDER BY id desc $limit_sql";
 		$pages_data = array("lead_count"=>$lead_count,"page_num"=>$page_num,"leads_in_page"=>$leads_in_page,"page_count"=>$page_count,"limit_from"=>($limit_from+1),"limit_to"=>$limit_to);
 		try{
 			$req = $db->prepare($sql);
@@ -339,10 +335,10 @@
 		}
 		
 		//sum profits for selection based on offer_amount
-		$filter_sql.=" AND ucf.status = 2 ";
+		$filter_sql.=" AND ul.status = 2 ";
 		
-		$sql = "SELECT sum(ucf.offer_amount) as profits FROM user_contact_forms ucf LEFT JOIN estimate_form ef ON ef.id = ucf.estimateFormID WHERE $profit_filter_sql";
-		
+		$sql = "SELECT sum(ul.offer_amount) as profits FROM user_leads ul LEFT JOIN biz_requests brq ON brq.id = ul.request_id WHERE $profit_filter_sql";
+
 		$req = $db->prepare($sql);
 		
 		$req->execute($prepare_arr);
@@ -361,78 +357,81 @@
 		$db = Db::getInstance();
 		// we make sure $id is an integer
 		$id = intval($id);
-		$req = $db->prepare('SELECT * FROM user_contact_forms WHERE id = :id');
+		$req = $db->prepare('SELECT * FROM user_leads WHERE id = :id');
 		// the query was prepared, now we replace :id with our actual $id value
 		$req->execute(array('id' => $id));
 		$lead = $req->fetch();
 		
 		$lead_data = new Leads($lead,true);
 		$lead_cat = $lead_data->estimate_form_data['final_cat'];
-		if($lead_data->estimate_form_data['lead_recource'] == 'phone'){
-			$user = User::getLogedInUser();
+		if($lead_data->estimate_form_data['resource'] == 'phone'){
+			$user = Users::get_loged_in_user();
 			$cat_refund_reasons = self::get_user_refund_reasons($user['id']);
 		}
 		else{
 			$cat_refund_reasons = self::get_cat_refund_reasons($lead_cat);
 		}
 		$lead_data->estimate_form_data['cat_refund_reasons'] = $cat_refund_reasons;
-		$req = $db->prepare("UPDATE user_contact_forms SET opened ='1' WHERE id = :id");
+		$req = $db->prepare("UPDATE user_leads SET open_state ='1' WHERE id = :id");
 		// the query was prepared, now we replace :id with our actual $id value
 		$req->execute(array('id' => $id));		
 		return $lead_data;
     }
     public static function delete_lead($id) {
-		$user = User::getLogedInUser();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
-		$unk = $user['unk'];
+		$user_id = $user['id'];
 		$db = Db::getInstance();
 		// we make sure $id is an integer
 		$id = intval($id);
-		$req = $db->prepare("UPDATE user_contact_forms set deleted = '1',last_update=NOW() WHERE unk=:unk AND id = :id");
+		$req = $db->prepare("UPDATE user_leads set deleted = '1',last_update=NOW() WHERE user_id=:user_id AND id = :id");
 		// the query was prepared, now we replace :id with our actual $id value
-		$req->execute(array('id' => $id,'unk' => $unk));
+		$req->execute(array('id' => $id,'user_id' => $user_id));
 		return self::find($id);
     }	
 	
     public static function buy_lead($id) {
 		$db = Db::getInstance();
-		$user = User::getLogedInUser();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
-		$unk = $user['unk'];
-		if($user['leads_credit'] > 0){
-			$req = $db->prepare('SELECT * FROM user_contact_forms WHERE id = :id');
+
+		$user_id = $user['id'];
+		$user_lead_settings = Leads_user::get_leads_user_data($user);
+		if($user_lead_settings['lead_credit'] > 0){
+			$req = $db->prepare('SELECT * FROM user_leads WHERE id = :id');
 			$req->execute(array('id' => $id));
 			$lead = $req->fetch();
 
 
 			$bill_array = array(
 				"row_id" => $id,
-				"payByPassword" => '1',
-				"lead_billed" => "1",
-				"lead_billed_id" => "0",
-			);		
+				"open_state" => '1',
+				"billed" => "1",
+				"duplicate_id" => "0",
+			);
+
 			if(isset($lead['phone'])){
-				$bill_sql = "SELECT id as billed_id FROM user_contact_forms WHERE phone = :phone AND lead_billed = 1 AND unk = :unk AND date_in > (CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE)) LIMIT 1";
+				$bill_sql = "SELECT id as billed_id FROM user_leads WHERE phone = :phone AND billed = 1 AND user_id = :user_id AND date_in > (CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE)) LIMIT 1";
 				$req = $db->prepare($bill_sql);
-				$req->execute(array('phone' => $lead['phone'],'unk'=>$unk));
+				$req->execute(array('phone' => $lead['phone'],'user_id'=>$user_id));
 				$bill_data = $req->fetch();
 				if(isset($bill_data['billed_id'])){
-					$bill_array['lead_billed'] = '0';
-					$bill_array['lead_billed_id'] = $bill_data['billed_id'];
+					$bill_array['billed'] = '0';
+					$bill_array['duplicate_id'] = $bill_data['billed_id'];
 				}			
 			}		
 			
-			$sql = "UPDATE user_contact_forms SET payByPassword = :payByPassword ,lead_billed = :lead_billed, lead_billed_id = :lead_billed_id WHERE id = :row_id";
+			$sql = "UPDATE user_leads SET open_state = :open_state ,billed = :billed, duplicate_id = :duplicate_id WHERE id = :row_id";
 			$req = $db->prepare($sql);
 			$effected_rows =  $req->execute($bill_array);
 			if($effected_rows){
-				if($bill_array['lead_billed'] == '1'){
-					$req = $db->prepare("UPDATE user_lead_settings SET leadQry = leadQry - 1 WHERE unk = :unk");
-					$req->execute(array('unk'=>$unk));
+				if($bill_array['billed'] == '1'){
+					$req = $db->prepare("UPDATE user_lead_settings SET lead_credit = lead_credit - 1 WHERE user_id = :user_id");
+					$req->execute(array('user_id'=>$user_id));
 				}
 			}
 			$return_array['success'] = '1';
@@ -444,23 +443,24 @@
 		$return_array['lead'] = self::find($id);
 		return $return_array;
     }
+
     public static function update_lead($id,$data_arr){
 		$db = Db::getInstance();
-		$user = User::getLogedInUser();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
-		$unk = $user['unk'];
+		$user_id = $user['id'];
 		
 		$set_sql_arr = array();
 		foreach($data_arr as $key=>$val){
 			$set_sql_arr[] = "$key=:$key";
-			$data_arr[$key] = wigt($val);
+			$data_arr[$key] = $val;
 		}
 		$set_sql_arr[] = "last_update=NOW()";
 		$set_sql = implode(",",$set_sql_arr);
 		$data_arr['row_id'] = $id;
-		$sql = "UPDATE user_contact_forms SET $set_sql WHERE id = :row_id";
+		$sql = "UPDATE user_leads SET $set_sql WHERE id = :row_id";
 		$req = $db->prepare($sql);
 		$effected_rows =  $req->execute($data_arr);
 
@@ -472,46 +472,28 @@
     public static function send_lead_refund_request($id,$data_arr){
 		//print_r($data_arr);
 		$db = Db::getInstance();
-		$user = User::getLogedInUser();
+		$user = Users::get_loged_in_user();
 		if(!$user){
 			return false;
 		}
-		$unk = $user['unk'];		
+		$user_id = $user['id'];		
 		$insert_array = array();
 		foreach($data_arr as $key=>$val){
 			if($key == "comment"){
-				$val = wigt($val);
+				$val = $val;
 			}
-			$insert_array[$key] = mysql_real_escape_string($val);
+			$insert_array[$key] = $val;
 		}
-		$insert_array['unk'] = $unk;
+		$insert_array['user_id'] = $user_id;
 		$insert_array['lead_id'] = $id;
 		
-		$sql = "INSERT INTO leads_refun_requests (unk, row_id, reason, comment,request_time) VALUES (:unk,:lead_id,:reason,:comment,NOW())";
+		$sql = "INSERT INTO lead_refund_requests (user_id, row_id, reason, comment,request_time) VALUES (:user_id,:lead_id,:reason,:comment,NOW())";
 		$req = $db->prepare($sql);
 		$effected_rows =  $req->execute($insert_array);
 		$return_array['success'] = '1';	
 		$return_array['lead'] = self::find($id);
 		return $return_array;
     }	
-	public static $affiliates_unk_arr = array();
-	private function affiliate_get_unk_data($unk){
-		
-		if(isset(self::$affiliates_unk_arr[$unk])){
-			return self::$affiliates_unk_arr[$unk];
-		}
-		$unk_data = array();
-		$sql = "SELECT * FROM users WHERE unk = '$unk'";
-		$res = mysql_db_query(DB,$sql);
-		$unk_result = mysql_fetch_array($res);
-		$unk_data['user'] = $unk_result;
-		$sql = "SELECT leadPrice FROM user_bookkeeping WHERE unk = '$unk'";
-		$res = mysql_db_query(DB,$sql);
-		$unk_result = mysql_fetch_array($res);
-		$unk_data['leadPrice'] = $unk_result['leadPrice'];
-		self::$affiliates_unk_arr[$unk] = $unk_data;
-		return self::$affiliates_unk_arr[$unk];
-	}
 	public static $cats_list = array();
 	private function get_cat_list(){
 		if(!empty(self::$cats_list)){
@@ -528,10 +510,12 @@
 		self::$cats_list = $cats_list;
 		return self::$cats_list;
 	}	
-	private function get_cat_refund_reasons($cat_id = '0'){
+	public static function get_cat_refund_reasons($cat_id = '0'){
 		$db = Db::getInstance();
 		$reason_list = array();
-		$sql = "SELECT * FROM  cat_lead_refund_reasons WHERE cat_id = '0' OR cat_id = $cat_id";
+		$sql = "SELECT * FROM  refund_reasons WHERE user_id IS NULL AND (cat_id = '0' OR cat_id IS NULL OR cat_id = $cat_id)";
+		
+		
 		$req = $db->prepare($sql);
 		$req->execute();
 		$cat_has_reasons = false;
@@ -539,16 +523,16 @@
 			if($reason['cat_id'] != '0'){
 				$cat_has_reasons = true;
 			}
-			$reason['title'] = utgt($reason['title']);
+			$reason['title'] = $reason['label'];
 			$reason_list[$reason['id']] = $reason;
 		}
 		if(!$cat_has_reasons && $cat_id!='0'){
-			$sql = "SELECT father FROM  biz_categories WHERE id = $cat_id";
+			$sql = "SELECT parent FROM  biz_categories WHERE id = $cat_id";
 			$req = $db->prepare($sql);
 			$req->execute();
-			$cat_father_data = $req->fetch();
-			if($cat_father_data['father'] != '0'){
-				return self::get_cat_refund_reasons($cat_father_data['father']);
+			$cat_parent_data = $req->fetch();
+			if($cat_parent_data['parent'] != '0'){
+				return self::get_cat_refund_reasons($cat_parent_data['parent']);
 			}
 		}
 		return $reason_list;
@@ -564,7 +548,7 @@
 			if($reason['user_id'] != '0'){
 				$user_has_reasons = true;
 			}
-			$reason['title'] = utgt($reason['title']);
+			$reason['label'] = $reason['label'];
 			$reason_list[$reason['id']] = $reason;
 		}
 		return $reason_list;
@@ -574,7 +558,7 @@
 		if(empty(self::$refund_reason_list)){
 			$db = Db::getInstance();
 			$refund_reason_list = array();
-			$sql = "SELECT * FROM cat_lead_refund_reasons";
+			$sql = "SELECT * FROM refund_reasons WHERE user_id IS NULL";
 			$req = $db->prepare($sql);
 			$req->execute();
 			foreach($req->fetchAll() as $reason) {

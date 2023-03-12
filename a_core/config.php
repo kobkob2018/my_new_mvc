@@ -4,10 +4,11 @@
 $config = array(
     'system_name'=>'mymvc',
     'cash_version'=>'1.0',
-    'db_host'=>'localhost',
-    'db_database'=>'newmvc',
-    'db_user'=>'just',
-    'db_password'=>'1234',
+
+    'db_host'=>'', //update in  a_core/secret.php that is in gitignore
+    'db_database'=>'', //update in  a_core/secret.php that is in gitignore
+    'db_user'=>'', //update in  a_core/secret.php that is in gitignore
+    'db_password'=>'', //update in  a_core/secret.php that is in gitignore
 
     'default_system'=>'sites',
     'site_title'=>'רשת איי אל ביז',

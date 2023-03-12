@@ -249,8 +249,8 @@ display: none;
     top: 50%;
     transform: translate(-50%, -50%);
 }
-.leads_credits_menu_wrap{float:left; margin-right:10px;}
-.leads_credits_menu{
+.lead_credits_menu_wrap{float:left; margin-right:10px;}
+.lead_credits_menu{
     background: url(../image/key-icon.png);
     border: #42C0FB 2px solid;
     width: 28px;
@@ -265,7 +265,7 @@ display: none;
     display: block;
     text-align: center;
 }
-.leads_credits_dropdown{text-align:center;}
+.lead_credits_dropdown{text-align:center;}
 .header-item:hover{background-color:#f8fdff;}
 .leads-header-link{background-color:#eaeaea;}
 .leads-header-link:hover{background-color:white;}

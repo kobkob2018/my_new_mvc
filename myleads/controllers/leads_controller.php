@@ -1,17 +1,24 @@
 <?php
   class LeadsController extends CrudController{
-	public $add_models = array("leads","tags");
+	public $add_models = array("leads","tags","leads_user","biz_categories");
     public function list() {
 		$this->set_layout('leads_layout');
 		$this->set_body('leads_body');
 		return $this->leadList();
     }
     public function leadList() {
-      
-      if(isset($_REQUEST['recordings_login']) && isset($_REQUEST['recording_pass'])){
-        $user = Users::get_loged_in_user();
+		$user = Users::get_loged_in_user();
+		$user = Leads_user::get_leads_user_data($user);
+		
+		if($user['active'] == '0'){
+			echo "User have no leads view";
+			return;
+		}
+      	if(isset($_REQUEST['recordings_login']) && isset($_REQUEST['recording_pass'])){
         
-        if($user['enableRecordingsPass'] == $_REQUEST['recording_pass']){
+        
+
+        if($user['lead_visability']['records_password'] == $_REQUEST['records_password']){
           session__set('recordings_pass','1');
           session__set('show_row',$_REQUEST['row_id']);
           $this->redirect_to(inner_url('/leads/all/'));
@@ -25,15 +32,19 @@
       
       // we store all the posts in a variable
       $leads_data = Leads::all($filter);
-      
+      $this->data['filter'] = $filter;
       $leads = $leads_data['list'];
       $pages_data = $leads_data['pages_data'];
+
+	  $this->data['pages'] = $pages_data;
+	  $this->data['leads'] = $leads;
       $show_row = false;
       
       if(session__isset('_show_row')){
         $show_row = session__get('show_row');
         session__unset('show_row');
       }
+	  $this->data['show_row'] = $show_row;
       //include('views/leads/all.php');
       $this->include_view('leads/list.php');
     }
@@ -42,11 +53,12 @@
 		$filter = $this->get_filter();
 		$leads_data = Leads::all($filter);
 		$leads_data['filter'] = $filter;
+		
 		$this->print_json_page($leads_data);
     }
 
 	public function report(){
-		$this->empty_layout();
+		$this->set_layout('blank');
 		$filter = $this->get_filter();		
 		$filter['leads_in_page'] = 'all';
 		$leads_data = Leads::all($filter);
@@ -64,7 +76,7 @@
 
 		$report_arr[] = array("דוח לידים");
 		$report_arr[] = array("מתאריך",$filter['date_from_str'],"עד תאריך",$filter['date_to_str']);
-		$report_arr[] = array("קטגוריה",$filter['cat_options_by_id'][$filter['cat']]['name']);
+		$report_arr[] = array("קטגוריה",$filter['cat_options_by_id'][$filter['cat']]['label']);
 		$status_arr = array("סטטוסים");
 		foreach($filter['status'] as $status){
 			$status_arr[] = $filter['status_options'][$status]['str'];
@@ -107,28 +119,28 @@
 		foreach($leads_data['list'] as $lead_data){
 			$lead = $lead_data->estimate_form_data;
 			$suming_arr['sent']++;
-			if($lead['lead_recource']!= 'phone'){
+			if($lead['resource']!= 'phone'){
 				$suming_arr['forms']++;
 			}
 			else{
 				$suming_arr['phones']++;
 			}
 			$bill_state_str = "חוייב";
-			if($lead['payByPassword'] == '0'){
+			if($lead['open_state'] == '0'){
 				$suming_arr['not_billed']++;
 				$suming_arr['closed']++;
 				$bill_state_str = "ליד סגור - לא חוייב";
-				$bil_state = "closed";
+				$bill_state = "closed";
 			}
 			else{
 				$suming_arr['open']++;
-				if($lead['lead_billed'] != '1'){
+				if($lead['billed'] != '1'){
 					$suming_arr['not_billed']++;
 					$bill_state_str = 'לא חוייב';
-					$bil_state = "not_billed";
-					if($lead['lead_billed_id'] != ''){
+					$bill_state = "not_billed";
+					if($lead['duplicate_id'] != ''){
 						$suming_arr['doubled']++;
-						$bil_state = "doubled";
+						$bill_state = "doubled";
 						$bill_state_str = 'ליד כפול - לא חוייב';
 					}			
 				}
@@ -139,7 +151,7 @@
 			$report_arr[] = array(
 				$lead['row_id'],
 				$lead['full_cat_name'],
-				$lead['name'],
+				$lead['full_name'],
 				$lead['phone'],
 				$lead['date_in_str'],
 				$lead['status_str'],
@@ -147,7 +159,7 @@
 				$bill_state_str,
 				$lead['refund_reason_str'],
 				$lead['email'],
-				$lead['content_full'],
+				$lead['note_full'],
 			);
 		}
 		$report_arr[] = array("סיכום");
@@ -186,7 +198,7 @@
 					echo "<tr>";
 					$arr_count = 0;
 					foreach($arr as $td){
-						echo "<td>".wigt($td)."</td>";
+						echo "<td>".$td."</td>";
 						$arr_count++;
 					}
 					$td_left = $td_count - $arr_count;
@@ -267,6 +279,8 @@
       include('views/leads/show.php');
     }
 	public function get_filter(){
+		$user = Users::get_loged_in_user();
+		$user_id = $user['id'];
 		$period_keys = array("today","yesterday","current_month","previous_month","previous_quarter","current_quarter","all_time","custom");
 		$period_options = array();
 		foreach($period_keys as $key){
@@ -344,34 +358,23 @@
 				}
 			}
 		}
-		$cat_oprions = User::get_user_cat_tree();
+		$cat_options = Leads_user::get_user_cat_options($user_id);
 
-		$selected = ($filter['cat'] == '0')?"selected":"";
-		$filter['cat_options']['0'] = array('selected'=>$selected,'name'=>'כל הקטגוריות','id'=>'0','base'=>'0');
-		foreach($cat_oprions  as $cat_id=>$cat){
-			$selected = ($filter['cat'] == $cat_id)?"selected":"";
-			$filter['cat_options'][] = array('selected'=>$selected,'name'=>$cat['cat_name'],'id'=>$cat_id,'base'=>'1');
-			if(isset($cat['children'])){
-				foreach($cat['children']  as $cat_child_id=>$cat_child){
-					$selected = ($filter['cat'] == $cat_child_id)?"selected":"";
-					$filter['cat_options'][] = array('selected'=>$selected,'name'=>$cat_child['cat_name'],'id'=>$cat_child_id,'base'=>'2');
-					if(isset($cat_child['children'])){
-						foreach($cat_child['children']  as $cat_child_2_id=>$cat_child_2){
-							$selected = ($filter['cat'] == $cat_child_2_id)?"selected":"";
-							$filter['cat_options'][] = array('selected'=>$selected,'name'=>$cat_child_2['cat_name'],'id'=>$cat_child_2_id,'base'=>'3');
-						}						
-					}
-				}					
+		
+		if(!isset($filter['cat'])){
+			$filter['cat'] = '0';
+		}
+		foreach($cat_options as $cat_key=>$cat){
+			if($filter['cat'] == $cat['id']){
+				$cat_options[$cat_key]['selected'] = 'selected';
 			}
-		}	
+		}
+		$filter['cat_options'] = $cat_options;
 		$filter['cat_options_by_id'] = array();
 		foreach($filter['cat_options'] as $option){
 			$filter['cat_options_by_id'][$option['id']] = $option;
 		}
-		if(isset($filter['cat'])){
-			$filter['cat_options']['0']['selected'] = "";
-			$filter['cat_options'][$filter['cat']]['selected'] = "selected";
-		}
+
 		$filter['pagination_options'] = array(
 			'10'=>array('selected'=>'','str'=>'10 שורות'),
 			'20'=>array('selected'=>'','str'=>'20 שורות'),

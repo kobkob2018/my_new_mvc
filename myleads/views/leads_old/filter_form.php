@@ -2,6 +2,10 @@
     <?php $this->include_view('messages/formMessages.php'); ?>
     <form name="send_form" class="send-form form-validate" id="send_form" method="post" action="<?= inner_url('leads/set_filter/') ?>">
 
+        <h3>סינון לידים</h3>
+
+        
+
         <?php foreach($this->data['leads_filter_form_builder']['fields_collection'] as $field_key=>$build_field): ?>
             <div class='form-group <?= isset($build_field['css_class'])? $build_field['css_class']: "" ?>'>
                     

@@ -2,26 +2,6 @@
   // to debug here, put in js console: help_debug_forms();
   
   class Leads_complex extends TableModel{
-
-    /*
-    public function example_from_old_code(){
-
-        //this is how you deside if to send in open mode and also charge, 
-        // or just send in open mode without charge
-        // or not send in open mode
-        $open_mode_final = false;
-        if($user['open_mode']>0){ 
-            if($user['leadQry']>0){
-                $open_mode_final = true;
-            }
-            else{
-                if($user['freeSend']>0){
-                    $open_mode_final = true;
-                }								
-            }							
-        }		
-    }
-*/
     protected static $users_arr; 
 
 
@@ -146,7 +126,9 @@
         $users_in_end_rotation = array();
         $user_count = 0;
         $max_sends_arr_int = intval($lead_info['max_lead_send']);
+        
         foreach($result as $user){
+            
             $check_user_ids[$user['id']] = '1';
 
             $user_lead_settings = self::$users_arr[$user['id']]['lead_settings'];
@@ -154,23 +136,27 @@
             $user_leads_recived = intval($user['leads_recived']);
 
             
-            if($user_count < $max_sends_arr_int){
-                if($user_leads_recived < $user_month_max){
+            if($user_count < $max_sends_arr_int || $max_sends_arr_int == 0){
+                
+                if($user_leads_recived < $user_month_max || $user_month_max == 0){
+                    
                     if(isset($duplicated_user_leads[$user['id']])){
                         $users_in_end_rotation[] = $user['id'];
                     }
                     else{
                         $users_in_rotation[] = $user['id'];
+                        $user_count++;
                     }
                 }
                 else{
+                    
                     if($user_lead_settings['flex_max'] == '1'){
                         $users_in_end_rotation[] = $user['id'];
                     }
                 }
             }
-            $user_count++;
         }
+        
         if($user_count < $max_sends_arr_int){
             foreach($users_in_end_rotation as $user_id){
                 if($user_count < $max_sends_arr_int){
@@ -208,7 +194,7 @@
         $user_id_in = implode(",",$optional_user_ids);
         $sql = "SELECT * FROM user_lead_settings WHERE user_id IN($user_id_in)  
         AND active = '1' 
-        AND (end_date > now() OR end_date = '0000-00-00')";
+        AND (end_date > now() OR end_date = '0000-00-00' OR end_date IS NULL)";
        
         $db = Db::getInstance();		
         $req = $db->prepare($sql);
@@ -317,7 +303,7 @@
         foreach($leads as $lead){
             if(in_array($lead['user_id'],$optional_user_ids)){
                 $duplicate_lead_id = $lead['id'];
-                if($lead['duplicate_id'] != ''){
+                if($lead['duplicate_id'] != '0' && $lead['duplicate_id'] != ''){
                     $duplicate_lead_id = $lead['duplicate_id'];
                 }
                 $users_duplicate_leads[$lead['user_id']] = $duplicate_lead_id;

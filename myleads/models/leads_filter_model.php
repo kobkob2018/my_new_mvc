@@ -17,7 +17,7 @@
             'default'=>'c-block'
         ),        
 
-        'content'=>array(
+        'note'=>array(
             'label'=>'תוכן',
             'type'=>'textbox',
             'reachtext'=>true,

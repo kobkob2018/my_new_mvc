@@ -23,8 +23,11 @@
 		<link rel="stylesheet" href="<?= styles_url('style/v1/css/main.css') ?>?v=<?= get_config("cash_version") ?>"  type="text/css" />	
 
 		<link rel="stylesheet" href="<?= styles_url('style/v1/css/bootstrap-multiselect.css') ?>?v=<?= get_config("cash_version") ?>"  type="text/css" />
-        <script src="<?= styles_url('style/v1/js/bootstrap-multiselect.js') ?>?v=<?= get_config("cash_version") ?>"></script>
-        	
+    <script src="<?= styles_url('style/v1/js/bootstrap-multiselect.js') ?>?v=<?= get_config("cash_version") ?>"></script>
+    
+    <script src="<?= styles_url('style/v1/js/angular.min.js') ?>?v=<?= get_config("cash_version") ?>"></script>
+
+    	
 		<title><?= $this->data['meta_title'] ?></title>
 		<?php $this->include_view('registered_scripts/head.php'); ?>
   </head>

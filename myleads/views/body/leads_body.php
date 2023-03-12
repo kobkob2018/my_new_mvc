@@ -31,7 +31,7 @@
 								<?php if($this->user['have_net_banners']): ?>
 									<li><a href="reports/banners/">הבאנרים שלי</a></li>
 								<?php endif; ?>
-								<li><a href="user/logout/">יציאה</a></li>
+								<li><a href="userLogin/logout/">יציאה</a></li>
 							</ul>
 						</div>
 					  </div>

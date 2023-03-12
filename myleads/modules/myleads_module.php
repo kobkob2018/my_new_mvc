@@ -1,8 +1,13 @@
 <?php
 	class MyleadsModule extends Module{
-
+        
+        public $add_models = array("users","leads_user");
         //good place to colect global data of the workon site, the user, etc...
         public function init_layout(){
+            $user = Users::get_loged_in_user();
+            if($user){
+                $this->controller->user = Leads_user::get_leads_user_data($user);
+            }
             $this->add_data('meta_title',"מערכת ניהול לידים - איי אל ביז");
             return;
         }
@@ -47,9 +52,35 @@
         }
 
         public function add_global_essential_ajax_info(){
-            $print_resut = $this->action_data;
-            $print_resut['system'] = 'admin';
-            return $print_resut;
+            $print_result = $this->action_data;
+            $print_result['system'] = 'myleads';
+            $user = $this->controller->user;
+            $user_arr = array();
+            $user_arr['login'] = '0';
+            if($this->user){
+                $user_arr['login'] = '1';
+                $user_params = array(
+                    "id",
+                    "email",
+                    "end_date",
+                    "full_name",
+                    "access_refunds",
+                    "lead_price",
+                    "lead_credit",
+                    "phone",
+                    "free_send",
+                    "open_mode",
+                    "auto_send",
+                    "has_special_closed_lead_alert",
+                );
+                foreach($user_params as $user_param){
+                    $user_arr[$user_param] = $this->user[$user_param];
+                }
+            }	
+            $print_result['user'] = $user_arr;
+
+            $print_result['user'] = $user;
+            return $print_result;
         }
 
 	}

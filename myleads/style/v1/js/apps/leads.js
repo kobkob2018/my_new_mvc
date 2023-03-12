@@ -15,7 +15,7 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 		
 		$http({
 			method : "GET",
-			url : "https://ilbiz.co.il/myleads/leads/ajax_list/?"+filter_data,
+			url : "leads/ajax_list/?"+filter_data,
 		})
 		.then(
 			function leadsSuccess(response) {
@@ -148,7 +148,7 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 		$scope.show_loading();
 		$http({
 			method : "GET",
-			url : "https://ilbiz.co.il/myleads/leads/ajax_lead_data/?lead_id="+lead_id,
+			url : "leads/ajax_lead_data/?lead_id="+lead_id,
 		})
 		.then(
 			function leadsSuccess(response) {
@@ -259,7 +259,7 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 		$scope.show_loading();
 		$http({
 			method : "GET",
-			url : "https://ilbiz.co.il/myleads/leads/ajax_lead_delete/?lead_id="+lead_id,
+			url : "leads/ajax_lead_delete/?lead_id="+lead_id,
 		})
 		.then(
 			function leadsSuccess(response) {
@@ -284,7 +284,7 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 		$scope.show_loading();
 		$http({
 			method : "GET",
-			url : "https://ilbiz.co.il/myleads/leads/ajax_lead_update/?lead_id="+lead_id+"&"+update_data,
+			url : "leads/ajax_lead_update/?lead_id="+lead_id+"&"+update_data,
 		})
 		.then(
 			function leadsSuccess(response) {
@@ -306,11 +306,11 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 	$scope.send_lead_refund_request = function(){
 		var lead_id = $scope.lead_data['row_id'];
 		var request_data = "&"+jQuery("#refund_request_form").serialize();
-		console.log("https://ilbiz.co.il/myleads/leads/ajax_send_lead_refund_request/?lead_id="+lead_id+request_data);
+		console.log("leads/ajax_send_lead_refund_request/?lead_id="+lead_id+request_data);
 		$scope.show_loading();
 		$http({
 			method : "GET",
-			url : "https://ilbiz.co.il/myleads/leads/ajax_send_lead_refund_request/?lead_id="+lead_id+request_data,
+			url : "leads/ajax_send_lead_refund_request/?lead_id="+lead_id+request_data,
 		})
 		.then(
 			function leadsSuccess(response) {
@@ -334,7 +334,7 @@ leadsApp.controller('leadsCtrl', function($scope, $http) {
 		$scope.close_lead_sub_form("buy_lead_sub_form");
 		$http({
 			method : "GET",
-			url : "https://ilbiz.co.il/myleads/leads/ajax_lead_buy/?lead_id="+lead_id,
+			url : "leads/ajax_lead_buy/?lead_id="+lead_id,
 		})
 		.then(
 			function leadsSuccess(response) {

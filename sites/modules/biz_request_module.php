@@ -30,13 +30,18 @@
 
             $have_meny_phone_duplications = $this->validate_phone_duplications($return_array);
 
+        
+            if(get_config('mode') == 'dev'){
+                $have_meny_phone_duplications = false;
+            }
+            
             //create duplication mockup for spammers, with a success true result
             if($have_meny_phone_duplications){
                 $return_array['html'] = $this->controller->include_ob_view('biz_form/request_success_mokup.php');
                 return $return_array;
             }
 
-            //exit("what");
+           
             $this->lead_info['page_id'] = $form_info['page_id'];
 
             $this->add_cat_info_to_lead_info();
@@ -121,7 +126,9 @@
             
             $fields_collection = SiteBiz_requests::setup_field_collection();
             
-
+            if(isset($this->controller->data['let_phone_go'])){
+                $fields_collection['phone']['validation'] = 'required';
+            }
             $form_info = $this->controller->data['form_info'];
             $input_remove_arr = $form_info['input_remove_arr'];
 
@@ -297,7 +304,8 @@
                     'email_to'=>$user['info']['email'],
                     'title'=>"בקשה להצעת מחיר באתר",
                     'content'=>$email_content,
-                    'send_times'=>$user_send_times
+                    'send_times'=>$user_send_times,
+                    'lead_id'=>$user_lead_id
                 );
                 User_pending_emails::create($email_pending_message);
             }
