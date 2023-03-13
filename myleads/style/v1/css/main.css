@@ -7,7 +7,7 @@
     margin-top: 0px;
     border-top: none;	
 }
-.leads_all #content_wrap{
+.leads_list #content_wrap{
 	background: white;
 	padding: 0px;
 	border: none;
@@ -27,7 +27,7 @@
 	z-index:300;
 }
 
-.header-space-keeper{height:60px;}
+.header-space-keeper{height:86px;}
 .header-right-menu{float:right;}
 .header-left-menu{float:left;}
 .header-item{display:block; float:right; margin-left:5px;}
@@ -44,6 +44,29 @@
 .form-group .checkbox_wrap input[type=checkbox]{width: 23px;}
 .form-group .checkbox_wrap .checkbox_label{width: 100%; display: block; position: absolute; top: 0px; padding-right: 29px; padding-top: 3px; box-sizing: border-box; height: 100%;z-index:20;}
 .datepicker {float: right}
+
+
+.messages{
+    padding: 10px;
+    background: #ffeaea;
+    color: red;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 15px 36px;
+    box-shadow: 3px 4px 7px #c19d9d;
+}
+
+.messages.success-messages{
+    background: #cffcf9;
+    color: black;
+    box-shadow: 3px 4px 7px #c1bebe;
+}
+
+.messages.warning-messages{
+    background: #fee7a3;
+    color: black;
+    box-shadow: 3px 4px 7px #c1bebe;
+}
 
 .datepicker.dropdown-menu {right:auto}
 #leads_filter_form_wrap{padding:0px 10px;}
@@ -328,7 +351,7 @@ display: none;
 		right: -300px;	
 		
 	}
-	.leads_all .header #filter_door{display:block;} 
+	.leads_list .header #filter_door{display:block;} 
 	#refresh_button{margin-right:10px;}
 	.lead-form-content{padding-bottom:50px;}
 	#lead_form_buttons_wrap{
@@ -436,7 +459,7 @@ display: none;
 		float: left;
 		margin-left: -9px;		
 	}
-	.leads_all #logo_wrap{display:none;}   
+	.leads_list #logo_wrap{display:none;}   
     /* Force table to not be like tables anymore */
 	#listTable_wrap #responsive-tables table, 
 	#listTable_wrap #responsive-tables thead, 

@@ -7,6 +7,12 @@ class Cron_masterController extends CrudController{
             'module'=>'cron_emails',
             'action'=>'send_pending_emails'
       ),
+
+      array('label'=>'cron_user_phone_calls', 
+      'module'=>'cron_user_phone_calls',
+      'action'=>'update_new_calls'
+    ),
+
     ),
     'hourly'=>array(),
     'daily_mornings'=>array(),
@@ -36,6 +42,14 @@ class Cron_masterController extends CrudController{
 ),
     ),
   );
+
+  protected function handle_access($action){
+
+    if($action == 'map_cron_actions'){
+      return true;
+    }
+    return parent::handle_access($action);
+	}
 
   protected function map_cron_actions(){
     $this->set_layout("blank");

@@ -49,6 +49,10 @@
             <li class="bar-item <?= $view->a_c_class("refund_reasons") ?>">
                 <a href="<?= inner_url('refund_reasons/list/') ?>" title="סיבות זיכוי" class="a-link">סיבות זיכוי</a>
             </li> 
+
+            <li class="bar-item <?= $view->a_class("refund_requests/list/") ?>">
+                <a href="<?= inner_url('refund_requests/list/') ?>" title="בקשות לזיכויים" class="a-link">בקשות לזיכויים</a>
+            </li> 
         <?php endif; ?>
 
     </ul>

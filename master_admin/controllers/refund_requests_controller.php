@@ -9,60 +9,59 @@
     function list()
     {
         
+        $return_page_id = '1';
+        if(isset($_GET['page_id'])){
+            $return_page_id = $_GET['page_id'];
+        }
+        $return_filter_qstr = "";
+        $filter_params = array('s_date','e_date','user_name');
+        foreach($filter_params as $filter_param){
+            if(isset($_GET[$filter_param]) && $_GET[$filter_param] != ''){
+               
+                $filter_val = $_GET[$filter_param];
+                $return_filter_qstr .= "&$filter_param=$filter_val";
+            }
+
+        }
+        $return_url = inner_url("refund_requests/list/")."?page_id=".$return_page_id.$return_filter_qstr;
         //pass for phone system server: juzvklcrj
-        if(isset($_GET['refund']) && isset($_GET['refund_user_id'])){
+        if(isset($_GET['refund']) && isset($_GET['reuquest_user_id'])){
             if($_GET['refund'] == "0" || $_GET['refund'] == "" || (!isset($_GET['refund_type']))){
                 echo "בקשה לא תקינה";
                 exit();
             }
-            $refund_row = $_GET['refund'];
+            
             $denied = false;
             $cancel_refund = false;
             if(isset($_REQUEST['denied']) && $_REQUEST['denied'] == '1'){
-                $lead_status = Refund_requests::get_request_lead_status($_REQUEST['request']);
+                $lead_status = Refund_requests::get_lead_status($_REQUEST['lead_id']);
                 
                 if($lead_status == '6'){
                     SystemMessages::add_err_message("שגיאה: הליד הזה כבר זוכה");
-                    return $this->redirect_to(inner_url("refund_requests/list/"));  
+                    return $this->redirect_to($return_url);  
                 }
                 $denied = true;
-
-                Refund_requests::deny_request($_REQUEST['request'],$_REQUEST['reuquest_user_id'],$_REQUEST['admin_comment']);		
+                
+                Refund_requests::deny_refund($_REQUEST['refund'],$_REQUEST['admin_comment']);		
             }
             elseif(isset($_REQUEST['cancel_refund']) && $_REQUEST['cancel_refund'] == '1'){
-                Refund_requests::deny_request($_REQUEST['request'],$_REQUEST['reuquest_user_id'],$_REQUEST['admin_comment']);		
+                Refund_requests::deny_refund($_REQUEST['refund'] ,$_REQUEST['admin_comment']);		
                 $effected_rows =  0;
-                if($_GET['refund_type'] == "phone"){
-                    $effected_rows =  Refund_requests::set_lead_status_by_lead_id($refund_row,$_REQUEST['reuquest_user_id'],'0');
-                }
-                else{
-                    $effected_rows =  Refund_requests::set_lead_status_by_biz_request_id($refund_row,$_REQUEST['reuquest_user_id'],'0');
-                }
+                $effected_rows =  Refund_requests::set_lead_status($_REQUEST['lead_id'],'0');
                 if($effected_rows > 0){
                     Refund_requests::remove_credit_to_user($_REQUEST['reuquest_user_id']);
                 }
             }
             else{
-                $effected_rows =  0;
-                if($_GET['refund_type'] == "phone"){
-                    $effected_rows =  Refund_requests::set_lead_status_by_lead_id($refund_row,$_REQUEST['reuquest_user_id'],'6');
-                }
-                else{
-                    $effected_rows =  Refund_requests::set_lead_status_by_biz_request_id($refund_row,$_REQUEST['reuquest_user_id'],'6');
-                }
-                if($effected_rows > 0){
-                    Refund_requests::add_credit_to_user($_REQUEST['reuquest_user_id']);
-                }
+                $effected_rows =  0;  
+                $effected_rows =  Refund_requests::set_lead_status($_REQUEST['lead_id'],'6');
             }
 
             $user_data = Users::get_by_id($_REQUEST['reuquest_user_id']);
 
-            if($_GET['refund_type'] == "phone"){
-                $lead_data = Refund_requests::get_lead_by_id($_REQUEST['reuquest_user_id']);
-            }
-            else{
-                $lead_data = Refund_requests::get_lead_by_request_id($_REQUEST['reuquest_user_id']);
-            }		
+            
+            $lead_data = Refund_requests::get_lead_data($_REQUEST['lead_id']);
+            	
 
             if( $lead_data){
                 if($denied){
@@ -96,7 +95,10 @@
 
 			    $this->send_email($email_to, $email_title, $email_content);
             }
-            return $this->redirect_to(inner_url("refund_requests/list/"));
+            else{
+                exit("no lead data!!!");
+            }
+            return $this->redirect_to($return_url);
         }	
         
         $refund_reasons = Refund_requests::get_refund_reasons_id_indexed();
@@ -120,24 +122,30 @@
         
         
         $user_name_filter = false;
+        $user_name_filter_str = "";
         if(isset($_GET['user_name']) && !empty($_GET['user_name'])){
             $user_name_filter = $_GET['user_name'];
+            $user_name_filter_str = $_GET['user_name'];
         }
 
         $s_date_filter = false;
+        $s_date_filter_str = "";
         if(isset($_GET['s_date']) && !empty($_GET['s_date'])){
+            $s_date_filter_str = $_GET['s_date'];
             $s_dateT = explode( "-", $_GET['s_date'] );
             $s_date_filter = $s_dateT[2]."-".$s_dateT[1]."-".$s_dateT[0];
         }
         $e_date_filter = false;
+        $e_date_filter_str = "";
         if(isset($_GET['e_date']) && !empty($_GET['e_date'])){
+            $e_date_filter_str = $_GET['e_date'];
             $e_dateT = explode( "-", $_GET['e_date'] );
             $e_date_filter = $e_dateT[2]."-".$e_dateT[1]."-".$e_dateT[0];
         }
 
         
 
-        $limit_rows = 50;
+        $limit_rows = 3;
         $page_id =  ( !empty($_GET['page_id']) ) ? $_GET['page_id'] : '1';
         
         $request_list = Refund_requests::get_filtered_requests_count($user_name_filter,$s_date_filter,$e_date_filter,$page_id,$limit_rows);
@@ -161,7 +169,7 @@
                 $refund_list[$refund_request['lead_id']]['history'][$refund_request['refund_id']] = $refund_request;
             }
         }
-
+        echo "<h3>בקשות לזיכויים</h3>";
         echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"maintext\">";
 
             echo "<tr><td colspan=20 height=15></td><td>";
@@ -170,22 +178,20 @@
 
             echo "<tr>";
                 echo "<td colspan=20>";
-                    echo "<form action='?' name='searchForm' method='get' style='padding:0; margin:0;'>";
-                    echo "<input type='hidden' name='main' value='view_estimate_form_refund_list'>";
-                    echo "<input type='hidden' name='page_id' value='".$page_id."'>";
+                    echo "<form action='".inner_url("refund_requests/list/")."' name='searchForm' method='get' style='padding:0; margin:0;'>";
                     echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"maintext\">";
                         echo "<tr>";
                             echo "<td>מתאריך</td>";
                             echo "<td width=10></td>";
-                            echo "<td><input type='text' name='s_date' value='".$_GET['s_date']."' class='input_style' style='width: 100px;'> dd-mm-yyyy</td>";
+                            echo "<td><input type='text' name='s_date' value='".$s_date_filter_str."' class='input_style' style='width: 100px;'> dd-mm-yyyy</td>";
                             echo "<td width=30></td>";
                             echo "<td>עד לתאריך</td>";
                             echo "<td width=10></td>";
-                            echo "<td><input type='text' name='e_date' value='".$_GET['e_date']."' class='input_style' style='width: 100px;'> (תאריך רצוי + יום) dd-mm-yyyy</td>";
+                            echo "<td><input type='text' name='e_date' value='".$e_date_filter_str."' class='input_style' style='width: 100px;'> (תאריך רצוי + יום) dd-mm-yyyy</td>";
                             
                             echo "<td width=30></td>";
                             echo "<td>שם משתמש: </td>";
-                            echo "<td><input type='text' name='user_name' value='".$_GET['user_name']."' class='input_style' style='width: 100px;'></td>";
+                            echo "<td><input type='text' name='user_name' value='".$user_name_filter_str."' class='input_style' style='width: 100px;'></td>";
                             
                             echo "<td width=10></td>";
                             echo "<td><input type='submit' value='חפש' class='submit_style'></td>";
@@ -238,7 +244,7 @@
                     }
                 }
                 $doubled_str = "";
-                if($data['lead_billed'] != '1'){
+                if($data['billed'] != '1'){
                     $tr_style = "background:#7d7d7d";
                     $doubled_str = "<b style = 'color:red'>ליד כפול. יש לברר כיצד בוצעה בקשת זיכוי</b><br/>";
                 }
@@ -263,20 +269,15 @@
                     echo "<td>".$data['comment']."</td>";
                     echo "<td width=15></td>";
                     echo "<td>";
-                        if($data['lead_recource'] == "phone"){
-                            $phone_lead_id = $data['phone_lead_id'];
-                            $phone_lead_sql = "SELECT * FROM sites_leads_stat WHERE id = '".$phone_lead_id."'";
-                            $phone_lead_res = mysql_db_query(DB, $phone_lead_sql);
-                            $phone_lead_data =  mysql_fetch_array($phone_lead_res);
-                            echo "<span style='color:orange;font-weight:bold;'>סטטוס תשובה:</span> ".$phone_lead_data['answer']."<br/>"
-                                ."<span style='color:orange;font-weight:bold;'>הודעת טקסט:</span> ".$phone_lead_data['sms_send']."<br/>"
-                                ."<span style='color:orange;font-weight:bold;'>חיוב בשניות:</span> ".$phone_lead_data['billsec']."<br/>"
-                                ."<span style='color:orange;font-weight:bold;'>מזהה:</span> ".$phone_lead_data['uniqueid']."<br/>";						
+                        if($data['resource'] == "phone"){
+                            $phone_data =  Refund_requests::get_phone_call_data($data['phone_id']);
+                            echo "<span style='color:orange;font-weight:bold;'>סטטוס תשובה:</span> ".$phone_data['answer']."<br/>"
+                                ."<span style='color:orange;font-weight:bold;'>הודעת טקסט:</span> ".$phone_data['sms_send']."<br/>"
+                                ."<span style='color:orange;font-weight:bold;'>חיוב בשניות:</span> ".$phone_data['billsec']."<br/>"
+                                ."<span style='color:orange;font-weight:bold;'>מזהה:</span> ".$phone_data['uniqueid']."<br/>";						
                         }
                         else{
-                            echo $data['cat_f_name']."<br/>"
-                            .$data['cat_s_name']."<br/>"
-                            .$data['cat_spec_name'];
+                            echo $data['cat_str']."<br/>";
                         }
                     echo "</td>";
                     echo "<td width=15></td>";
@@ -285,15 +286,15 @@
                             ."<span style='color:orange;font-weight:bold;'>שם:</span> ".$data['sender_name']."<br/>"
                             ."<span style='color:orange;font-weight:bold;'>טלפון:</span> ".$data['sender_phone']."<br/>"
                             ."<span style='color:orange;font-weight:bold;'>אימייל:</span> ".$data['sender_email']."<br/>"
-                            ."<span style='color:orange;font-weight:bold;'>הערות:</span> ".$data['ef_note']."<br/>";
+                            ."<span style='color:orange;font-weight:bold;'>הערות:</span> ".$data['brq_note']."<br/>";
                     echo "</td>";
                     echo "<td width=10></td>";					
                     echo "<td>";
-                    if($data['lead_recource'] == "phone"){
+                    if($data['resource'] == "phone"){
                         echo "<b style='color:red;'>ליד טלפוני</b>";
                     }
                     else{
-                        echo "<a target='_new' href='index.php?main=send_estimate_form_users_list&estimate_id=".$data['lead_id']."&status=18&sesid=".SESID."' class='maintext'>צפה בליד</a>";
+                        echo "<a target='_new' href='".inner_url("leads_handler/send_lead_users_list/")."?biz_request_id=".$data['lead_id']."&status=".$data['status']."' class='maintext'>צפה בליד</a>";
                     }
                     echo "</td>";
                     echo "<td width=20></td>";					
@@ -302,7 +303,7 @@
                             ksort($data['history']);
                             echo "<b style='color:red;'>הסטורית בקשות:</b><br/>";
                             foreach($data['history'] as $history_data){
-                                echo "<br/>".$history_data['ref_id']."<br/><span style='color:brown;'><b>לקוח:</b>".$history_data['comment']."</span>";
+                                echo "<br/>".$history_data['refund_id']."<br/><span style='color:brown;'><b>לקוח:</b>".$history_data['comment']."</span>";
                                 echo "<br/><span style='color:orange;'><b>מנהל:</b>";
                                 if($history_data['admin_comment'] == ""){
                                     echo "-----אין תגובה----";
@@ -317,7 +318,7 @@
                                 echo "</span>";
 
                             }
-                                echo "<br/><br/>החלטה נוכחית: <br/>".$data['ref_id']."<br/>";
+                                echo "<br/><br/>החלטה נוכחית: <br/>".$data['refund_id']."<br/>";
                         }
                         if($data['denied'] == '1'){
                             echo "<b><span style='color:red;'>הוחלט לא לזכות(".$data['admin_comment'].")</span></b>";
@@ -326,48 +327,42 @@
                             if($data['status'] == '6'){
                                 echo "<h4 style='color:red;'>הליד זוכה</h4>";
                             }
-                            if($data['lead_recource'] == "phone"){
-                                if($data['status'] != '6'){
-                                    echo "<a href='index.php?main=view_estimate_form_refund_list&unk=".$data['user_unk']."&refund_type=phone&refund=".$data['ucf_id']."&sesid=".SESID."' class='maintext'>לחץ כאן לזיכוי</a><br/><br/>";
+                            if($data['resource'] == "phone"){
+                                if($data['status'] != '6'){   //reuquest_user_id,refund, refund_type, cancel_refund, admin_comment, denied, 
+                                    echo "<a href='".$return_url."&reuquest_user_id=".$data['user_id']."&refund_type=phone&refund=".$data['refund_id']."&lead_id=".$data['lead_id']."' class='maintext'>לחץ כאן לזיכוי</a><br/><br/>";
                                 }
-                                if($phone_lead_data['recordingfile'] != ""){
-                                    if($phone_lead_data['link_sys_id'] == "0"){
-                                        echo "<a target='_blank' href='https://212.143.60.5/index.php?menu=monitoring&action=display_record&id=".$phone_lead_data['uniqueid']."&rawmode=yes' class='maintext'>לחץ כאן להורדת הקלטה</a><br/>";
+                                if($phone_data['recordingfile'] != ""){
+                                    if($phone_data['link_sys_id'] == "0"){
+                                        $link_records_alt_url = get_config("link_records_alt_url");
+                                        echo "<a target='_blank' href='".$link_records_alt_url."?menu=monitoring&action=display_record&id=".$phone_data['uniqueid']."&rawmode=yes' class='maintext'>לחץ כאן להורדת הקלטה</a><br/>";
                                     }
                                     else{
-                                        echo "<a target='_blank' href='http://ilbiz.co.il/site-admin/recording_handlers/download.php?filename=".$phone_lead_data['recordingfile']."' class='maintext'>לחץ כאן להורדת הקלטה</a><br/>";
+                                        echo "<a target='_blank' href='".inner_url("Link_recordings/download/")."?filename=".$phone_data['recordingfile']."' class='maintext'>לחץ כאן להורדת הקלטה</a><br/>";
                                     }
                                 }
                             }
                             else{
                                 if($data['status'] != '6'){
-                                    echo "<a href='index.php?main=view_estimate_form_refund_list&unk=".$data['user_unk']."&refund_type=form&refund=".$data['lead_id']."&sesid=".SESID."' class='maintext'>לחץ כאן לזיכוי</a>";
+                                    echo "<a href='".$return_url."&reuquest_user_id=".$data['user_id']."&refund_type=form&refund=".$data['refund_id']."&lead_id=".$data['lead_id']."' class='maintext'>לחץ כאן לזיכוי</a>";
                                 }
                             }
-                            $lead_id = $data['lead_id'];
-                            if($data['lead_recource'] == "phone"){
-                                $lead_id = $data['ucf_id'];
-                            }
+
                             if($data['status'] != '6'){
-                                echo "<form method='POST' action='index.php?main=view_estimate_form_refund_list&unk=".$data['user_unk']."&request=".$data['ref_id']."&refund_type=".$data['lead_recource']."&refund=".$lead_id."&denied=1&sesid=".SESID."' class='maintext'>
+                                echo "<form method='POST' action='".$return_url."&reuquest_user_id=".$data['user_id']."&refund=".$data['refund_id']."&refund_type=".$data['resource']."&lead_id=".$data['lead_id']."&denied=1' class='maintext'>
                                     <b>החלט לא לזכות(הוסף הערה)</b>
                                     <textarea name='admin_comment'></textarea>
                                     <button type='sumbit'>שלח</button>
                                 </form>";	
                             }
                             else{
-                                echo "<form method='POST' action='index.php?main=view_estimate_form_refund_list&unk=".$data['user_unk']."&request=".$data['ref_id']."&refund_type=".$data['lead_recource']."&refund=".$lead_id."&cancel_refund=1&sesid=".SESID."' class='maintext'>
+                                echo "<form method='POST' action='".$return_url."&reuquest_user_id=".$data['user_id']."&refund=".$data['refund_id']."&refund_type=".$data['resource']."&lead_id=".$data['lead_id']."&cancel_refund=1' class='maintext'>
                                     <b>בטל זיכוי(הוסף הערה)</b>
                                     <textarea name='admin_comment'></textarea>
                                     <button type='sumbit'>שלח</button>
                                 </form>";							
                             }
                         }
-                        /*
-                        else{
-                            echo "<span style='color:red;'>הליד זוכה</span>";
-                        }
-                        */
+
                     echo "</td>";
                 echo "</tr>";
                 echo "<tr><td colspan=20 height=2></td></tr>";
@@ -375,7 +370,7 @@
             }
             
             echo "<tr>";
-                    echo "<td colspan=20 align=center style=\"border-top: 1px solid #".$data_colors['border_color'].";\">";
+                    echo "<td colspan=20 align=center style=\"border-top: 1px solid gray;\">";
                         echo "<table align=center border=0 cellspacing=\"0\" width=100% cellpadding=\"3\" class=\"maintext\">";
                             echo "<tr>";
                                 echo "<td align=center>סך הכל ".$num_rows." בקשות</td>";
@@ -394,10 +389,10 @@
                                             $pz = $z+1;
                                             
 
-                                                    if( $i == $_GET['page_id'] )
+                                                    if( $i == $page_id )
                                                         $classi = "<strong style=\"color:#000000\">".$pz."</strong>&nbsp;&nbsp;";
                                                     else
-                                                        $classi = "<a href='index.php?main=view_estimate_form_refund_list&page_id=".$i."&sesid=".SESID."' class='maintext'>".$pz."</a>&nbsp;&nbsp;";
+                                                        $classi = "<a href='".inner_url("refund_requests/list/")."?page_id=".$i.$return_filter_qstr."' class='maintext'>".$pz."</a>&nbsp;&nbsp;";
                                                         
                                                     echo $classi;
                                                     

@@ -10,7 +10,7 @@
 		</div>		
 		<?php if($this->user): ?>
 			<div id="header_links" class="header-right-menu">
-				<a id="header_lead_list_link" class="header-link header-item" href='leads/all/'><span class="bg"></span><span class="header-link-title">לידים</span></a>
+				<a id="header_lead_list_link" class="header-link header-item" href='<?= inner_url("leads/list/") ?>'><span class="bg"></span><span class="header-link-title">לידים</span></a>
 			</div>
 			<div id="left_menu" class="header-left-menu">
 				<div id="user_menu" class="header-item">
@@ -25,13 +25,13 @@
 							<h4><?= $this->user['full_name']; ?></h4>
 							<h5><?= $this->user['username']; ?></h5>
 							<ul>
-								<li><a href="credits/buyLeads/">רכישת לידים</a></li>
-								<li><a href="notifications/payment_list/">תשלומים אחרונים</a></li>
-								<li><a href="user/details/">עדכון פרטים</a></li>
+								<li><a href="<?= inner_url("credits/buyLeads/") ?>">רכישת לידים</a></li>
+								<li><a href="<?= inner_url("notifications/payment_list/") ?>">תשלומים אחרונים</a></li>
+								<li><a href="<?= inner_url("user/details/") ?>">עדכון פרטים</a></li>
 								<?php if($this->user['have_net_banners']): ?>
-									<li><a href="reports/banners/">הבאנרים שלי</a></li>
+									<li><a href="<?= inner_url("reports/banners/") ?>" ?>">הבאנרים שלי</a></li>
 								<?php endif; ?>
-								<li><a href="userLogin/logout/">יציאה</a></li>
+								<li><a href="<?= inner_url("userLogin/logout/") ?>">יציאה</a></li>
 							</ul>
 						</div>
 					  </div>
@@ -67,8 +67,9 @@
 				check_notifications_interval();
 			</script>
 		<?php else: ?>
-		  <a href = 'userLogin/login/'>כניסה למערכת</a>
-		  <a href = 'userLogin/register/'>הרשמה</a>
+			<a href = "<?= inner_url("userLogin/login/"); ?>">כניסה למערכת</a>
+		  	<a href = "<?= inner_url("userLogin/register/"); ?>">הרשמה</a>
+		  	<a href = "<?= inner_url(""); ?>">דף הבית</a>
 		<?php endif; ?>
 		
 		<?php $this->include_view('leads/all_messages.php'); ?>

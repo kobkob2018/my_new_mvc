@@ -19,7 +19,7 @@
 				</form>
 			</td>
 		</tr>
-		<?php foreach($tag_list as $tag_id=>$tag_name): if($tag_id!='0'): ?>
+		<?php foreach($this->data['tag_list'] as $tag_id=>$tag_name): if($tag_id!='0'): ?>
 			<tr>
 				<td><?php echo $tag_id; ?></td>
 				<td><?php echo $tag_name; ?></td>

@@ -3,10 +3,10 @@
 
     protected static $main_table = 'refund_requests';
 
-    public static function get_request_lead_status($request_id){
-        $execute_arr = array('request_id'=>$request_id);
+    public static function get_lead_status($lead_id){
+        $execute_arr = array('lead_id'=>$lead_id);
         $db = Db::getInstance();
-		$sql = "SELECT status FROM user_leads WHERE id = (SELECT row_id FROM lead_refund_requests WHERE id = :request_id)";
+		$sql = "SELECT status FROM user_leads WHERE id = :lead_id";
 		$req = $db->prepare($sql);
 		$req->execute($execute_arr);
         $result = $req->fetch();
@@ -18,52 +18,33 @@
         }
     }
 
-    public static function deny_request($request_id, $user_id, $comment){
-        $execute_arr = array('request_id'=>$request_id,'user_id'=>$user_id,'comment'=>$comment);
+    public static function deny_refund($refund_id, $comment){
+        $execute_arr = array('refund_id'=>$refund_id ,'comment'=>$comment);
         $db = Db::getInstance();
 
-		$sql = "update lead_refund_requests set denied = 1,admin_comment=:comment WHERE user_id = :user_id AND id = :request_id";
+		$sql = "update lead_refund_requests set denied = 1,admin_comment=:comment WHERE id = :refund_id";
 		$req = $db->prepare($sql);
 		$req->execute($execute_arr);
         return;
     }
 
-    public static function set_lead_status_by_lead_id($lead_id,$user_id,$status){
-        $execute_arr = array('lead_id'=>$lead_id,'user_id'=>$user_id, 'status'=>$status);
+    public static function set_lead_status($lead_id,$status){
+        $execute_arr = array('lead_id'=>$lead_id, 'status'=>$status);
         $db = Db::getInstance();
-		$sql = "update user_leads set status = :status WHERE user_id = :user_id AND id = :lead_id";
+		$sql = "update user_leads set status = :status WHERE id = :lead_id";
 		$req = $db->prepare($sql);
 		$req->execute($execute_arr);
         return $req->rowCount();
     }
 
-    public static function set_lead_status_by_biz_request_id($biz_request_id,$user_id,$status){
-        $execute_arr = array('biz_request_id'=>$biz_request_id,'user_id'=>$user_id, 'status'=>$status);
-        $db = Db::getInstance();
-		$sql = "update user_leads set status = :status WHERE user_id = :user_id AND request_id = :lead_id";
-		$req = $db->prepare($sql);
-		$req->execute($execute_arr);
-        return $req->rowCount();
-    }
-
-
-    public static function get_lead_by_id($lead_id){
+    public static function get_lead_data($lead_id){
         $execute_arr = array('lead_id'=>$lead_id);
         $db = Db::getInstance();
 		$sql = "SELECT * FROM user_leads WHERE id = :lead_id";
 		$req = $db->prepare($sql);
 		$req->execute($execute_arr);
         return $req->fetch();
-    }    
-
-    public static function get_lead_by_request_id($request_id){
-        $execute_arr = array('request_id'=>$request_id);
-        $db = Db::getInstance();
-		$sql = "SELECT * FROM user_leads WHERE request_id = :request_id";
-		$req = $db->prepare($sql);
-		$req->execute($execute_arr);
-        return $req->fetch();
-    }  
+    }     
 
     public static function add_credit_to_user($user_id){
         $execute_arr = array('user_id'=>$user_id);
@@ -118,12 +99,12 @@
         $db = Db::getInstance();
         $date_from_sql = ( $s_date_filter ) ? " AND refund.request_time >= '".$s_date_filter."' " : "";
         $date_to_sql = ( $e_date_filter ) ? " AND refund.request_time <= '".$e_date_filter."' " : "";
-        $user_name_sql = ( $user_name_filter ) ? " AND (user.full_name LIKE ('%".$user_name_filter."%') OR user.name LIKE ('%".$user_name_filter."%') ) " : "";
+        $user_name_sql = ( $user_name_filter ) ? " AND (user.full_name LIKE ('%".$user_name_filter."%') OR user.full_name LIKE ('%".$user_name_filter."%') ) " : "";
         $where_sql = " WHERE 1 ".$date_from_sql.$date_to_sql.$user_name_sql;
         
         $count_sql = "SELECT COUNT(distinct refund.row_id) as rows_count
                 FROM lead_refund_requests refund
-                LEFT JOIN users user ON ul.user_id = user.id
+                LEFT JOIN users user ON refund.user_id = user.id
             ".$where_sql;
         $req = $db->prepare($count_sql);
 		$req->execute();
@@ -139,22 +120,27 @@
 
         $limit_sql = " LIMIT ".$limit_row.", ".$limit_rows." ";
 
-        $sql = "SELECT id 
+        $sql = "SELECT distinct refund.row_id as lead_id
                 FROM lead_refund_requests refund
-                LEFT JOIN users user ON ul.user_id = user.id
+                LEFT JOIN users user ON refund.user_id = user.id
         ".$where_sql." ORDER BY refund.id desc ".$limit_sql;
+       
         $req = $db->prepare($sql);
         $req->execute();
         $refund_requests_ids = $req->fetchAll();
 
         $row_ids = array();
         foreach($refund_requests_ids as $refund_request){
-            $row_ids[] = $refund_request['id'];
+            $row_ids[] = $refund_request['lead_id'];
         }
         $row_ids_in = implode(",",$row_ids);
 
+        $refund_requests = array();
 
-        $sql = "SELECT 	user.full_name as user_name, 
+        if($row_ids_in != ""){
+
+            
+            $sql = "SELECT 	user.full_name as user_name, 
                         user.id as user_id, 
                         ul.request_id as biz_request_id,
                         ul.resource as resource,
@@ -174,18 +160,19 @@
                         ul.email as sender_email,
                         ul.date_in as send_time,
                         brq.note as brq_note,
-                        ul.cat_id as cat_id
+                        brq.cat_id as cat_id
 
                 FROM lead_refund_requests refund
                 LEFT JOIN user_leads ul ON refund.row_id = ul.id
-                LEFT JOIN estimate_form brq ON ul.request_id = brq.id
-                LEFT JOIN users user ON ul.unk = user.unk
-                WHERE refund.id IN (".$row_ids_in.") ORDER BY refund.id desc ";
+                LEFT JOIN biz_requests brq ON ul.request_id = brq.id
+                LEFT JOIN users user ON ul.user_id = user.id
+                WHERE refund.row_id IN (".$row_ids_in.") ORDER BY refund.id desc ";
 
-        $req = $db->prepare($sql);
-        $req->execute();
-        $refund_requests = $req->fetchAll();
+                $req = $db->prepare($sql);
+                $req->execute();
+                $refund_requests = $req->fetchAll();
 
+        }
         foreach($refund_requests as $request_key=>$request){
             $cat_id = $request['cat_id'];
             $cat_str = "";
@@ -240,6 +227,17 @@
             return "";
         }
         return $tag_data['tag_name'];
+    }
+
+    public static function get_phone_call_data($phone_id){
+        $db = Db::getInstance();
+        $execute_arr = array('phone_id'=>$phone_id);
+        $sql = "SELECT * FROM user_phone_calls WHERE id = :phone_id";
+
+        $req = $db->prepare($sql);
+        $req->execute($execute_arr);
+        $call_data = $req->fetch();
+        return $call_data;
     }
 }
 ?>
