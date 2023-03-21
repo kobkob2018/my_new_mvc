@@ -70,5 +70,33 @@
       
     } 
   
+    public static function send_sms($phone,$msg){
+      $msg = urlencode($msg);
+      $micropay_url = get_config('micropay_url');
+      $micropay_url = str_replace("{{phone}}", $phone, $micropay_url);
+      $micropay_url = str_replace("{{msg}}", $msg, $micropay_url);
+      $no_answer_url = get_config('base_url')."/master_admin/micropay_sms_result/handle/";
+      $micropay_url = str_replace("{{no_answer_url}}", $no_answer_url, $micropay_url);
+      $curlSend = curl_init(); 
+      curl_setopt($curlSend, CURLOPT_URL, $micropay_url); 
+      curl_setopt($curlSend, CURLOPT_RETURNTRANSFER, 1); 
+      $curlResult = curl_exec ($curlSend); 
+      curl_close ($curlSend); 
+      return $curlResult;
+    }
+
+    public static function send_email($email_to, $email_title,$email_content){
+      $email_sender = get_config('email_sender'); 
+      $email_sender_name = get_config('email_sender_name');
+      // Set content-type header for sending HTML email 
+      $headers = "MIME-Version: 1.0" . "\r\n"; 
+      $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n"; 
+      
+      // Additional headers 
+      $headers .= 'From: '.$email_sender_name.'<'.$email_sender.'>' . "\r\n"; 
+      mail($email_to,$email_title,$email_content,$headers);
+      
+    }
+
   }
 ?>

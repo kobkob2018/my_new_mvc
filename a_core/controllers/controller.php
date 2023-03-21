@@ -1,6 +1,6 @@
 <?php
   class Controller {
-	public $use_models = array("userLogin","users","user_rolls","systemMessages","globalSettings");
+	public $use_models = array("userLogin","users","user_rolls","systemMessages","global_settings");
 	public $add_models = array();
 	public $data = array();
 	public $user = false;
@@ -166,15 +166,7 @@
 	}
 
 	public function send_email($email_to, $email_title,$email_content){ 
-		$email_sender = get_config('email_sender'); 
-		$email_sender_name = get_config('email_sender_name');
-		// Set content-type header for sending HTML email 
-		$headers = "MIME-Version: 1.0" . "\r\n"; 
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n"; 
-		
-		// Additional headers 
-		$headers .= 'From: '.$email_sender_name.'<'.$email_sender.'>' . "\r\n"; 
-		mail($email_to,$email_title,$email_content,$headers);
+		return Helper::send_email($email_to, $email_title,$email_content);
 	}
 
 	public function init_form_handler($form_id = 'main'){		

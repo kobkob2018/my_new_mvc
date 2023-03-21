@@ -16,7 +16,8 @@
 			'6'=>'הליד זוכה',
 		);
 
-		$tag = Tags::get_user_tag_list();		
+		$tag = Tags::get_user_tag_list();	
+			
 		$lead = array(
 			'row_id'=>$lead_data['id'],
 			'date_in'=>$lead_data['date_in'],
@@ -29,7 +30,7 @@
 			'status'=>trim($lead_data['status']),
 			'status_str'=>$status[$lead_data['status']],
 			'tag'=>trim($lead_data['tag']),
-			'tag_str'=>$tag[$lead_data['tag']],			
+			'tag_str'=>isset($tag[$lead_data['tag']])?$tag[$lead_data['tag']]:"",			
 			'view_state'=>$lead_data['view_state'],
 			'deleted'=>$lead_data['deleted'],
 			'open_state'=>$lead_data['open_state'],

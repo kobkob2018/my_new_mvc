@@ -18,6 +18,7 @@ $config = array(
 
     'master_domain'=>'usites.com',
 
+    'master_url'=>'http://usites.com',
     'error_controller'=>'pages',
     'error_action'=>'error',
 
@@ -33,7 +34,7 @@ $config = array(
         ,'users'
         ,'user_rolls'
         ,'systemMessages'
-        ,'globalSettings'
+        ,'global_settings'
         ,'sites'
         ,'biz_categories'
         ,'cities'
